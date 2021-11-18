@@ -38,7 +38,7 @@ if __name__ == '__main__':
         clear = lambda: os.system('clear')
         clear()
 
-    print(f'\u001b[36m{Figlet(font="slant").renderText("")}\u001b[0m')
+    print(f'\u001b[36m{Figlet(font="chunky").renderText("Kenexar")}\u001b[0m')
     load()
     Client = Process(target=bot.run(TOKEN))
     Client.start()
