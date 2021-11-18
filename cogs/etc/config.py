@@ -1,6 +1,0 @@
-TOKEN = 'ODQxNTA4NTk3NTc3Njc4ODgw.YJnx9A.X8WJNcitE9_fHZXMtqERuA_-9Cg'
-PREFIX = '$'
-COLOR_ST = '#fff'
-COLOR_RED = '#ff0000'
-COLOR_GREEN = '#00ff00'
-
