@@ -1,0 +1,4 @@
+mysql-connector
+nextcord==
+pyfiglet
+alive_progress
