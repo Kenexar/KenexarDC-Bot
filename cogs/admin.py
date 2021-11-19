@@ -3,7 +3,7 @@ from datetime import datetime
 from nextcord.ext import commands
 from nextcord.ext.commands import CommandNotFound
 
-from cogs.etc.config import ESCAPE
+from cogs.etc.config import ESCAPE, cur, DBESSENT
 from cogs.etc.embeds import user_info
 
 
@@ -49,6 +49,7 @@ class Admin(commands.Cog):
 
         :return: list
         """
+
         return_list = []
 
         if ESCAPE + toParse in option:
@@ -57,14 +58,36 @@ class Admin(commands.Cog):
             return return_list
         return None
 
-    @commands.command()
+    @commands.Command
     async def get(self, ctx, *args):
+        cur.execute(DBESSENT)
+
         options = [
             f'{ESCAPE}user', f'{ESCAPE}u',
             f'{ESCAPE}vehicletrunk', f'{ESCAPE}vh', 'Null']
 
-        await ctx.send(embed=user_info(username='test', license='coggers', cash=200, bank=2000, bm=20000, veh=2,
-                                       weapons=['carbine: 255/255'], inv={'handy': '1'}))
+        cur.execute(
+            "SELECT identifier, `accounts`, `group`, inventory, job, job_grade, loadout, firstname, lastname FROM users WHERE identifier='002bfa00e51df9daa0a9cf7a9cea511d7dc2a227'")
+
+        fetcher = cur.fetchone()[1].strip('"')
+        print(fetcher)
+
+        user = {
+            'username': 'clx',
+            'license': 'coggers',
+            'cash': 200,
+            'bank': 200,
+            'bm': 200,
+            'veh': 2,
+            'weapons': [
+                'Carbine 255/255'
+            ],
+            'inv': {
+                'Handy': '1'
+            }
+        }
+
+        await ctx.send(embed=user_info(user=user))
 
     @commands.command()
     async def delete(self, ctx, *args):

@@ -5,15 +5,27 @@ from nextcord import Embed
 from cogs.etc.config import EMBED_ST
 
 
-def user_info(username=str, license=str, cash=int, bank=int, bm=int, veh=int, weapons=list, inv=dict) -> Embed:
+def user_info(user=dict) -> Embed:
     global f, s, fi, si
+
+    username = user.get('username', None)
+    license_ = user.get('license', None)
+
+    cash = user.get('cash', None)
+    bank = user.get('bank', None)
+    bm = user.get('bm', None)
+    veh = user.get('veh', None)
+
+    weapons = user.get('weapons', None)
+    inv = user.get('inv', None)
+
     embed = Embed(title=username,
-                  description=license,
+                  description=license_,
                   color=EMBED_ST,
                   timestamp=datetime.utcnow())
 
     embed.add_field(name='Information',
-                    value=f'💰 Bargeld: {cash}\n💳 Bank: {bank}\n💸 Schwarzgeld: {bm}\n\n🚘 Fahrzeuge: {veh}',
+                    value=f'Group: \n\n💰 Bargeld: {cash}\n💳 Bank: {bank}\n💸 Schwarzgeld: {bm}\n\n🚘 Fahrzeuge: {veh}',
                     inline=False)
     if len(weapons):
         print(weapons, inv)
