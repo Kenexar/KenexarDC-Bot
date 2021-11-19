@@ -1,0 +1,34 @@
+import mysql.connector
+## [SQL SHIT] ##
+
+HOST = 'localhost'
+PASSWORD = ''
+DB = 'dcbot'
+USER = 'root'
+
+db = mysql.connector.connect(
+        host=HOST,
+        user=USER,
+        password=PASSWORD,
+        database=DB
+)
+
+CUR = db.cursor(buffered=True)
+
+## [BOT SHIT] ##
+
+config_shit = []
+foo = 1
+
+for _ in range(2):
+    foo += 1
+    CUR.execute("SELECT * FROM tokens WHERE Name='SunSideAdmin'")
+    config_shit.append(CUR.fetchone()[foo])
+
+TOKEN = config_shit[0]
+PREFIX = config_shit[1]
+ESCAPE = '-'
+FLASK = False
+EMBED_ST = 0xff0000
+
+cycle_query = []

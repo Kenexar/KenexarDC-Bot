@@ -1,6 +1,12 @@
 from cogs.etc.config import dbBase, CUR, ESCAPE, DBESSENT
 from datetime import datetime
 from nextcord.ext import commands
+from datetime import datetime
+
+from etc.config import ESCAPE
+from nextcord.ext import CommandNotFound
+
+from embeds import user_info
 
 #todo:
 #   get, del, add, clear
@@ -23,6 +29,7 @@ class Admin(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print(f'Ready at {datetime.now().strftime("%H:%M:%S")}')
+
 
     @commands.command()
     async def get(self, ctx, *args):
