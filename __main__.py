@@ -1,7 +1,7 @@
 import os
 import platform
-from multiprocessing import Process
 import time
+from multiprocessing import Process
 
 import nextcord
 from alive_progress import alive_bar
@@ -28,8 +28,8 @@ def load():
     with alive_bar(count) as bar:
         for filename in os.listdir("cogs"):
             if filename.endswith(
-                    ".py"
-            ) and filename != "__init__.py" and filename != "playground.py":
+                    ".py") and filename != "__init__.py" and filename != "playground.py":
+                print(filename)
                 bot.load_extension(f"cogs.{filename[:-3]}")
                 bar()
 
