@@ -8,16 +8,16 @@ from cogs.etc.config import EMBED_ST
 def user_info(user=dict) -> Embed:
     global f, s, fi, si
 
-    username = user.get('username', None)
-    license_ = user.get('license', None)
+    username = user.get('username', '-')
+    license_ = user.get('license', '-')
 
-    cash = user.get('cash', None)
-    bank = user.get('bank', None)
-    bm = user.get('bm', None)
-    veh = user.get('veh', None)
+    cash = user.get('cash', '-')
+    bank = user.get('bank', '-')
+    bm = user.get('bm', '-')
+    veh = user.get('veh', '-')
 
-    weapons = user.get('weapons', None)
-    inv = user.get('inv', None)
+    weapons = user.get('weapons', '-')
+    inv = user.get('inv', '-')
 
     embed = Embed(title=username,
                   description=license_,

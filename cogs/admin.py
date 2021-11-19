@@ -1,3 +1,5 @@
+import json
+
 from datetime import datetime
 
 from nextcord.ext import commands
@@ -70,7 +72,8 @@ class Admin(commands.Cog):
             "SELECT identifier, `accounts`, `group`, inventory, job, job_grade, loadout, firstname, lastname FROM users WHERE identifier='002bfa00e51df9daa0a9cf7a9cea511d7dc2a227'")
 
         fetcher = cur.fetchone()[1].strip('"')
-        print(fetcher)
+        aDict = json.loads(fetcher)
+        print(aDict['bank'])
 
         user = {
             'username': 'clx',
