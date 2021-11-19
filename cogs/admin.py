@@ -1,9 +1,10 @@
 from datetime import datetime
 
-from nextcord.ext.commands import CommandNotFound
 from nextcord.ext import commands
+from nextcord.ext.commands import CommandNotFound
 
 from cogs.etc.config import ESCAPE
+from cogs.etc.embeds import user_info
 
 
 # todo:
@@ -35,13 +36,14 @@ class Admin(commands.Cog):
             return await ctx.send("Command/API not found.")
         raise error
 
-    def parser(self, rounds, toparse, option) -> list or None:
+    @staticmethod
+    def parser(rounds, toParse, option) -> list or None:
         """ This is a small self written Argparser
 
         This Function parse given Arguments for administration
 
         :param rounds: Insert the max number of words for the return
-        :param toparse: Gives the Arg to Parse
+        :param toParse: Gives the Arg to Parse
         :param option: Insert option for parsing
 
 
@@ -49,7 +51,7 @@ class Admin(commands.Cog):
         """
         return_list = []
 
-        if ESCAPE + toparse in option:
+        if ESCAPE + toParse in option:
             for i in range(rounds):
                 return_list.append(i)
             return return_list
@@ -60,6 +62,9 @@ class Admin(commands.Cog):
         options = [
             f'{ESCAPE}user', f'{ESCAPE}u',
             f'{ESCAPE}vehicletrunk', f'{ESCAPE}vh', 'Null']
+
+        await ctx.send(embed=user_info(username='test', license='coggers', cash=200, bank=2000, bm=20000, veh=2,
+                                       weapons=['carbine: 255/255'], inv={'handy': '1'}))
 
     @commands.command()
     async def delete(self, ctx, *args):
