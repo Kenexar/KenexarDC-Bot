@@ -9,7 +9,7 @@ from nextcord.ext import commands
 from pyfiglet import Figlet
 
 from cogs.etc.config import TOKEN, PREFIX, FLASK
-from cogs.etc.server import start_server
+from cogs.etc.flask_server import start_server
 
 intents = nextcord.Intents.all()
 bot = commands.Bot(command_prefix=PREFIX,
@@ -49,8 +49,8 @@ if __name__ == '__main__':
     if FLASK:
         print('\u001b[32m/----------[ FLASK ]----------\\\u001b[0m'.center(80))
         start_server()
-    time.sleep(.5)
-    if FLASK:
+        time.sleep(.5)
+
         print('\u001b[32m\\----------[ FLASK ]----------/\u001b[0m'.center(80))
 
     Client = Process(target=bot.run(TOKEN))
