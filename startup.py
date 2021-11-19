@@ -2,7 +2,7 @@ import os
 import mysql.connector
 
 FILE1 = 'cogs/etc/config.py'
-FLASK = 'cogs/etc/server.py'
+FLASK = 'cogs/etc/flask_server.py'
 
 
 TEMPLATE1 = open('templates/templateBOTCONFIG', 'r')
