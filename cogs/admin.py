@@ -2,6 +2,9 @@ from nextcord.ext import commands
 from datetime import datetime
 
 from etc.config import ESCAPE
+from nextcord.ext import CommandNotFound
+
+from embeds import user_info
 
 #todo:
 #   get, del, add, clear
@@ -18,39 +21,57 @@ from etc.config import ESCAPE
 
 
 class Admin(commands.Cog):
-	def __init__(self, bot):
-		self.bot = bot
+    def __init__(self, bot):
+        self.bot = bot
 
-	@commands.Cog.listener()
-	async def on_ready(self):
-		print(f'Ready at {datetime.now().strftime("%H:%M:%S")}')
+    @commands.Cog.listener()
+    async def on_ready(self):
+        print(f'Ready at {datetime.now().strftime("%H:%M:%S")}')
 
+    @commands.Cog.listener()
+    async def on_command_error(self, ctx,
+                               error):  # Function doing intense computing!
+        if isinstance(error, CommandNotFound):
+            return await ctx.send("Command/API not found.")
+        raise error
 
-	def parser(rounds, toparse, options=list) -> list:
-		return_list = []
+    def parser(rounds, toparse, option) -> list or None:
+        '''This is a small self written Argparser
 		
-		if ESCAPE + toparse in options:
-			for i in range(rounds):
-				pass
+		This Function parse given Arguments for administration
 
-	@commands.command()
-	async def get(self, ctx, *args):
-		options = [f'{ESCAPE}user', f'{ESCAPE}u',
-					f'{ESCAPE}vehicletrunk', f'{ESCAPE}vh']
+		:param rounds: Insert the max words to parse
+		:param toparse: Gives the Arg to Parse
+		:param option: Insert option for parsing
 
-		
 
-	@commands.command()
-	async def delete(self, ctx):
-		pass
+		:return > list
+		'''
+        return_list = []
 
-	@commands.command()
-	async def add(self, ctx):
-		pass
+        if ESCAPE + toparse in option:
+            for i in range(rounds):
+                return_list.append(i)
+            return return_list
+        return None
 
-	@commands.command()
-	async def clear(self, ctx):
-		pass
+    @commands.command()
+    async def get(self, ctx, *args):
+        options = [
+            f'{ESCAPE}user', f'{ESCAPE}u', f'{ESCAPE}vehicletrunk',
+            f'{ESCAPE}vh']
+
+    @commands.command()
+    async def delete(self, ctx):
+        pass
+
+    @commands.command()
+    async def add(self, ctx):
+        pass
+
+    @commands.command()
+    async def clear(self, ctx):
+        pass
 
 
 def setup(bot):

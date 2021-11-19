@@ -1,4 +1,5 @@
 mysql-connector
-nextcord==
+nextcord
 pyfiglet
 alive_progress
+flask

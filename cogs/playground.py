@@ -1,4 +1,11 @@
-import pyfiglet
+f = {
+	'Carbine': '200',
+	'spezi': '200',
+	'jaq': '200',
+	'fd': '200',
+	'fds': '200'
+}
 
-for i in pyfiglet.FigletFont.getFonts():
-    print(pyfiglet.Figlet(font=i).renderText('Test'), f"\n {i}")
+s = '\n'.join(f[i] for i in f)
+print(s)
+
