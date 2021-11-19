@@ -40,12 +40,12 @@ class Admin(commands.Cog):
 		
 		This Function parse given Arguments for administration
 
-		:param rounds: Insert the max words to parse
+		:param rounds: Insert the max number of words for the return
 		:param toparse: Gives the Arg to Parse
 		:param option: Insert option for parsing
 
 
-		:return > list
+		:return: list
 		'''
         return_list = []
 
@@ -58,8 +58,8 @@ class Admin(commands.Cog):
     @commands.command()
     async def get(self, ctx, *args):
         options = [
-            f'{ESCAPE}user', f'{ESCAPE}u', f'{ESCAPE}vehicletrunk',
-            f'{ESCAPE}vh']
+            f'{ESCAPE}user', f'{ESCAPE}u', 
+			f'{ESCAPE}vehicletrunk', f'{ESCAPE}vh']
 
     @commands.command()
     async def delete(self, ctx):
