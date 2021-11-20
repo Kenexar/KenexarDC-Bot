@@ -10,6 +10,14 @@ def user_info(user=dict) -> Embed:
 
     username = user.get('username', '-')
     license_ = user.get('license', '-')
+    group = user.get('group', '-')
+
+    firstname = user.get('firstname', '-')
+    lastname = user.get('lastname', '-')
+    phone_number = user.get('phone_number', '-')
+
+    job = user.get('job', '-')
+    job_grade = user.get('job_grade', '-')
 
     cash = user.get('cash', '-')
     bank = user.get('bank', '-')
@@ -25,7 +33,9 @@ def user_info(user=dict) -> Embed:
                   timestamp=datetime.utcnow())
 
     embed.add_field(name='Information',
-                    value=f'Group: \n\n💰 Bargeld: {cash}\n💳 Bank: {bank}\n💸 Schwarzgeld: {bm}\n\n🚘 Fahrzeuge: {veh}',
+                    value=f'Group: {group}\n\nVoller Name: {firstname}, {lastname}\nJob: {job}. Grade: {job_grade}\n'
+                          f'Telefon: {phone_number}'
+                          f'\n\n💰 Bargeld: {cash}\n💳 Bank: {bank}\n💸 Schwarzgeld: {bm}\n\n🚘 Fahrzeuge: {veh}',
                     inline=False)
     if len(weapons):
         print(weapons, inv)
@@ -37,7 +47,7 @@ def user_info(user=dict) -> Embed:
 
     if len(inv):
         fi = '\n'.join(inv)
-        si = '\n'.join([inv[i] for i in inv])
+        si = '\n'.join([str(inv[i]) for i in inv])
     else:
         fi = 'Hat keine Items im Inventar'
         si = '--'

@@ -69,25 +69,35 @@ class Admin(commands.Cog):
             f'{ESCAPE}vehicletrunk', f'{ESCAPE}vh', 'Null']
 
         cur.execute(
-            "SELECT identifier, `accounts`, `group`, inventory, job, job_grade, loadout, firstname, lastname FROM users WHERE identifier='002bfa00e51df9daa0a9cf7a9cea511d7dc2a227'")
+            "SELECT identifier, `accounts`, `group`, inventory, job, job_grade, loadout, firstname, lastname, phone_number FROM users WHERE identifier='3bf55e0c0deca54563461985c94f13694a0ad919'")
 
-        fetcher = cur.fetchone()[1].strip('"')
-        aDict = json.loads(fetcher)
-        print(aDict['bank'])
+        fetcher = cur.fetchone()
+
+        money = json.loads(fetcher[1])
+        inventory = json.loads(fetcher[3].strip('"'))
+        weapons = json.loads(fetcher[6])
+
+        weapons_list = []
+
+        for i in weapons:
+            to_add = ''
+            to_add.join(f'{i} {weapons[i]["ammo"]}/255')
+            print(to_add)
 
         user = {
             'username': 'clx',
             'license': 'coggers',
-            'cash': 200,
-            'bank': 200,
-            'bm': 200,
-            'veh': 2,
-            'weapons': [
-                'Carbine 255/255'
-            ],
-            'inv': {
-                'Handy': '1'
-            }
+            'job': fetcher[4],
+            'job_grade': fetcher[5],
+            'cash': money.get('money'),
+            'bank': money.get('bank'),
+            'bm': money.get('black_money'),
+            'veh': '',
+            'weapons': weapons_list,
+            'inv': inventory,
+            'firstname': fetcher[7],
+            'lastname': fetcher[8],
+            'phone_number': fetcher[9]
         }
 
         await ctx.send(embed=user_info(user=user))
