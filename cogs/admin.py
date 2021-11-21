@@ -7,6 +7,7 @@ from nextcord.ext.commands import CommandNotFound
 
 from cogs.etc.config import ESCAPE, cur, DBESSENT
 from cogs.etc.embeds import user_info
+from cogs.etc.parser import parser
 
 
 # todo:
@@ -38,38 +39,21 @@ class Admin(commands.Cog):
             return await ctx.send("Command/API not found.")
         raise error
 
-    @staticmethod
-    def parser(rounds, toParse, option) -> list or None:
-        """ This is a small self written Argparser
-
-        This Function parse given Arguments for administration
-
-        :param rounds: Insert the max number of words for the return
-        :param toParse: Gives the Arg to Parse
-        :param option: Insert option for parsing
-
-
-        :return: list
-        """
-
-        return_list = []
-
-        if ESCAPE + toParse in option:
-            for i in range(rounds):
-                return_list.append(i)
-            return return_list
-        return None
 
     @commands.Command
     async def get(self, ctx, *args):
         cur.execute(DBESSENT)
 
+
         options = [
             f'{ESCAPE}user', f'{ESCAPE}u',
             f'{ESCAPE}vehicletrunk', f'{ESCAPE}vh', 'Null']
 
+        parsed = parser(1, args, options)
+        print(parsed)
+
         cur.execute(
-            "SELECT identifier, `accounts`, `group`, inventory, job, job_grade, loadout, firstname, lastname, phone_number FROM users WHERE identifier='3bf55e0c0deca54563461985c94f13694a0ad919'")
+            "SELECT identifier, `accounts`, `group`, inventory, job, job_grade, loadout, firstname, lastname, phone_number FROM users WHERE identifier='4141a2fc964a90303b789e0fc1f1c28883a56e36'")
 
         fetcher = cur.fetchone()
 
@@ -77,22 +61,31 @@ class Admin(commands.Cog):
         inventory = json.loads(fetcher[3].strip('"'))
         weapons = json.loads(fetcher[6])
 
+        license_ = fetcher[0]
+
         weapons_list = []
 
         for i in weapons:
-            to_add = ''
-            to_add.join(f'{i} {weapons[i]["ammo"]}/255')
-            print(to_add)
+            weapons_list.append(f'{i.replace("WEAPON_", "").title()} - {weapons[i]["ammo"]}/255')
+
+
+        cur.execute("SELECT owner FROM owned_vehicles WHERE owner='4141a2fc964a90303b789e0fc1f1c28883a56e36'")
+
+        fetcher2 = cur.fetchall()
+
+        f = 0
+        for _ in fetcher2:
+            f += 1
 
         user = {
             'username': 'clx',
-            'license': 'coggers',
+            'license': license_,
             'job': fetcher[4],
             'job_grade': fetcher[5],
             'cash': money.get('money'),
             'bank': money.get('bank'),
             'bm': money.get('black_money'),
-            'veh': '',
+            'veh': f,
             'weapons': weapons_list,
             'inv': inventory,
             'firstname': fetcher[7],
