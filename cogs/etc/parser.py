@@ -18,7 +18,7 @@ def parser(rounds, toParse, option) -> list or None:
 
     for key in toParse:
         if ESCAPE + toParse[toParse.index(key)] in option:
-            for i in range(rounds + 1):
-                return_list.append(toParse[i])
+            for i in range(rounds):
+                return_list.append(toParse[i + 1])
             return return_list
         return None
