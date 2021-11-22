@@ -7,7 +7,7 @@ from nextcord.ext.commands import CommandNotFound
 
 from cogs.embeds import user_info
 from cogs.etc.config import dbBase
-from cogs.etc.config import CUR
+from cogs.etc.config import cur
 from cogs.etc.config import ESCAPE
 from cogs.etc.config import DBESSENT
 from cogs.etc.config import ESCAPE
@@ -55,7 +55,7 @@ class Admin(commands.Cog):
             f'{ESCAPE}user', f'{ESCAPE}u',
             f'{ESCAPE}vehicletrunk', f'{ESCAPE}vh', 'Null']
 
-        parsed = Preset.parser(1, args, options)
+        parsed = Preset.parser(rounds=1, toParse=args, option=options)
         print(parsed)
 
         cur.execute(

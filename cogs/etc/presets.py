@@ -1,67 +1,66 @@
-import nextcord
-
 from cogs.etc.config import ESCAPE
-from cogs.etc.config import CUR
 from cogs.etc.config import PROJECT_NAME
-from cogs.etc.config import db
+from cogs.etc.config import cur
+from cogs.etc.config import dbSun
 
 
 class Preset:
-	""" This is the Main function part for my Administration bot """
-	def parser(self, rounds, toParse, option) -> None:
-		""" This is a small self written Argparser
-		
-		This Function parse given Arguments for administration
+    """ This is the Main function part for my Administration bot """
+    @staticmethod
+    def parser(rounds, toparse, option) -> list:
+        """ This is a small self written Argparser
 
-		:param rounds: Insert the max number of words for the return
-		:param toParse: Gives the Arg to Parse
-		:param option: Insert option for parsing
+        This Function parse given Arguments for administration
 
-		:return: list
-		"""
+        :param rounds: Insert the max number of words for the return
+        :param toparse: Gives the Arg to Parse
+        :param option: Insert option for parsing
 
-		return_list = []
+        :return: list
+        """
 
-		for key in toParse:
-			if ESCAPE + toParse[toParse.index(key)] in option:
-				for i in range(rounds):
-					return_list.append(toParse[i + 1])
-				return return_list
-			
-	
+        return_list = []
 
-	def whitelist(mode, member=int) -> str or list:
-		"""Whitelist function whitelist a member
-		
-		:param mode:add: Add a Member to the Whitelist for Administration
-		:param mode:list: List all members on the whitelist
-		:param mode:remove: Remove a Member from the Whitelist
+        for key in toparse:
+            if ESCAPE + toparse[toparse.index(key)] in option:
+                for i in range(rounds):
+                    return_list.append(toparse[i + 1])
+                return return_list
 
-		:returns: SQL Insert/Update
-		"""
+    @staticmethod
+    def whitelist(mode, member=int) -> str or list:
+        """Whitelist function whitelist a member
 
-		if mode == 'list':
-			compare = []
+        :param mode:add: Add a Member to the Whitelist for Administration
+        :param mode:list: List all members on the whitelist
+        :param mode:remove: Remove a Member from the Whitelist
+        :param member: Serve the member
 
-			CUR.execute(f"SELECT uid FROM whitelist WHERE name='{PROJECT_NAME}'")
-			fetcher = CUR.fetchall()
-			
-			if fetcher:
-				for i in fetcher:
-					compare.append(i)
-			else:
-				return 'Cannot find any entries'
-			
-			return compare
+        :returns: SQL Insert/Update
+        """
 
-		elif mode == 'add':
-			CUR.execute("INSERT INTO whitelist(name, uid) VALUES (?, ?)", (PROJECT_NAME, member))
-			db.commit()
-			return f'Added <@{member}> to the whitelist'
+        if mode == 'list':
+            compare = []
 
-		elif mode == 'remove':
-			CUR.execute("DELETE FROM whitelist WHERE uid=? and name=?;", (member, PROJECT_NAME))
-			db.commit()
-			return f'Removed <@{member}> from whitelist'
-		else:
-			return f'{mode} is not available'
+            cur.execute(f"SELECT uid FROM whitelist WHERE name='{PROJECT_NAME}'")
+            fetcher = cur.fetchall()
+
+            if fetcher:
+                for i in fetcher:
+                    compare.append(i)
+            else:
+                return 'Cannot find any entries'
+
+            return compare
+
+        elif mode == 'add':
+            cur.execute("INSERT INTO whitelist(name, uid) VALUES (?, ?)", (PROJECT_NAME, member))
+            dbSun.commit()
+            return f'Added <@{member}> to the whitelist'
+
+        elif mode == 'remove':
+            cur.execute("DELETE FROM whitelist WHERE uid=? and name=?;", (member, PROJECT_NAME))
+            dbSun.commit()
+            return f'Removed <@{member}> from whitelist'
+        else:
+            return f'{mode} is not available'
