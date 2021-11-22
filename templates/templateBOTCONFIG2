@@ -1,0 +1,19 @@
+import os
+
+## [SQL SHIT] ##
+
+HOST = 'localhost'
+PASSWORD = ''
+DB = ''
+USER = 'root'
+
+
+## [DICSORD SHIT] ##
+
+def token_grep(value):
+  return os.getenv(value)
+
+TOKEN = token_grep('TOKEN')
+PREFIX = ''
+ESCAPE = ''
+FLASK = True

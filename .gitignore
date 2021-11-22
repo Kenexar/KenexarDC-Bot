@@ -129,4 +129,8 @@ dmypy.json
 .pyre/
 .idea
 
+.replit
 cogs/etc/config.py
+
+poetry.lock
+pyproject.toml
