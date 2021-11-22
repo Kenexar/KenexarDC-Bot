@@ -131,3 +131,6 @@ dmypy.json
 
 .replit
 cogs/etc/config.py
+
+poetry.lock
+pyproject.toml

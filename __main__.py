@@ -11,6 +11,7 @@ from pyfiglet import Figlet
 from cogs.etc.config import TOKEN, PREFIX, FLASK
 from cogs.etc.server import start_server
 
+
 intents = nextcord.Intents.all()
 bot = commands.Bot(command_prefix=PREFIX,
                    intents=intents,
@@ -19,19 +20,23 @@ bot = commands.Bot(command_prefix=PREFIX,
 
 count = 0
 
+names = ['__init__.py', 'playground.py', 'embeds.py']
+
 for f in os.listdir('cogs'):
-    if f.endswith(".py") and f != "__init__.py" and f != "playground.py":
+    if f.endswith(".py") and not f in names:
         count += 1
 
-
 def load():
-    with alive_bar(count) as bar:
-        for filename in os.listdir("cogs"):
-            if filename.endswith(
-                    ".py"
-            ) and filename != "__init__.py" and filename != "playground.py":
-                bot.load_extension(f"cogs.{filename[:-3]}")
-                bar()
+	with alive_bar(count) as bar:
+		for filename in os.listdir("cogs"):
+			print(filename)
+			if filename.endswith(
+				".py"
+			) and filename not in names:
+				loader = f"cogs.{filename[:-3]}"
+				print(loader)
+				bot.load_extension(loader)
+				bar()
 
 
 if __name__ == '__main__':

@@ -8,6 +8,7 @@ authors = ["exersalza <<>>"]
 python = "^3.8"
 pyfiglet = "^0.8.post1"
 alive-progress = "^2.1.0"
+Flask = "^2.0.2"
 
 [tool.poetry.dev-dependencies]
 
