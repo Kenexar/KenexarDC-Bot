@@ -2,6 +2,8 @@ import nextcord
 
 from cogs.etc.config import ESCAPE
 from cogs.etc.config import CUR
+from cogs.etc.config import PROJECT_NAME
+from cogs.etc.config import db
 
 
 class Preset:
@@ -28,7 +30,7 @@ class Preset:
 			return None
 	
 
-	def whitelist(mode) -> str or list:
+	def whitelist(mode, member=int) -> str or list:
 		"""Whitelist function whitelist a member
 		
 		:param mode:add: Add a Member to the Whitelist for Administration
@@ -41,7 +43,7 @@ class Preset:
 		if mode == 'list':
 			compare = []
 
-			CUR.execute("SELECT uid FROM whitelist WHERE name='SunSideAdmin'")
+			CUR.execute(f"SELECT uid FROM whitelist WHERE name='{PROJECT_NAME}'")
 			fetcher = CUR.fetchall()
 			
 			if fetcher:
@@ -49,11 +51,17 @@ class Preset:
 					compare.append(i)
 			else:
 				return 'Keine einträge vorhanden'
-
+			
 			return compare
+
 		elif mode == 'add':
-			pass
+			CUR.execute("INSERT INTO whitelist(name, uid) VALUES (?, ?)", (PROJECT_NAME, member))
+			db.commit()
+			return f'Added <@{member}> to the whitelist'
+
 		elif mode == 'remove':
-			pass
+			CUR.execute("DELETE FROM whitelist WHERE uid=? and name=?;", (member, PROJECT_NAME))
+			db.commit()
+			return f'Removed <@{member}> from whitelist'
 		else:
 			return f'{mode} is not available'

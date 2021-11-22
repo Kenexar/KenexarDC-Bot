@@ -8,7 +8,7 @@ from alive_progress import alive_bar
 from nextcord.ext import commands
 from pyfiglet import Figlet
 
-from cogs.etc.config import TOKEN, PREFIX, FLASK
+from cogs.etc.config import TOKEN, PREFIX, FLASK, PROJECT_NAME
 from cogs.etc.flask_server import start_server
 
 
@@ -16,7 +16,7 @@ intents = nextcord.Intents.all()
 bot = commands.Bot(command_prefix=PREFIX,
                    intents=intents,
                    help_command=None,
-                   description="Created by exersalza. Project: SunSide")
+                   description=f"Created by exersalza. Project: {PROJECT_NAME}")
 
 count = 0
 names = ['__init__.py', 'playground.py', 'embeds.py']

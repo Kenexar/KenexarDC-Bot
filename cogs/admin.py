@@ -1,25 +1,19 @@
-<<<<<<< HEAD
-=======
 import json
 
->>>>>>> d8da944fe305ed917a7aa17ae1b5e36a61c07b24
 from datetime import datetime
 
 from nextcord.ext import commands
 from nextcord.ext.commands import CommandNotFound
 
-<<<<<<< HEAD
 from cogs.embeds import user_info
 from cogs.etc.config import dbBase
 from cogs.etc.config import CUR
 from cogs.etc.config import ESCAPE
 from cogs.etc.config import DBESSENT
 from cogs.etc.config import ESCAPE
-=======
-from cogs.etc.config import ESCAPE, cur, DBESSENT
-from cogs.etc.embeds import user_info
-from cogs.etc.parser import parser
->>>>>>> d8da944fe305ed917a7aa17ae1b5e36a61c07b24
+from cogs.etc.config import cur
+
+from cogs.etc.presets import Preset
 
 
 # todo:
@@ -61,7 +55,7 @@ class Admin(commands.Cog):
             f'{ESCAPE}user', f'{ESCAPE}u',
             f'{ESCAPE}vehicletrunk', f'{ESCAPE}vh', 'Null']
 
-        parsed = parser(1, args, options)
+        parsed = Preset.parser(1, args, options)
         print(parsed)
 
         cur.execute(
