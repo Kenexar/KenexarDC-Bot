@@ -1,6 +1,7 @@
 import nextcord
 
 from cogs.etc.config import ESCAPE
+from cogs.etc.config import CUR
 
 
 class Preset:
@@ -27,7 +28,7 @@ class Preset:
 			return None
 	
 
-	def whitelist(mode):
+	def whitelist(mode) -> str or list:
 		"""Whitelist function whitelist a member
 		
 		:param mode:add: Add a Member to the Whitelist for Administration
@@ -36,4 +37,23 @@ class Preset:
 
 		:returns: SQL Insert/Update
 		"""
-		return mode
+
+		if mode == 'list':
+			compare = []
+
+			CUR.execute("SELECT uid FROM whitelist WHERE name='SunSideAdmin'")
+			fetcher = CUR.fetchall()
+			
+			if fetcher:
+				for i in fetcher:
+					compare.append(i)
+			else:
+				return 'Keine einträge vorhanden'
+
+			return compare
+		elif mode == 'add':
+			pass
+		elif mode == 'remove':
+			pass
+		else:
+			return f'{mode} is not available'
