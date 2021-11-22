@@ -26,7 +26,6 @@ for f in os.listdir('cogs'):
         count += 1
 
 def load():
-<<<<<<< HEAD
 	with alive_bar(count) as bar:
 		for filename in os.listdir("cogs"):
 			print(filename)
@@ -60,35 +59,3 @@ if __name__ == '__main__':
 
 	Client = Process(target=bot.run(TOKEN))
 	Client.start()
-=======
-    with alive_bar(count) as bar:
-        for filename in os.listdir("cogs"):
-            if filename.endswith(
-                    ".py") and filename != "__init__.py" and filename != "playground.py":
-                print(filename)
-                bot.load_extension(f"cogs.{filename[:-3]}")
-                bar()
-
-
-if __name__ == '__main__':
-    platform = platform.system()
-
-    if platform == 'Windows':
-        clear = lambda: os.system('cls')
-        clear()
-    elif platform == 'Linux':
-        clear = lambda: os.system('clear')
-        clear()
-
-    print(f'\u001b[36m{Figlet(font="chunky").renderText("Kenexar")}\u001b[0m')
-    load()
-    if FLASK:
-        print('\u001b[32m/----------[ FLASK ]----------\\\u001b[0m'.center(80))
-        start_server()
-        time.sleep(.5)
-
-        print('\u001b[32m\\----------[ FLASK ]----------/\u001b[0m'.center(80))
-
-    Client = Process(target=bot.run(TOKEN))
-    Client.start()
->>>>>>> d8da944fe305ed917a7aa17ae1b5e36a61c07b24

@@ -17,7 +17,5 @@ class Reload(commands.Cog):
 			return await ctx.send('Du bist nicht Berechtigt um Module neu zu starten!')
 
 		print(Preset.whitelist('ADD'))
-
-		coggers = 'fds'
 def setup(bot):
 	bot.add_cog(Reload(bot))
