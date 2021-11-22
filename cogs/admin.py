@@ -3,10 +3,10 @@ from datetime import datetime
 from nextcord.ext import commands
 from datetime import datetime
 
-from etc.config import ESCAPE
-from nextcord.ext import CommandNotFound
+from cogs.etc.config import ESCAPE
+from nextcord.ext.commands import CommandNotFound
 
-from embeds import user_info
+from cogs.embeds import user_info
 
 #todo:
 #   get, del, add, clear

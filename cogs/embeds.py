@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from nextcord import Embed
-from etc.config import EMBED_ST, EMBED_RED, EMBED_GREEN
+from cogs.etc.config import EMBED_ST, EMBED_RED, EMBED_GREEN
 
 
 def user_info(username=str, license=str, cash=int, bank=int, bm=int, veh=int, weapons=dict, inv=dict) -> Embed:
