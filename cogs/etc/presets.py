@@ -8,7 +8,7 @@ from cogs.etc.config import db
 
 class Preset:
 	""" This is the Main function part for my Administration bot """
-	def parser(self, rounds, toParse, option) -> list or None:
+	def parser(self, rounds, toParse, option) -> None:
 		""" This is a small self written Argparser
 		
 		This Function parse given Arguments for administration
@@ -27,7 +27,7 @@ class Preset:
 				for i in range(rounds):
 					return_list.append(toParse[i + 1])
 				return return_list
-			return None
+			
 	
 
 	def whitelist(mode, member=int) -> str or list:
@@ -50,7 +50,7 @@ class Preset:
 				for i in fetcher:
 					compare.append(i)
 			else:
-				return 'Keine einträge vorhanden'
+				return 'Cannot find any entries'
 			
 			return compare
 
