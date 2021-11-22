@@ -18,6 +18,6 @@ class Reload(commands.Cog):
 
 		print(Preset.whitelist('ADD'))
 
-
+		coggers = 'fds'
 def setup(bot):
 	bot.add_cog(Reload(bot))
