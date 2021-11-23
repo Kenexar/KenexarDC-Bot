@@ -1,5 +1,11 @@
 import os
-import mysql.connector
+
+
+try:
+	import mysql.connector
+except ModuleNotFoundError:
+	os.system('pip install -r req')
+
 
 FILE1 = 'cogs/etc/config.py'
 FLASK = 'cogs/etc/flask_server.py'
@@ -12,7 +18,7 @@ FLASKTEMP = open('templates/templateFLASKCONFIG', 'r')
 
 def setup(path, template):
 	if os.path.isfile(path):
-		return f'File {path} exists!'
+		raise FileExistsError(path)
 
 	else:
 		f = open(path, 'w')
@@ -28,6 +34,7 @@ def sql_setup():
 		user='root',
 		password='',
 		database='dcbot'
+
 	)
 
 	cur = mydb.cursor()
@@ -43,8 +50,10 @@ if __name__ == '__main__':
 	while not_true:
 		input_ = input()
 		if input_.lower() == 'normal':
-			setup(FILE1, TEMPLATE1)
-
+			try:
+				setup(FILE1, TEMPLATE1)
+			except FileExistsError:
+				print('File exists, Exiting...')
 			not_true = False
 
 		elif input_.lower() == 'flask':
