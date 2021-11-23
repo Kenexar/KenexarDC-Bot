@@ -1,18 +1,13 @@
 import json
-
 from datetime import datetime
 
 from nextcord.ext import commands
 from nextcord.ext.commands import CommandNotFound
 
 from cogs.embeds import user_info
-from cogs.etc.config import dbBase
-from cogs.etc.config import cur
-from cogs.etc.config import ESCAPE
 from cogs.etc.config import DBESSENT
 from cogs.etc.config import ESCAPE
 from cogs.etc.config import cur
-
 from cogs.etc.presets import Preset
 
 
@@ -45,21 +40,19 @@ class Admin(commands.Cog):
             return await ctx.send("Command/API not found.")
         raise error
 
-
     @commands.Command
     async def get(self, ctx, *args):
         cur.execute(DBESSENT)
-
 
         options = [
             f'{ESCAPE}user', f'{ESCAPE}u',
             f'{ESCAPE}vehicletrunk', f'{ESCAPE}vh', 'Null']
 
-        parsed = Preset.parser(rounds=1, toParse=args, option=options)
-        print(parsed)
+        parsed = Preset.parser(2, args, options)
 
         cur.execute(
-            "SELECT identifier, `accounts`, `group`, inventory, job, job_grade, loadout, firstname, lastname, phone_number FROM users WHERE identifier='4141a2fc964a90303b789e0fc1f1c28883a56e36'")
+            f"SELECT identifier, `accounts`, `group`, inventory, job, job_grade, loadout, firstname, lastname, phone_number FROM users WHERE identifier='{parsed[1]}'")
+
 
         fetcher = cur.fetchone()
 
@@ -74,7 +67,6 @@ class Admin(commands.Cog):
         for i in weapons:
             weapons_list.append(f'{i.replace("WEAPON_", "").title()} - {weapons[i]["ammo"]}/255')
 
-
         cur.execute("SELECT owner FROM owned_vehicles WHERE owner='4141a2fc964a90303b789e0fc1f1c28883a56e36'")
 
         fetcher2 = cur.fetchall()
@@ -85,7 +77,7 @@ class Admin(commands.Cog):
 
         user = {
             'username': 'clx',
-            'license': license_,
+            'license': parsed[1],
             'job': fetcher[4],
             'job_grade': fetcher[5],
             'cash': money.get('money'),

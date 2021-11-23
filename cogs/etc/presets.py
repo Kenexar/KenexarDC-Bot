@@ -24,7 +24,7 @@ class Preset:
         for key in toparse:
             if ESCAPE + toparse[toparse.index(key)] in option:
                 for i in range(rounds):
-                    return_list.append(toparse[i + 1])
+                    return_list.append(toparse[i])
                 return return_list
 
     @staticmethod

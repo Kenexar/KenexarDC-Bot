@@ -6,22 +6,24 @@ from cogs.etc.config import EMBED_ST
 
 
 def user_info(user=dict) -> Embed:
-    username = user['username']
-    license_ = user['license']
+    username = user.get('username', '--')
+    license_ = user.get('license', '--')
 
-    firstname = user['firstname']
-    lastname = user['lastname']
-    phone = user['phone_number']
-    job = user['job']
-    job_grade = user['job_grade']
+    firstname = user.get('firstname', '--')
+    lastname = user.get('lastname', '--')
+    phone = user.get('phone_number', '--')
+    job = user.get('job', '--')
+    job_grade = user.get('job_grade', '--')
 
-    cash = user['cash']
-    bank = user['bank']
-    bm = user['bm']
+    cash = user.get('cash', '--')
+    bank = user.get('bank', '--')
+    bm = user.get('bm', '--')
 
-    veh = user['veh']
-    weapons = user['weapons']
-    inv = user['inv']
+    veh = user.get('veh', '--')
+    weapons = user.get('weapons', '--')
+    inv = user.get('inv', '--')
+
+    s = '--'
 
     embed = Embed(title=username,
                   description=license_,
@@ -29,9 +31,9 @@ def user_info(user=dict) -> Embed:
                   timestamp=datetime.utcnow())
 
     embed.add_field(name='Information',
-                    value=f'Vorname: {firstname}\nNachname: {lastname}\nTel: {phone}\nJob: {job}, Grad: {job_grade}'
-                          f'💰Bargeld: {cash}\n💳Bank: {bank}\n💸Schwarzgeld: {bm}\n\n🚘Fahrzeuge: {veh}',
+                    value=f'Vorname: {firstname}\nNachname: {lastname}\nTel: {phone}\nJob: {job}, Grad: {job_grade}\n\n 💰Bargeld: {cash}\n💳Bank: {bank}\n💸Schwarzgeld: {bm}\n\n🚘Fahrzeuge: {veh}',
                     inline=False)
+
     if not len(weapons):
         f = '\n'.join(weapons)
         s = '\n'.join(weapons[i] + '/255' for i in weapons)
@@ -39,7 +41,7 @@ def user_info(user=dict) -> Embed:
         f = 'Hat keine Waffen im Inventar'
 
     embed.add_field(name='Waffen', value=f, inline=True)
-    embed.add_field(name='__//--\\\\__', value=s, inline=False)
+    embed.add_field(name='__---------__', value=s, inline=False)
 
     if not len(weapons):
         f = '\n'.join(inv)
