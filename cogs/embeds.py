@@ -39,7 +39,7 @@ def user_info(user=dict) -> Embed:
         f = 'Hat keine Waffen im Inventar'
 
     embed.add_field(name='Waffen', value=f, inline=True)
-    embed.add_field(name='__//--\\\\__', value=s, inline=False)
+    embed.add_field(name='--', value=s, inline=False)
 
     if not len(weapons):
         f = '\n'.join(inv)

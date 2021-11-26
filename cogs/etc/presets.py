@@ -1,7 +1,7 @@
 from cogs.etc.config import ESCAPE
 from cogs.etc.config import PROJECT_NAME
 from cogs.etc.config import cur
-from cogs.etc.config import dbSun
+from cogs.etc.config import db
 
 
 class Preset:
@@ -54,13 +54,13 @@ class Preset:
             return compare
 
         elif mode == 'add':
-            cur.execute("INSERT INTO whitelist(name, uid) VALUES (?, ?)", (PROJECT_NAME, member))
-            dbSun.commit()
-            return f'Added <@{member}> to the whitelist'
+            cur.execute("INSERT INTO whitelist(name, uid) VALUES (%s, %s)", (PROJECT_NAME, member))
+            db.commit()
+            return f'Added <@{member}> to the [BOT]whitelist'
 
         elif mode == 'remove':
-            cur.execute("DELETE FROM whitelist WHERE uid=? and name=?;", (member, PROJECT_NAME))
-            dbSun.commit()
-            return f'Removed <@{member}> from whitelist'
+            cur.execute("DELETE FROM whitelist WHERE uid=%s and name=%s;", (member, PROJECT_NAME))
+            db.commit()
+            return f'Removed <@{member}> from [BOT]whitelist'
         else:
-            return f'{mode} is not available'
+            return f'`{mode}` is not available'
