@@ -12,8 +12,7 @@ class Preset:
 
 		This Function parse given Arguments for administration
 
-		:param rounds:int: Insert the max number of words for the return, beware the argument
-		is not listed
+		:param rounds:int: Insert the max number of words for the return
 		:param toparse:list: Gives the Arg to Parse
 		:param option:list: Insert option for parsing
 
