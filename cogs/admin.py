@@ -64,7 +64,7 @@ class Admin(commands.Cog):
         fetcher = cur.fetchone()
 
         money = json.loads(fetcher[1])
-        inventory = json.loads(fetcher[3].strip('"'))
+        inventory = json.loads(fetcher[3])
         weapons = json.loads(fetcher[6])
 
         license_ = fetcher[0]

@@ -1,3 +1,4 @@
 from cogs.etc.presets import Preset
 
-print(Preset.whitelist('add', 327140448638599168))
+print(Preset.parser(2, ['-add', '9483902980'], ['-add']))
+
