@@ -24,7 +24,10 @@ class Preset:
 		for key in toparse:
 			if ESCAPE + toparse[toparse.index(key)].strip(ESCAPE) in option:
 				for i in range(rounds):
-					return_list.append(toparse[i])
+					try:
+						return_list.append(toparse[i])
+					except IndexError:
+						return 'Index out of range'
 				return return_list
 			return return_list
 

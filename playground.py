@@ -1,4 +1,4 @@
-from cogs.etc.presets import Preset
+list_ = [1, 2]
 
-print(Preset.parser(2, ['-add', '9483902980'], ['-add']))
-
+for _ in range(3):
+	print(list_[_])

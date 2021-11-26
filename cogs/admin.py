@@ -18,7 +18,6 @@ from cogs.etc.presets import Preset
 
 # todo:
 #   get, del, add, clear
-#       getUser
 #       getVehicleTrunk
 #       delUser
 #       delVehicles
@@ -65,53 +64,51 @@ class Admin(commands.Cog):
 	async def get(self, ctx, *args):
 		cur.execute(DBESSENT)
 
-		
+		parsed = Preset.parser(rounds=2, toParse=args, option=self.get_options)
+		if parsed[0] in self.get_options[0:2]:
+			cur.execute(
+				"SELECT identifier, `accounts`, `group`, inventory, job, job_grade, loadout, firstname, lastname, phone_number FROM users WHERE identifier='4141a2fc964a90303b789e0fc1f1c28883a56e36'")
 
-		parsed = Preset.parser(rounds=1, toParse=args, option=self.get_options)
-		print(parsed)
+			fetcher = cur.fetchone()
 
-		cur.execute(
-			"SELECT identifier, `accounts`, `group`, inventory, job, job_grade, loadout, firstname, lastname, phone_number FROM users WHERE identifier='4141a2fc964a90303b789e0fc1f1c28883a56e36'")
+			money = json.loads(fetcher[1])
+			inventory = json.loads(fetcher[3])
+			weapons = json.loads(fetcher[6])
 
-		fetcher = cur.fetchone()
+			license_ = fetcher[0]
 
-		money = json.loads(fetcher[1])
-		inventory = json.loads(fetcher[3])
-		weapons = json.loads(fetcher[6])
+			weapons_list = []
 
-		license_ = fetcher[0]
-
-		weapons_list = []
-
-		for i in weapons:
-			weapons_list.append(f'{i.replace("WEAPON_", "").title()} - {weapons[i]["ammo"]}/255')
+			for i in weapons:
+				weapons_list.append(f'{i.replace("WEAPON_", "").title()} - {weapons[i]["ammo"]}/255')
 
 
-		cur.execute("SELECT owner FROM owned_vehicles WHERE owner='4141a2fc964a90303b789e0fc1f1c28883a56e36'")
+			cur.execute("SELECT owner FROM owned_vehicles WHERE owner='4141a2fc964a90303b789e0fc1f1c28883a56e36'")
 
-		fetcher2 = cur.fetchall()
+			fetcher2 = cur.fetchall()
 
-		f = 0
-		for _ in fetcher2:
-			f += 1
 
-		user = {
-			'username': 'clx',
-			'license': license_,
-			'job': fetcher[4],
-			'job_grade': fetcher[5],
-			'cash': money.get('money'),
-			'bank': money.get('bank'),
-			'bm': money.get('black_money'),
-			'veh': f,
-			'weapons': weapons_list,
-			'inv': inventory,
-			'firstname': fetcher[7],
-			'lastname': fetcher[8],
-			'phone_number': fetcher[9]
-		}
+			user = {
+				'username': 'clx',
+				'license': license_,
+				'job': fetcher[4],
+				'job_grade': fetcher[5],
+				'cash': money.get('money'),
+				'bank': money.get('bank'),
+				'bm': money.get('black_money'),
+				'veh': range(fetcher2).count(),
+				'weapons': weapons_list,
+				'inv': inventory,
+				'firstname': fetcher[7],
+				'lastname': fetcher[8],
+				'phone_number': fetcher[9]
+			}
 
-		await ctx.send(embed=user_info(user=user))
+			await ctx.send(embed=user_info(user=user))
+		elif parsed[0] in self.get_options[2:4]:
+			pass
+		elif parsed[0] == 'Null':
+			pass
 
 	@commands.command()
 	async def delete(self, ctx, *args):
