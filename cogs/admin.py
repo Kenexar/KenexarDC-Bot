@@ -1,24 +1,27 @@
 import json
+
 from datetime import datetime
 
 from nextcord.ext import commands
 from nextcord.ext.commands import CommandNotFound
 
 from cogs.embeds import user_info
+from cogs.etc.config import dbBase
+from cogs.etc.config import cur
+from cogs.etc.config import ESCAPE
 from cogs.etc.config import DBESSENT
 from cogs.etc.config import ESCAPE
 from cogs.etc.config import cur
+
 from cogs.etc.presets import Preset
 
 
 # todo:
 #   get, del, add, clear
-#       getUser
 #       getVehicleTrunk
 #       delUser
 #       delVehicles
 #       delWeapon
-#       clearWeapons
 #       clearInventory
 #       clearVehicleTrunk
 #       clearUserMoney
@@ -26,85 +29,99 @@ from cogs.etc.presets import Preset
 
 
 class Admin(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
+	def __init__(self, bot):
+		self.bot = bot
 
-    @commands.Cog.listener()
-    async def on_ready(self):
-        print(f'Ready at {datetime.now().strftime("%H:%M:%S")}')
+		self.get_options = [
+			f'{ESCAPE}user', f'{ESCAPE}u',
+			f'{ESCAPE}vehicletrunk', f'{ESCAPE}vh', 'Null']
+		
+		self.del_options = [
+			f'{ESCAPE}user', f'{ESCAPE}u', 
+			f'{ESCAPE}veh', f'{ESCAPE}vehicle',
+			f'{ESCAPE}weapons', 'Null']
 
-    @commands.Cog.listener()
-    async def on_command_error(self, ctx,
-                               error):  # Function doing intense computing!
-        if isinstance(error, CommandNotFound):
-            return await ctx.send("Command/API not found.")
-        raise error
+		self.clear_options = [
+			f'{ESCAPE}inv',
+			f'{ESCAPE}vehtrunk', f'{ESCAPE}veht',
+			f'{ESCAPE}usermoney', f'{ESCAPE}um']
 
-    @commands.Command
-    async def get(self, ctx, *args):
-        cur.execute(DBESSENT)
+		self.add_options = [f'{ESCAPE}um', f'{ESCAPE}usermoney']
 
-        options = [
-            f'{ESCAPE}user', f'{ESCAPE}u',
-            f'{ESCAPE}vehicletrunk', f'{ESCAPE}vh', 'Null']
+	@commands.Cog.listener()
+	async def on_ready(self):
+		print(f'Ready at {datetime.now().strftime("%H:%M:%S")}')
 
-        parsed = Preset.parser(2, args, options)
-
-        cur.execute(
-            f"SELECT identifier, `accounts`, `group`, inventory, job, job_grade, loadout, firstname, lastname, phone_number FROM users WHERE identifier='{parsed[1]}'")
+	@commands.Cog.listener()
+	async def on_command_error(self, ctx,
+									error):  # Function doing intense computing!
+		if isinstance(error, CommandNotFound):
+			return await ctx.send("Command/API not found.")
+		raise error
 
 
-        fetcher = cur.fetchone()
+	@commands.Command
+	async def get(self, ctx, *args):
+		cur.execute(DBESSENT)
 
-        money = json.loads(fetcher[1])
-        inventory = json.loads(fetcher[3].strip('"'))
-        weapons = json.loads(fetcher[6])
+		parsed = Preset.parser(rounds=2, toParse=args, option=self.get_options)
+		if parsed[0] in self.get_options[0:2]:
+			cur.execute(
+				"SELECT identifier, `accounts`, `group`, inventory, job, job_grade, loadout, firstname, lastname, phone_number FROM users WHERE identifier='4141a2fc964a90303b789e0fc1f1c28883a56e36'")
 
-        license_ = fetcher[0]
+			fetcher = cur.fetchone()
 
-        weapons_list = []
+			money = json.loads(fetcher[1])
+			inventory = json.loads(fetcher[3])
+			weapons = json.loads(fetcher[6])
 
-        for i in weapons:
-            weapons_list.append(f'{i.replace("WEAPON_", "").title()} - {weapons[i]["ammo"]}/255')
+			license_ = fetcher[0]
 
-        cur.execute("SELECT owner FROM owned_vehicles WHERE owner='4141a2fc964a90303b789e0fc1f1c28883a56e36'")
+			weapons_list = []
 
-        fetcher2 = cur.fetchall()
+			for i in weapons:
+				weapons_list.append(f'{i.replace("WEAPON_", "").title()} - {weapons[i]["ammo"]}/255')
 
-        f = 0
-        for _ in fetcher2:
-            f += 1
 
-        user = {
-            'username': 'clx',
-            'license': parsed[1],
-            'job': fetcher[4],
-            'job_grade': fetcher[5],
-            'cash': money.get('money'),
-            'bank': money.get('bank'),
-            'bm': money.get('black_money'),
-            'veh': f,
-            'weapons': weapons_list,
-            'inv': inventory,
-            'firstname': fetcher[7],
-            'lastname': fetcher[8],
-            'phone_number': fetcher[9]
-        }
+			cur.execute("SELECT owner FROM owned_vehicles WHERE owner='4141a2fc964a90303b789e0fc1f1c28883a56e36'")
 
-        await ctx.send(embed=user_info(user=user))
+			fetcher2 = cur.fetchall()
 
-    @commands.command()
-    async def delete(self, ctx, *args):
-        pass
 
-    @commands.command()
-    async def add(self, ctx, *args):
-        pass
+			user = {
+				'username': 'clx',
+				'license': license_,
+				'job': fetcher[4],
+				'job_grade': fetcher[5],
+				'cash': money.get('money'),
+				'bank': money.get('bank'),
+				'bm': money.get('black_money'),
+				'veh': range(fetcher2).count(),
+				'weapons': weapons_list,
+				'inv': inventory,
+				'firstname': fetcher[7],
+				'lastname': fetcher[8],
+				'phone_number': fetcher[9]
+			}
 
-    @commands.command()
-    async def clear(self, ctx, *args):
-        pass
+			await ctx.send(embed=user_info(user=user))
+		elif parsed[0] in self.get_options[2:4]:
+			pass
+		elif parsed[0] == 'Null':
+			pass
+
+	@commands.command()
+	async def delete(self, ctx, *args):
+		pass
+
+	@commands.command()
+	async def add(self, ctx, *args):
+		pass
+
+	@commands.command()
+	async def clear(self, ctx, *args):
+		pass
 
 
 def setup(bot):
-    bot.add_cog(Admin(bot))
+	bot.add_cog(Admin(bot))
