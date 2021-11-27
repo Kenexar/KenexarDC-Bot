@@ -6,10 +6,12 @@ from nextcord.ext import commands
 from nextcord.ext.commands import CommandNotFound
 
 from cogs.embeds import user_info
-from cogs.etc.config import dbBase
+from cogs.etc.config import dbBase, cur_db, DBBASE
 from cogs.etc.config import DBESSENT
 from cogs.etc.config import ESCAPE
 from cogs.etc.config import cur
+from cogs.etc.config import fetch_whitelist
+from cogs.etc.config import WHITELIST_RANKS
 
 from cogs.etc.presets import Preset
 
@@ -29,22 +31,24 @@ from cogs.etc.presets import Preset
 class Admin(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
+		self.whitelist = fetch_whitelist()
 
+		self.whitelist_options = ['add', 'remove', 'list']
 		self.get_options = [
-			f'{ESCAPE}user', f'{ESCAPE}u',
-			f'{ESCAPE}vehicletrunk', f'{ESCAPE}vh', 'Null']
+			f'user', f'u',
+			f'vehicletrunk', f'vh', 'Null']
 		
 		self.del_options = [
-			f'{ESCAPE}user', f'{ESCAPE}u', 
-			f'{ESCAPE}veh', f'{ESCAPE}vehicle',
-			f'{ESCAPE}weapons', 'Null']
+			f'user', f'u',
+			f'veh', f'vehicle',
+			f'weapons', 'Null']
 
 		self.clear_options = [
-			f'{ESCAPE}inv',
-			f'{ESCAPE}vehtrunk', f'{ESCAPE}veht',
-			f'{ESCAPE}usermoney', f'{ESCAPE}um']
+			f'inv',
+			f'vehtrunk', f'veht',
+			f'usermoney', f'um']
 
-		self.add_options = [f'{ESCAPE}um', f'{ESCAPE}usermoney']
+		self.add_options = [f'um', f'usermoney']
 
 	@commands.Cog.listener()
 	async def on_ready(self):
@@ -56,7 +60,6 @@ class Admin(commands.Cog):
 		if isinstance(error, CommandNotFound):
 			return await ctx.send("Command/API not found.")
 		raise error
-
 
 	@commands.Command
 	async def get(self, ctx, *args):
@@ -86,7 +89,7 @@ class Admin(commands.Cog):
 			fetcher2 = cur.fetchall()
 			veh = 0
 
-			for i in range(fetcher2):
+			for i in fetcher2:
 				veh += 1
 
 			user = {
@@ -122,6 +125,35 @@ class Admin(commands.Cog):
 	@commands.command()
 	async def clear(self, ctx, *args):
 		pass
+
+	@commands.Command
+	async def einreise(self, ctx):
+		if not ctx.message.author.id in self.whitelist:
+			return
+
+		cur.execute("SELECT rank FROM whitelist WHERE uid=%s;", (ctx.author.id,))
+		if not cur.fetchone() >= 3:
+			pass
+
+	@commands.Command
+	async def whitelist(self, ctx, *args):
+		if not ctx.message.author.id in self.whitelist:
+			return await ctx.send('You don\'t have permission to manage the Whitelist')
+		cur_db.execute(DBBASE)
+
+		id = ctx.message.author.id
+		cur_db.execute("SELECT rank FROM whitelist WHERE uid=%s;", (id,))
+		mal = cur_db.fetchone()
+
+		if not mal[0] == 5:
+			return await ctx.send('You don\'t have permission to manage the Whitelist')
+
+		if args[0] == 'add':
+			return await ctx.send(Preset.whitelist('add', args[1].strip('<!@ >'), args[2] if args[2].isdigit() else 0))
+		elif args[0] == 'remove':
+			return await ctx.send(Preset.whitelist('remove', args[1].strip('<!@ >')))
+		elif args[0] == 'list':
+			return await ctx.send(embed=Preset.whitelist('list'))
 
 
 def setup(bot):
