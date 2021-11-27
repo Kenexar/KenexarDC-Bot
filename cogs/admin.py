@@ -68,11 +68,15 @@ class Admin(commands.Cog):
 		parsed = Preset.parser(rounds=2, toparse=args, option=self.get_options)
 		if parsed[0] in self.get_options[0:2]:
 			cur.execute(
-				"SELECT identifier, `accounts`, `group`, inventory, job, job_grade, loadout, firstname, lastname, phone_number FROM users WHERE identifier='4141a2fc964a90303b789e0fc1f1c28883a56e36'")
+				"SELECT identifier, `accounts`, `group`, inventory, job, job_grade, loadout, firstname, lastname, phone_number FROM users WHERE identifier=%s", (parsed[1],))
 
 			fetcher = cur.fetchone()
 
-			money = json.loads(fetcher[1])
+			try:
+				money = json.loads(fetcher[1])
+			except TypeError:
+				return await ctx.send(f'{parsed[1]} is not an Valid id!')
+
 			inventory = json.loads(fetcher[3])
 			weapons = json.loads(fetcher[6])
 
@@ -83,8 +87,7 @@ class Admin(commands.Cog):
 			for i in weapons:
 				weapons_list.append(f'{i.replace("WEAPON_", "").title()} - {weapons[i]["ammo"]}/255')
 
-
-			cur.execute("SELECT owner FROM owned_vehicles WHERE owner='4141a2fc964a90303b789e0fc1f1c28883a56e36'")
+			cur.execute("SELECT owner FROM owned_vehicles WHERE owner=%s", (parsed[1],))
 
 			fetcher2 = cur.fetchall()
 			veh = 0
