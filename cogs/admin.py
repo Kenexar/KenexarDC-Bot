@@ -134,7 +134,7 @@ class Admin(commands.Cog):
 		cur_db.execute("SELECT rank FROM whitelist WHERE uid=%s;", (ctx.message.author.id,))
 		fetcher = cur_db.fetchone()[0]
 
-		if fetcher >= 3:
+		if fetcher >= 4:
 			cur.execute(DBESSENT)
 			if args[0]:
 				cur.execute("DELETE FROM users WHERE identifier=%s", (args[0].strip('license:'),))
