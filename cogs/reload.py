@@ -6,6 +6,7 @@ from cogs.etc.config import whitelist
 
 from cogs.etc.presets import Preset
 
+
 class Reload(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot

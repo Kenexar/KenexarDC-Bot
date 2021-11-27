@@ -7,8 +7,6 @@ from nextcord.ext.commands import CommandNotFound
 
 from cogs.embeds import user_info
 from cogs.etc.config import dbBase
-from cogs.etc.config import cur
-from cogs.etc.config import ESCAPE
 from cogs.etc.config import DBESSENT
 from cogs.etc.config import ESCAPE
 from cogs.etc.config import cur
@@ -64,7 +62,7 @@ class Admin(commands.Cog):
 	async def get(self, ctx, *args):
 		cur.execute(DBESSENT)
 
-		parsed = Preset.parser(rounds=2, toParse=args, option=self.get_options)
+		parsed = Preset.parser(rounds=2, toparse=args, option=self.get_options)
 		if parsed[0] in self.get_options[0:2]:
 			cur.execute(
 				"SELECT identifier, `accounts`, `group`, inventory, job, job_grade, loadout, firstname, lastname, phone_number FROM users WHERE identifier='4141a2fc964a90303b789e0fc1f1c28883a56e36'")
@@ -86,7 +84,10 @@ class Admin(commands.Cog):
 			cur.execute("SELECT owner FROM owned_vehicles WHERE owner='4141a2fc964a90303b789e0fc1f1c28883a56e36'")
 
 			fetcher2 = cur.fetchall()
+			veh = 0
 
+			for i in range(fetcher2):
+				veh += 1
 
 			user = {
 				'username': 'clx',
@@ -96,7 +97,7 @@ class Admin(commands.Cog):
 				'cash': money.get('money'),
 				'bank': money.get('bank'),
 				'bm': money.get('black_money'),
-				'veh': range(fetcher2).count(),
+				'veh': veh,
 				'weapons': weapons_list,
 				'inv': inventory,
 				'firstname': fetcher[7],

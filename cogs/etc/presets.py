@@ -1,13 +1,13 @@
 from cogs.etc.config import ESCAPE
 from cogs.etc.config import PROJECT_NAME
 from cogs.etc.config import cur
-from cogs.etc.config import db
+from cogs.etc.config import dbBase
 
 
 class Preset:
 	""" This is the Main function part for my Administration bot """
 	@staticmethod
-	def parser(rounds=int, toparse=list, option=list) -> list:
+	def parser(rounds=int, toparse=list, option=list) -> list or str:
 		""" This is a small self written Argparser
 
 		This Function parse given Arguments for administration
@@ -59,12 +59,12 @@ class Preset:
 
 		elif mode == 'add':
 			cur.execute("INSERT INTO whitelist(name, uid) VALUES (%s, %s)", (PROJECT_NAME, member))
-			db.commit()
+			dbBase.commit()
 			return f'Added <@{member}> to the [BOT]whitelist'
 
 		elif mode == 'remove':
 			cur.execute("DELETE FROM whitelist WHERE uid=%s and name=%s;", (member, PROJECT_NAME))
-			db.commit()
+			dbBase.commit()
 			return f'Removed <@{member}> from [BOT]whitelist'
 		else:
 			return f'`{mode}` is not available'
