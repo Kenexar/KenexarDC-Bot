@@ -9,7 +9,7 @@ from cogs.embeds import user_info
 from cogs.etc.config import dbBase, cur_db, DBBASE
 from cogs.etc.config import DBESSENT
 from cogs.etc.config import ESCAPE
-from cogs.etc.config import cur
+from cogs.etc.config import cur, dbSun
 from cogs.etc.config import fetch_whitelist
 from cogs.etc.config import WHITELIST_RANKS
 
@@ -127,13 +127,21 @@ class Admin(commands.Cog):
 		pass
 
 	@commands.Command
-	async def einreise(self, ctx):
+	async def einreise(self, ctx, *args):
 		if not ctx.message.author.id in self.whitelist:
 			return
 
-		cur.execute("SELECT rank FROM whitelist WHERE uid=%s;", (ctx.author.id,))
-		if not cur.fetchone() >= 3:
-			pass
+		cur_db.execute("SELECT rank FROM whitelist WHERE uid=%s;", (ctx.message.author.id,))
+		fetcher = cur_db.fetchone()[0]
+
+		if fetcher >= 3:
+			cur.execute(DBESSENT)
+			if args[0]:
+				cur.execute("DELETE FROM users WHERE identifier=%s", (args[0].strip('license:'),))
+				dbSun.commit()
+				await ctx.send('User got deleted from the Db')
+		else:
+			return await ctx.send('You don\'t have permission to manage the Whitelist')
 
 	@commands.Command
 	async def whitelist(self, ctx, *args):
