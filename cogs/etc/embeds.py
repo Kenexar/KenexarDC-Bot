@@ -2,7 +2,7 @@ from datetime import datetime
 
 from nextcord import Embed
 
-from cogs.etc.config import EMBED_ST
+from cogs.etc.config import EMBED_ST, ESCAPE, PREFIX
 
 
 def user_info(user=dict) -> Embed:
@@ -37,8 +37,8 @@ def user_info(user=dict) -> Embed:
                           f'Telefon: {phone_number}'
                           f'\n\n💰 Bargeld: {cash}\n💳 Bank: {bank}\n💸 Schwarzgeld: {bm}\n\n🚘 Fahrzeuge: {veh}',
                     inline=False)
+
     if len(weapons):
-        print(weapons, inv)
         f = '\n'.join(weapons)
     else:
         f = 'Hat keine Waffen im Inventar'
@@ -46,13 +46,29 @@ def user_info(user=dict) -> Embed:
     embed.add_field(name='Waffen', value=f, inline=False)
 
     if len(inv):
-        fi = '\n'.join(inv)
-        si = '\n'.join([str(inv[i]) for i in inv])
+        f = '\n'.join(inv)
+        s = '\n'.join(str(inv[i]) for i in inv)
     else:
-        fi = 'Hat keine Items im Inventar'
-        si = '--'
+        f = 'Hat keine Items im Inventar'
 
-    embed.add_field(name='Inventar', value=fi, inline=True)
-    embed.add_field(name='--', value=si, inline=True)
+    embed.add_field(name='Inventar', value=f, inline=True)
+    embed.add_field(name='--', value=s, inline=True)
 
     return embed
+
+
+def help_site() -> Embed:
+    embed = Embed(title='Help Site - MrPython',
+                  timestamp=datetime.utcnow(),
+                  color=EMBED_ST)
+
+    embed.add_field(name=f'`{PREFIX}whitelist` [list|add|remove]',
+                    value=f'`Usage`: `{PREFIX}whitelist` [list/add|remove] discord.Memmber.\n\n'
+                          f'`Des`: List - Lists all memebers on the Whitelist. \n'
+                          f'`Des`: Add/Remove - Adds or Removes a discord.Member.',
+                    inline=False)
+
+    embed.add_field(name=f'`{PREFIX}einreise`', value=f'Usage: `{PREFIX}einreise`\n\nDes: Delete user entry from database', inline=False)
+
+    return embed
+

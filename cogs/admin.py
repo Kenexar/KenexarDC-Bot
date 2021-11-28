@@ -5,7 +5,8 @@ from datetime import datetime
 from nextcord.ext import commands
 from nextcord.ext.commands import CommandNotFound
 
-from cogs.embeds import user_info
+from cogs.etc.embeds import user_info
+from cogs.etc.embeds import help_site
 from cogs.etc.config import dbBase, cur_db, DBBASE
 from cogs.etc.config import DBESSENT
 from cogs.etc.config import ESCAPE
@@ -165,6 +166,10 @@ class Admin(commands.Cog):
 			return await ctx.send(Preset.whitelist('remove', args[1].strip('<!@ >')))
 		elif args[0] == 'list':
 			return await ctx.send(embed=Preset.whitelist('list'))
+
+	@commands.Command
+	async def help(self, ctx):
+		await ctx.send(embed=help_site())
 
 
 def setup(bot):
