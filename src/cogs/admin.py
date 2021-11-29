@@ -7,12 +7,10 @@ from nextcord.ext.commands import CommandNotFound
 
 from cogs.etc.embeds import user_info
 from cogs.etc.embeds import help_site
-from cogs.etc.config import dbBase, cur_db, DBBASE
-from cogs.etc.config import DBESSENT
-from cogs.etc.config import ESCAPE
-from cogs.etc.config import cur, dbSun
-from cogs.etc.config import fetch_whitelist
-from cogs.etc.config import WHITELIST_RANKS
+from src.cogs.etc.config import cur_db, DBBASE
+from src.cogs.etc.config import DBESSENT
+from src.cogs.etc.config import cur, dbSun
+from src.cogs.etc.config import fetch_whitelist
 
 from cogs.etc.presets import Preset
 
