@@ -1,5 +1,7 @@
 mysql-connector
+mysqlclient
 nextcord
 pyfiglet
 alive_progress
 flask
+django
