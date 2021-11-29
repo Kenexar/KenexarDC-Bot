@@ -130,7 +130,7 @@ dmypy.json
 .idea
 
 .replit
-cogs/etc/config.py
+src/cogs/etc/config.py
 
 poetry.lock
 pyproject.toml
