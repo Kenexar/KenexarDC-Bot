@@ -4,16 +4,16 @@ import os
 try:
 	import mysql.connector
 except ModuleNotFoundError:
-	os.system('pip install -r req')
+	os.system('pip install -r src/req')
 
 
-FILE1 = 'cogs/etc/config.py'
-FLASK = 'cogs/etc/flask_server.py'
+FILE1 = 'src/cogs/etc/config.py'
+FLASK = 'src/cogs/etc/flask_server.py'
 
 
-TEMPLATE1 = open('templates/templateBOTCONFIG', 'r')
-TEMPLATE2 = open('templates/templateBOTCONFIG2', 'r')
-FLASKTEMP = open('templates/templateFLASKCONFIG', 'r')
+TEMPLATE1 = open('src/templates/templateBOTCONFIG', 'r')
+TEMPLATE2 = open('src/templates/templateBOTCONFIG2', 'r')
+FLASKTEMP = open('src/templates/templateFLASKCONFIG', 'r')
 
 
 def setup(path, template):
