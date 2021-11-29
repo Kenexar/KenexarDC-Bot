@@ -75,10 +75,8 @@ WSGI_APPLICATION = 'webinterface.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'webinterface',
-		'HOST': 'locahost',
-		'USER': 'root'
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
