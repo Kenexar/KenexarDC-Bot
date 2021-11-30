@@ -66,7 +66,7 @@ class Admin(commands.Cog):
 
 	@commands.Command
 	async def get(self, ctx, *args):
-		if Preset.get_perm(ctx.message.author.id) <= 2:
+		if not Preset.get_perm(ctx.message.author.id) >= 2:
 			return await ctx.send('You are not Authorized to use the Get function!')
 		cur.execute(DBESSENT)
 
