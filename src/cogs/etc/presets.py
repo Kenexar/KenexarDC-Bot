@@ -1,5 +1,7 @@
 import nextcord
 
+from nextcord import Embed
+
 from cogs.etc.config import EMBED_ST
 from cogs.etc.config import PROJECT_NAME
 from cogs.etc.config import cur_db
@@ -36,7 +38,7 @@ class Preset:
             return return_list
 
     @staticmethod
-    def whitelist(mode=str, member=int, rank=int):
+    def whitelist(mode=str, member=int, rank=int) -> Embed or str:
         """Whitelist function whitelist a member
 
         :param mode:str-add: Add a Member to the Whitelist for Administration
@@ -44,7 +46,7 @@ class Preset:
         :param mode:str-remove: Remove a Member from the Whitelist
         :param member: Serve the member
 
-        :returns: SQL Insert/Update
+        :returns: String or nextord.Embed object
         """
 
         if mode == 'list':

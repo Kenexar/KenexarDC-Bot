@@ -13,6 +13,7 @@ from cogs.etc.embeds import help_site
 from cogs.etc.config import cur_db, DBBASE
 from cogs.etc.config import DBESSENT
 from cogs.etc.config import cur, dbSun
+from cogs.etc.config import get_perm
 from cogs.etc.config import fetch_whitelist, status_query
 
 from cogs.etc.presets import Preset
@@ -21,7 +22,7 @@ from cogs.etc.presets import Preset
 # todo:
 #   get, del, add, clear
 #       getVehicleTrunk
-#       delUser
+#		delUser
 #       delVehicles
 #       delWeapon
 #       clearInventory
@@ -35,38 +36,26 @@ class Admin(commands.Cog):
 		self.bot = bot
 		self.whitelist = fetch_whitelist()
 
-		status_list = []
-		self.status = cycle(status_query(status_list))
-
 		self.whitelist_options = ['add', 'remove', 'list']
-		self.get_options = [
-		f'user', f'u',
-		f'vehicletrunk', f'vh', 'Null']
+		self.GET_OPTIONS = [
+			f'user', f'u',
+			f'vehicletrunk', f'vh', 'Null']
 
-		self.del_options = [
-		f'user', f'u',
-		f'veh', f'vehicle',
-		f'weapons', 'Null']
+		self.DEL_OPTIONS = [
+			f'user', f'u',
+			f'veh', f'vehicle',
+			f'weapons', 'Null']
 
-		self.clear_options = [
-		f'inv',
-		f'vehtrunk', f'veht',
-		f'usermoney', f'um']
+		self.CLEAR_OPTIONS = [
+			f'inv',
+			f'vehtrunk', f'veht',
+			f'usermoney', f'um']
 
-		self.add_options = [f'um', f'usermoney']
+		self.ADD_OPTIONS = [f'um', f'usermoney']
 
 	@commands.Cog.listener()
 	async def on_ready(self):
 		print(f'Ready at {datetime.now().strftime("%H:%M:%S")}')
-
-		await self.status_task.start()
-
-
-	@tasks.loop(seconds=30)
-	async def status_task(self):
-		await self.bot.change_presence(status=nextcord.Status.online, 
-							activity=nextcord.Activity(type=nextcord.ActivityType.watching, 
-							name=next(self.status)))
 
 
 	@commands.Cog.listener()
@@ -78,10 +67,12 @@ class Admin(commands.Cog):
 
 	@commands.Command
 	async def get(self, ctx, *args):
+		if get_perm(ctx.message.author.id) <= 2:
+			return await ctx.send('You are not Authorized to use the Get function!')
 		cur.execute(DBESSENT)
 
-		parsed = Preset.parser(rounds=2, toparse=args, option=self.get_options)
-		if parsed[0] in self.get_options[0:2]:
+		parsed = Preset.parser(rounds=2, toparse=args, option=self.GET_OPTIONS)
+		if parsed[0] in self.GET_OPTIONS[0:2]:
 			cur.execute(
 				"SELECT identifier, `accounts`, `group`, inventory, job, job_grade, loadout, firstname, lastname, phone_number FROM users WHERE identifier=%s", (parsed[1],))
 
@@ -127,7 +118,7 @@ class Admin(commands.Cog):
 			}
 
 			await ctx.send(embed=user_info(user=user))
-		elif parsed[0] in self.get_options[2:4]:
+		elif parsed[0] in self.GET_OPTIONS[2:4]:
 			pass
 		elif parsed[0] == 'Null':
 			pass
@@ -159,12 +150,12 @@ class Admin(commands.Cog):
 				dbSun.commit()
 				await ctx.send('User got deleted from the Db')
 		else:
-			return await ctx.send('You don\'t have permission to manage the Whitelist')
+			return await ctx.send('You are not Authorized to manage the Whitelist')
 
 	@commands.Command
 	async def whitelist(self, ctx, *args):
 		if not ctx.message.author.id in self.whitelist:
-			return await ctx.send('You don\'t have permission to manage the Whitelist')
+			return await ctx.send('You are not Authorized to manage the Whitelist')
 		cur_db.execute(DBBASE)
 
 		id = ctx.message.author.id
@@ -172,7 +163,7 @@ class Admin(commands.Cog):
 		mal = cur_db.fetchone()
 
 		if not mal[0] == 5:
-			return await ctx.send('You don\'t have permission to manage the Whitelist')
+			return await ctx.send('You are not Authorized to manage the Whitelist')
 
 		if args[0] == 'add':
 			return await ctx.send(Preset.whitelist('add', args[1].strip('<!@ >'), args[2] if args[2].isdigit() else 0))
