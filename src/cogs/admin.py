@@ -1,8 +1,11 @@
 import json
+import nextcord
 
 from datetime import datetime
+from itertools import cycle
 
 from nextcord.ext import commands
+from nextcord.ext import tasks
 from nextcord.ext.commands import CommandNotFound
 
 from cogs.etc.embeds import user_info
@@ -10,7 +13,7 @@ from cogs.etc.embeds import help_site
 from cogs.etc.config import cur_db, DBBASE
 from cogs.etc.config import DBESSENT
 from cogs.etc.config import cur, dbSun
-from cogs.etc.config import fetch_whitelist
+from cogs.etc.config import fetch_whitelist, status_query
 
 from cogs.etc.presets import Preset
 
@@ -32,26 +35,39 @@ class Admin(commands.Cog):
 		self.bot = bot
 		self.whitelist = fetch_whitelist()
 
+		status_list = []
+		self.status = cycle(status_query(status_list))
+
 		self.whitelist_options = ['add', 'remove', 'list']
 		self.get_options = [
-			f'user', f'u',
-			f'vehicletrunk', f'vh', 'Null']
-		
+		f'user', f'u',
+		f'vehicletrunk', f'vh', 'Null']
+
 		self.del_options = [
-			f'user', f'u',
-			f'veh', f'vehicle',
-			f'weapons', 'Null']
+		f'user', f'u',
+		f'veh', f'vehicle',
+		f'weapons', 'Null']
 
 		self.clear_options = [
-			f'inv',
-			f'vehtrunk', f'veht',
-			f'usermoney', f'um']
+		f'inv',
+		f'vehtrunk', f'veht',
+		f'usermoney', f'um']
 
 		self.add_options = [f'um', f'usermoney']
 
 	@commands.Cog.listener()
 	async def on_ready(self):
 		print(f'Ready at {datetime.now().strftime("%H:%M:%S")}')
+
+		await self.status_task.start()
+
+
+	@tasks.loop(seconds=30)
+	async def status_task(self):
+		await self.bot.change_presence(status=nextcord.Status.online, 
+							activity=nextcord.Activity(type=nextcord.ActivityType.watching, 
+							name=next(self.status)))
+
 
 	@commands.Cog.listener()
 	async def on_command_error(self, ctx,
