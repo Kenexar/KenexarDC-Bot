@@ -41,7 +41,7 @@ class Cycle(commands.Cog):
 	@commands.Command
 	async def cycle(self, ctx, *args):
 		if ctx.message.author.id in self.whitelist:
-			
+			pass
 		return await ctx.send('You are not Authorized to Manage the Bot Status menu!')
 
 
