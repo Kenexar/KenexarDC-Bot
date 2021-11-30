@@ -2,7 +2,7 @@ from datetime import datetime
 
 from nextcord import Embed
 
-from src.cogs.etc.config import EMBED_ST, PREFIX
+from cogs.etc.config import EMBED_ST, PREFIX
 
 
 def user_info(user=dict) -> Embed:

@@ -1,10 +1,10 @@
 import nextcord
 
-from src.cogs.etc.config import EMBED_ST
-from src.cogs.etc.config import PROJECT_NAME
-from src.cogs.etc.config import cur_db
-from src.cogs.etc.config import dbBase
-from src.cogs.etc.config import WHITELIST_RANKS
+from cogs.etc.config import EMBED_ST
+from cogs.etc.config import PROJECT_NAME
+from cogs.etc.config import cur_db
+from cogs.etc.config import dbBase
+from cogs.etc.config import WHITELIST_RANKS
 
 
 class Preset:
