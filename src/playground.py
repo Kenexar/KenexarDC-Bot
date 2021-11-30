@@ -1,4 +1,4 @@
-list_ = [1, 2]
+from cogs.etc.config import cur
 
-for _ in range(3):
-	print(list_[_])
+cur.execute("SELECT * FROM trunk_inventory;")
+print(cur.fetchone())
