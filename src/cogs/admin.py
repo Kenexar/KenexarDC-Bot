@@ -158,11 +158,12 @@ class Admin(commands.Cog):
 		cur_db.execute(DBBASE)
 
 		id = ctx.message.author.id
-		cur_db.execute("SELECT rank FROM whitelist WHERE uid=%s;", (id,))
-		mal = cur_db.fetchone()
 
-		if not mal[0] == 5:
+		if not Preset.get_perm(id) == 5:
 			return await ctx.send('You are not Authorized to manage the Whitelist')
+		
+		if not len(args):
+			return await ctx.send(embed=help_site('whitelist'))
 
 		if args[0] == 'add':
 			return await ctx.send(Preset.whitelist('add', args[1].strip('<!@ >'), args[2] if args[2].isdigit() else 0))
@@ -170,6 +171,8 @@ class Admin(commands.Cog):
 			return await ctx.send(Preset.whitelist('remove', args[1].strip('<!@ >')))
 		elif args[0] == 'list':
 			return await ctx.send(embed=Preset.whitelist('list'))
+		else: 
+			return await ctx.send('The argument is not valid!')
 
 	@commands.Command
 	async def help(self, ctx):

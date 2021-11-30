@@ -57,18 +57,20 @@ def user_info(user=dict) -> Embed:
     return embed
 
 
-def help_site() -> Embed:
-    embed = Embed(title='Help Site - MrPython',
-                  timestamp=datetime.utcnow(),
-                  color=EMBED_ST)
+def help_site(mode='all') -> Embed:
+	embed = Embed(title='Help Site - MrPython',
+					timestamp=datetime.utcnow(),
+					color=EMBED_ST)
 
-    embed.add_field(name=f'`{PREFIX}whitelist` [list|add|remove]',
-                    value=f'`Usage`: `{PREFIX}whitelist` [list/add|remove] discord.Memmber.\n\n'
-                          f'`Des`: List - Lists all memebers on the Whitelist. \n'
-                          f'`Des`: Add/Remove - Adds or Removes a discord.Member.',
-                    inline=False)
+	if mode in ('all', 'whitelist'):
+		embed.add_field(name=f'`{PREFIX}whitelist` [list|add|remove]',
+						value=f'`Usage`: `{PREFIX}whitelist` [list/add|remove] discord.Memmber.\n\n'
+							f'`Des`: List - Lists all memebers on the Whitelist. \n'
+							f'`Des`: Add/Remove - Adds or Removes a discord.Member.',
+						inline=False)
 
-    embed.add_field(name=f'`{PREFIX}einreise`', value=f'Usage: `{PREFIX}einreise`\n\nDes: Delete user entry from database', inline=False)
+	if mode in ('all', 'einreise'):
+		embed.add_field(name=f'`{PREFIX}einreise`', value=f'Usage: `{PREFIX}einreise`\n\nDes: Delete user entry from database', inline=False)
 
-    return embed
+	return embed
 
