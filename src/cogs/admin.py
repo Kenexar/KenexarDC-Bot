@@ -152,8 +152,7 @@ class Admin(commands.Cog):
 					await ctx.send('User got deleted from the Db')
 				except Exception:
 					return await ctx.send('Nothing happens, Contact an dev or try it again.\n**Maybe it was an invalid id!**')
-		else:
-			return await ctx.send('You are not Authorized to manage the Whitelist')
+		return await ctx.send('You are not Authorized to manage the Whitelist')
 
 	@commands.Command
 	async def whitelist(self, ctx, *args):
@@ -175,8 +174,7 @@ class Admin(commands.Cog):
 			return await ctx.send(Preset.whitelist('remove', args[1].strip('<!@ >')))
 		elif args[0] == 'list':
 			return await ctx.send(embed=Preset.whitelist('list'))
-		else: 
-			return await ctx.send('The argument is not valid!')
+		return await ctx.send('The argument is not valid!')
 
 	@commands.Command
 	async def help(self, ctx):
