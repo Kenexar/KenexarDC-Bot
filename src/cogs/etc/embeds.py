@@ -64,8 +64,8 @@ def help_site(mode='all') -> Embed:
 
 	if mode in ('all', 'whitelist'):
 		embed.add_field(name=f'`{PREFIX}whitelist` [list|add|remove]',
-						value=f'`Usage`: `{PREFIX}whitelist` [list/add|remove] discord.Memmber.\n\n'
-							f'`Des`: List - Lists all memebers on the Whitelist. \n'
+						value=f'`Usage`: `{PREFIX}whitelist` [list/add|remove] discord.Member.\n\n'
+							f'`Des`: List - Lists all members on the Whitelist. \n'
 							f'`Des`: Add/Remove - Adds or Removes a discord.Member.',
 						inline=False)
 
