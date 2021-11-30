@@ -142,7 +142,7 @@ class Admin(commands.Cog):
 
 		if Preset.get_perm(ctx.message.author.id) >= 4:
 			cur.execute(DBESSENT)
-			if not len(args):
+			if not args:
 				return await ctx.send(embed=help_site('einreise'))
 
 			if args[0]:
@@ -166,7 +166,7 @@ class Admin(commands.Cog):
 		if not Preset.get_perm(id) == 5:
 			return await ctx.send('You are not Authorized to manage the Whitelist')
 		
-		if not len(args):
+		if not args:
 			return await ctx.send(embed=help_site('whitelist'))
 
 		if args[0] == 'add':
