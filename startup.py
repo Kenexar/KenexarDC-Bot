@@ -57,8 +57,11 @@ if __name__ == '__main__':
 			not_true = False
 
 		elif input_.lower() == 'flask':
-			setup(FILE1, TEMPLATE2)
-			setup(FLASK, FLASKTEMP)  # if you pour water on a rock, nothing happens!
+			try:
+				setup(FILE1, TEMPLATE2)
+				setup(FLASK, FLASKTEMP)  # if you pour water on a rock, nothing happens!
+			except FileExistsError:
+				print('File exists, Exiting...')
 
 			not_true = False
 
