@@ -13,7 +13,6 @@ from cogs.etc.embeds import help_site
 from cogs.etc.config import cur_db, DBBASE
 from cogs.etc.config import DBESSENT
 from cogs.etc.config import cur, dbSun
-from cogs.etc.config import get_perm
 from cogs.etc.config import fetch_whitelist, status_query
 
 from cogs.etc.presets import Preset
@@ -67,7 +66,7 @@ class Admin(commands.Cog):
 
 	@commands.Command
 	async def get(self, ctx, *args):
-		if get_perm(ctx.message.author.id) <= 2:
+		if Preset.get_perm(ctx.message.author.id) <= 2:
 			return await ctx.send('You are not Authorized to use the Get function!')
 		cur.execute(DBESSENT)
 
