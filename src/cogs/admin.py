@@ -9,11 +9,13 @@ from cogs.etc.embeds import user_info
 from cogs.etc.embeds import help_site
 from cogs.etc.config import cur_db, DBBASE
 from cogs.etc.config import DBESSENT
+from cogs.etc.config import HOST
+from cogs.etc.config import RCON_PSW
 from cogs.etc.config import cur, dbSun
 from cogs.etc.config import fetch_whitelist
 
 from cogs.etc.presets import Preset
-from cogs.etc.presets import RCON
+from cogs.etc.presets import Rcon
 
 # todo:
 #   get, del, add, clear
@@ -31,8 +33,6 @@ class Admin(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		self.whitelist = fetch_whitelist()
-
-		self.rcon = RCON('45.142.114.207', "aojafocofosa")
 
 		self.whitelist_options = ['add', 'remove', 'list']
 		self.get_options = [
@@ -61,6 +61,13 @@ class Admin(commands.Cog):
 		if isinstance(error, CommandNotFound):
 			return await ctx.send("Command/API not found.")
 		raise error
+
+	@commands.Command
+	async def rcon(self, ctx, *args):
+		rcon = Rcon(HOST, RCON_PSW)
+		
+		response = rcon.send_command("status")
+		return await ctx.send(response)
 
 	@commands.Command
 	async def get(self, ctx, *args):
@@ -117,14 +124,6 @@ class Admin(commands.Cog):
 			pass
 		elif parsed[0] == 'Null':
 			pass
-
-	#@commands.Command
-	#async def rcon(self, ctx, *args):
-		#	rcon = RCON('45.142.114.207', "aojafocofosa")
-		#
-		#response = rcon.send_command("status")
-		#return await ctx.send(response)
-
 
 	@commands.command()
 	async def delete(self, ctx, *args):
