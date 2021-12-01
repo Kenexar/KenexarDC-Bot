@@ -80,6 +80,6 @@ class Preset:
 			return f'`{mode}` is not available'
 
 	@staticmethod
-	def get_perm(user):
+	def get_perm(user) -> list:
 		cur_db.execute('SELECT rank FROM whitelist WHERE uid=%s', (user,))
 		return cur_db.fetchone()[0]
