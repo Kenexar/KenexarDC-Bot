@@ -116,12 +116,12 @@ class Admin(commands.Cog):
 		elif parsed[0] == 'Null':
 			pass
 
-	@commands.Command
-	async def rcon(self, ctx, *args):
-		rcon = RCON('45.142.114.207', "aojafocofosa")
-
-		response = rcon.send_command("status")
-		return await ctx.send(response)
+	#@commands.Command
+	#async def rcon(self, ctx, *args):
+		#	rcon = RCON('45.142.114.207', "aojafocofosa")
+		#
+		#response = rcon.send_command("status")
+		#return await ctx.send(response)
 
 
 	@commands.command()
