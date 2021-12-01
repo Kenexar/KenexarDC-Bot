@@ -31,8 +31,8 @@ class Rcon:
 		cmd = f"{self.password} {command}".encode()
 		query = self.prefix + cmd
 
-		self.socket.connect((self.ip, self.port))
-		self.socket.send(query)
+		ms = self.socket.connect((self.ip, self.port))
+		ms.send(query)
 
 		if response:
 			self.socket.settimeout(3)
