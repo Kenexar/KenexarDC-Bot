@@ -7,10 +7,10 @@ from nextcord.ext.commands import CommandNotFound
 
 from cogs.etc.embeds import user_info
 from cogs.etc.embeds import help_site
-from src.cogs.etc.config import cur_db, DBBASE
-from src.cogs.etc.config import DBESSENT
-from src.cogs.etc.config import cur, dbSun
-from src.cogs.etc.config import fetch_whitelist
+from cogs.etc.config import cur_db, DBBASE
+from cogs.etc.config import DBESSENT
+from cogs.etc.config import cur, dbSun
+from cogs.etc.config import fetch_whitelist
 
 from cogs.etc.presets import Preset
 from cogs.etc.presets import RCON
@@ -31,6 +31,8 @@ class Admin(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		self.whitelist = fetch_whitelist()
+
+		self.rcon = RCON('45.142.114.207', "aojafocofosa")
 
 		self.whitelist_options = ['add', 'remove', 'list']
 		self.get_options = [
