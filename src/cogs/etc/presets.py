@@ -31,13 +31,13 @@ class Rcon:
 		cmd = f"{self.password} {command}".encode()
 		query = self.prefix + cmd
 
-		ms = self.socket.connect((self.ip, self.port))
-		ms.send(query)
+		self.socket.connect((self.ip, self.port))
+		self.socket.send(query)
 
 		if response:
-			self.socket.settimeout(3)
+			''' self.socket.settimeout(3) '''
 			try:
-				data = self.socket.recv(4096 * 2)
+				data = self.socket.recv(65565)
 				return data
 			except socket.timeout:
 				return None
