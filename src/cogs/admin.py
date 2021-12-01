@@ -40,20 +40,20 @@ class Admin(commands.Cog):
 		self.logger = self.bot.get_channel(LOG_CHANNEL)
 
 		self.GET_OPTIONS = [
-			f'user', f'u',
-			f'vehicletrunk', f'vh', 'Null']
+			'user', 'u',
+			'vehicletrunk', 'vh', 'Null']
 
 		self.DEL_OPTIONS = [
-			f'user', f'u',
-			f'veh', f'vehicle',
-			f'vehtrunk', f'veht',
-			f'usermoney', f'um',
+			'user', 'u',
+			'veh', 'vehicle',
+			'vehtrunk', 'veht',
+			'usermoney', 'um',
 			'inv', 'inventory',
-			f'weapons', 'Null']
+			'weapons', 'Null']
 
 
 		self.ADD_OPTIONS = [
-			f'um', f'usermoney',
+			'um', 'usermoney',
 			'weapons'
 		]
 
