@@ -20,7 +20,7 @@ class Rcon:
 		self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 	def send_command(self, command, response=True):
-		""" Sending commands to home
+		""" Sending commands to server
 		
 		:param command: Enter a command that should sent to the server
 		:param response: Standart True, turn it to False when you dont want a response 

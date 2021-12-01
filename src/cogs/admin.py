@@ -66,8 +66,8 @@ class Admin(commands.Cog):
 	async def rcon(self, ctx, *args):
 		rcon = Rcon(HOST, RCON_PSW)
 		
-		response = rcon.send_command("status")
-		return await ctx.send(response)
+		response = rcon.send_command(" ".join(args))
+		return await ctx.send(response if response else "no answer")
 
 	@commands.Command
 	async def get(self, ctx, *args):
