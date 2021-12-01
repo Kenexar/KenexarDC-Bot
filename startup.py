@@ -40,7 +40,7 @@ def sql_setup():
 	cur = mydb.cursor()
 	cur.execute("SELECT Name FROM tokens WHERE Name='Cougars'")
 
-	if cur.fetchone() == None:
+	if cur.fetchone() is None:
 		pass
 
 
