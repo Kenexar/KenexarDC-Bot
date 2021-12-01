@@ -134,3 +134,5 @@ src/cogs/etc/config.py
 
 poetry.lock
 pyproject.toml
+
+.breakpoints
