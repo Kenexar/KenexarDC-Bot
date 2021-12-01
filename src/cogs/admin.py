@@ -1,26 +1,27 @@
 import json
+import nextcord
 
 from datetime import datetime
+from itertools import cycle
 
 from nextcord.ext import commands
+from nextcord.ext import tasks
 from nextcord.ext.commands import CommandNotFound
 
 from cogs.etc.embeds import user_info
 from cogs.etc.embeds import help_site
 from cogs.etc.config import cur_db, DBBASE
 from cogs.etc.config import DBESSENT
-from cogs.etc.config import HOST
-from cogs.etc.config import RCON_PSW
 from cogs.etc.config import cur, dbSun
-from cogs.etc.config import fetch_whitelist
+from cogs.etc.config import fetch_whitelist, status_query
 
 from cogs.etc.presets import Preset
-from cogs.etc.presets import Rcon
+
 
 # todo:
 #   get, del, add, clear
 #       getVehicleTrunk
-#       delUser
+#		delUser
 #       delVehicles
 #       delWeapon
 #       clearInventory
@@ -35,25 +36,26 @@ class Admin(commands.Cog):
 		self.whitelist = fetch_whitelist()
 
 		self.whitelist_options = ['add', 'remove', 'list']
-		self.get_options = [
+		self.GET_OPTIONS = [
 			f'user', f'u',
 			f'vehicletrunk', f'vh', 'Null']
-		
-		self.del_options = [
+
+		self.DEL_OPTIONS = [
 			f'user', f'u',
 			f'veh', f'vehicle',
 			f'weapons', 'Null']
 
-		self.clear_options = [
+		self.CLEAR_OPTIONS = [
 			f'inv',
 			f'vehtrunk', f'veht',
 			f'usermoney', f'um']
 
-		self.add_options = [f'um', f'usermoney']
+		self.ADD_OPTIONS = [f'um', f'usermoney']
 
 	@commands.Cog.listener()
 	async def on_ready(self):
 		print(f'Ready at {datetime.now().strftime("%H:%M:%S")}')
+
 
 	@commands.Cog.listener()
 	async def on_command_error(self, ctx,
@@ -63,18 +65,13 @@ class Admin(commands.Cog):
 		raise error
 
 	@commands.Command
-	async def rcon(self, ctx, *args):
-		rcon = Rcon(HOST, RCON_PSW)
-		
-		response = rcon.send_command(" ".join(args))
-		return await ctx.send(response if response else "no answer")
-
-	@commands.Command
 	async def get(self, ctx, *args):
+		if not Preset.get_perm(ctx.message.author.id) >= 2:
+			return await ctx.send('You are not Authorized to use the Get function!')
 		cur.execute(DBESSENT)
 
-		parsed = Preset.parser(rounds=2, toparse=args, option=self.get_options)
-		if parsed[0] in self.get_options[0:2]:
+		parsed = Preset.parser(rounds=2, toparse=args, option=self.GET_OPTIONS)
+		if parsed[0] in self.GET_OPTIONS[0:2]:
 			cur.execute(
 				"SELECT identifier, `accounts`, `group`, inventory, job, job_grade, loadout, firstname, lastname, phone_number FROM users WHERE identifier=%s", (parsed[1],))
 
@@ -120,7 +117,7 @@ class Admin(commands.Cog):
 			}
 
 			await ctx.send(embed=user_info(user=user))
-		elif parsed[0] in self.get_options[2:4]:
+		elif parsed[0] in self.GET_OPTIONS[2:4]:
 			pass
 		elif parsed[0] == 'Null':
 			pass
@@ -142,30 +139,34 @@ class Admin(commands.Cog):
 		if not ctx.message.author.id in self.whitelist:
 			return
 
-		cur_db.execute("SELECT rank FROM whitelist WHERE uid=%s;", (ctx.message.author.id,))
-		fetcher = cur_db.fetchone()[0]
 
-		if fetcher >= 4:
+		if Preset.get_perm(ctx.message.author.id) >= 4:
 			cur.execute(DBESSENT)
+			if not args:
+				return await ctx.send(embed=help_site('einreise'))
+
 			if args[0]:
-				cur.execute("DELETE FROM users WHERE identifier=%s", (args[0].strip('license:'),))
-				dbSun.commit()
-				await ctx.send('User got deleted from the Db')
-		else:
-			return await ctx.send('You don\'t have permission to manage the Whitelist')
+				try:
+					cur.execute("DELETE FROM users WHERE identifier=%s", (args[0].strip('license:'),))
+					dbSun.commit()
+					await ctx.send('User got deleted from the Db')
+				except Exception:
+					return await ctx.send('Nothing happens, Contact an dev or try it again.\n**Maybe it was an invalid id!**')
+		return await ctx.send('You are not Authorized to manage the Whitelist')
 
 	@commands.Command
 	async def whitelist(self, ctx, *args):
 		if not ctx.message.author.id in self.whitelist:
-			return await ctx.send('You don\'t have permission to manage the Whitelist')
+			return await ctx.send('You are not Authorized to manage the Whitelist')
 		cur_db.execute(DBBASE)
 
 		id = ctx.message.author.id
-		cur_db.execute("SELECT rank FROM whitelist WHERE uid=%s;", (id,))
-		mal = cur_db.fetchone()
 
-		if not mal[0] == 5:
-			return await ctx.send('You don\'t have permission to manage the Whitelist')
+		if not Preset.get_perm(id) == 5:
+			return await ctx.send('You are not Authorized to manage the Whitelist')
+		
+		if not args:
+			return await ctx.send(embed=help_site('whitelist'))
 
 		if args[0] == 'add':
 			return await ctx.send(Preset.whitelist('add', args[1].strip('<!@ >'), args[2] if args[2].isdigit() else 0))
@@ -173,6 +174,7 @@ class Admin(commands.Cog):
 			return await ctx.send(Preset.whitelist('remove', args[1].strip('<!@ >')))
 		elif args[0] == 'list':
 			return await ctx.send(embed=Preset.whitelist('list'))
+		return await ctx.send('The argument is not valid!')
 
 	@commands.Command
 	async def help(self, ctx):
