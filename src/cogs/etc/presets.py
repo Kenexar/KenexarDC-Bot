@@ -37,7 +37,7 @@ class Rcon:
 		if response:
 			self.socket.settimeout(3)
 			try:
-				data = self.socket.recv(4096)
+				data = self.socket.recv(4096 * 2)
 				return data
 			except socket.timeout:
 				return None
