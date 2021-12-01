@@ -14,6 +14,7 @@ from cogs.etc.config import cur_db, DBBASE
 from cogs.etc.config import DBESSENT
 from cogs.etc.config import cur, dbSun
 from cogs.etc.config import fetch_whitelist, status_query
+from cogs.etc.config import LOG_CHANNEL
 
 from cogs.etc.presets import Preset
 
@@ -34,6 +35,8 @@ class Admin(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		self.whitelist = fetch_whitelist()
+
+		self.logger = self.bot.get_channel(LOG_CHANNEL)
 
 		self.whitelist_options = ['add', 'remove', 'list']
 		self.GET_OPTIONS = [
@@ -136,11 +139,13 @@ class Admin(commands.Cog):
 
 	@commands.Command
 	async def einreise(self, ctx, *args):
+		print(self.logger)
 		if not ctx.message.author.id in self.whitelist:
-			return
+			return await ctx.send('You are not Authorized to delete user Entries')
+					#await self.logger.send(f'{ctx.message.author} tried to use the `einreise` command!')
 
 
-		if Preset.get_perm(ctx.message.author.id) >= 4:
+		if Preset.get_perm(ctx.message.author.id) >= 6:
 			cur.execute(DBESSENT)
 			if not args:
 				return await ctx.send(embed=help_site('einreise'))
@@ -158,6 +163,7 @@ class Admin(commands.Cog):
 				except Exception:
 					return await ctx.send('Nothing happens, Contact an dev or try it again.\n**Maybe it was an invalid id!**')
 		return await ctx.send('You are not Authorized to delete user Entries')
+				# await self.logger.send(f'{ctx.message.author} tried to use the `einreise` command!')
 
 	@commands.Command
 	async def whitelist(self, ctx, *args):

@@ -70,7 +70,7 @@ def help_site(mode='all') -> Embed:
 						inline=False)
 
 	if mode in ('all', 'einreise'):
-		embed.add_field(name=f'`{PREFIX}einreise`', value=f'Usage: `{PREFIX}einreise`\n\nDes: Delete user entry from database', inline=False)
+		embed.add_field(name=f'`{PREFIX}einreise`', value=f'Usage: `{PREFIX}einreise` user id [Cfx]\n\nDes: Delete user entry from database', inline=False)
 
 	return embed
 
