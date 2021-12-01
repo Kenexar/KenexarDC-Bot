@@ -69,7 +69,7 @@ class Preset:
 				"INSERT INTO whitelist(name, uid, rank) VALUES (%s, %s, %s)",
 				(PROJECT_NAME, member, rank))
 			dbBase.commit()
-			return f'Added <@{member}> to the [BOT]whitelist'
+			return f'Added <@{member}> to the [BOT]whitelist' 
 
 		elif mode == 'remove':
 			cur_db.execute("DELETE FROM whitelist WHERE uid=%s and name=%s;",
@@ -81,5 +81,10 @@ class Preset:
 
 	@staticmethod
 	def get_perm(user) -> list:
+		""" ger_perm or fetch_perm (old) is for authorization purposes
+
+		:param user: takes an nextcord.Member.id and provide it to the database where you become an numberic value back.
+		
+		"""
 		cur_db.execute('SELECT rank FROM whitelist WHERE uid=%s', (user,))
-		return cur_db.fetchone()[0]
+		return cur_db.fetchone()[0] # fetch from the result the tuples first index 

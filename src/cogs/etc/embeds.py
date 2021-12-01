@@ -6,58 +6,70 @@ from cogs.etc.config import EMBED_ST, PREFIX
 
 
 def user_info(user=dict) -> Embed:
-    global f, s, fi, si
+	""" An embed for the get user command
 
-    username = user.get('username', '-')
-    license_ = user.get('license', '-')
-    group = user.get('group', '-')
+	:param user: User takes an dictionairy with harcoded values, that comes from
+	a SQL query
 
-    firstname = user.get('firstname', '-')
-    lastname = user.get('lastname', '-')
-    phone_number = user.get('phone_number', '-')
+	"""
 
-    job = user.get('job', '-')
-    job_grade = user.get('job_grade', '-')
+	username = user.get('username', '-')
+	license_ = user.get('license', '-')
+	group = user.get('group', '-')
 
-    cash = user.get('cash', '-')
-    bank = user.get('bank', '-')
-    bm = user.get('bm', '-')
-    veh = user.get('veh', '-')
+	firstname = user.get('firstname', '-')
+	lastname = user.get('lastname', '-')
+	phone_number = user.get('phone_number', '-')
 
-    weapons = user.get('weapons', '-')
-    inv = user.get('inv', '-')
+	job = user.get('job', '-')
+	job_grade = user.get('job_grade', '-')
 
-    embed = Embed(title=username,
-                  description=license_,
-                  color=EMBED_ST,
-                  timestamp=datetime.utcnow())
+	cash = user.get('cash', '-')
+	bank = user.get('bank', '-')
+	bm = user.get('bm', '-')
+	veh = user.get('veh', '-')
 
-    embed.add_field(name='Information',
-                    value=f'Group: {group}\n\nVoller Name: {firstname}, {lastname}\nJob: {job}. Grade: {job_grade}\n'
-                          f'Telefon: {phone_number}'
-                          f'\n\n💰 Bargeld: {cash}\n💳 Bank: {bank}\n💸 Schwarzgeld: {bm}\n\n🚘 Fahrzeuge: {veh}',
-                    inline=False)
+	weapons = user.get('weapons', '-')
+	inv = user.get('inv', '-')
 
-    if len(weapons):
-        f = '\n'.join(weapons)
-    else:
-        f = 'Hat keine Waffen im Inventar'
+	embed = Embed(title=username,
+					description=license_,
+					color=EMBED_ST,
+					timestamp=datetime.utcnow()) # embed creation
 
-    embed.add_field(name='Waffen', value=f, inline=False)
+	embed.add_field(name='Information',
+					value=f'Group: {group}\n\nVoller Name: {firstname}, {lastname}\nJob: {job}. Grade: {job_grade}\n'
+							f'Telefon: {phone_number}'
+							f'\n\n💰 Bargeld: {cash}\n💳 Bank: {bank}\n💸 Schwarzgeld: {bm}\n\n🚘 Fahrzeuge: {veh}',
+					inline=False)
 
-    if len(inv):
-        f = '\n'.join(inv)
-        s = '\n'.join(str(inv[i]) for i in inv)
-    else:
-        f = 'Hat keine Items im Inventar'
+	if len(weapons):
+		f = '\n'.join(weapons)
+	else:
+		f = 'Hat keine Waffen im Inventar'
 
-    embed.add_field(name='Inventar', value=f, inline=True)
-    embed.add_field(name='--', value=s, inline=True)
+	embed.add_field(name='Waffen', value=f, inline=False)
 
-    return embed
+	if len(inv):
+		f = '\n'.join(inv)
+		s = '\n'.join(str(inv[i]) for i in inv)
+	else:
+		f = 'Hat keine Items im Inventar'
+
+	embed.add_field(name='Inventar', value=f, inline=True)
+	embed.add_field(name='--', value=s, inline=True)
+
+	return embed
 
 
 def help_site(mode='all') -> Embed:
+	""" Creates an Help embed
+
+	:param mode: Standart is all but you can deliever a argument for the
+	help embed that is needed
+
+	:return: nextcord.Embed object
+	"""
 	embed = Embed(title='Help Site - MrPython',
 					timestamp=datetime.utcnow(),
 					color=EMBED_ST)

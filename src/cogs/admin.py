@@ -32,13 +32,13 @@ from cogs.etc.presets import Preset
 
 
 class Admin(commands.Cog):
+	""" Admin class for Moderation actions """
 	def __init__(self, bot):
 		self.bot = bot
 		self.whitelist = fetch_whitelist()
 
 		self.logger = self.bot.get_channel(LOG_CHANNEL)
 
-		self.whitelist_options = ['add', 'remove', 'list']
 		self.GET_OPTIONS = [
 			f'user', f'u',
 			f'vehicletrunk', f'vh', 'Null']
@@ -46,22 +46,24 @@ class Admin(commands.Cog):
 		self.DEL_OPTIONS = [
 			f'user', f'u',
 			f'veh', f'vehicle',
+			f'vehtrunk', f'veht',
+			f'usermoney', f'um',
+			'inv', 'inventory',
 			f'weapons', 'Null']
 
-		self.CLEAR_OPTIONS = [
-			f'inv',
-			f'vehtrunk', f'veht',
-			f'usermoney', f'um']
 
-		self.ADD_OPTIONS = [f'um', f'usermoney']
+		self.ADD_OPTIONS = [
+			f'um', f'usermoney',
+			'weapons'
+		]
 
 	@commands.Cog.listener()
 	async def on_ready(self):
-		print(f'Ready at {datetime.now().strftime("%H:%M:%S")}')
+		print(f'Ready at {datetime.now().strftime("%H:%M:%S")}', self.logger)
 
 
 	@commands.Cog.listener()
-	async def on_command_error(self, ctx,
+	async def on_command_error(self, ctx, # error handler
 									error):  # Function doing intense computing!
 		if isinstance(error, CommandNotFound):
 			return await ctx.send("Command/API not found.")
@@ -69,12 +71,17 @@ class Admin(commands.Cog):
 
 	@commands.Command
 	async def get(self, ctx, *args):
-		if not Preset.get_perm(ctx.message.author.id) >= 2:
+		""" Get function [user|veht|Null]
+
+			Get for specific users the player data from the db
+		
+		"""
+		if not Preset.get_perm(ctx.message.author.id) >= 2 and ctx.message.author.id in self.whitelist: # permission checker if user is mod or higher and in whitelist
 			return await ctx.send('You are not Authorized to use the Get function!')
 		cur.execute(DBESSENT)
 
 		parsed = Preset.parser(rounds=2, toparse=args, option=self.GET_OPTIONS)
-		if parsed[0] in self.GET_OPTIONS[0:2]:
+		if parsed[0] in self.GET_OPTIONS[0:2]: # if argument user or u
 			cur.execute(
 				"SELECT identifier, `accounts`, `group`, inventory, job, job_grade, loadout, firstname, lastname, phone_number FROM users WHERE identifier=%s", (parsed[1],))
 
@@ -120,22 +127,33 @@ class Admin(commands.Cog):
 			}
 
 			await ctx.send(embed=user_info(user=user))
-		elif parsed[0] in self.GET_OPTIONS[2:4]:
+		elif parsed[0] in self.GET_OPTIONS[2:4]: # if argument vehicle trunk or veht
 			pass
-		elif parsed[0] == 'Null':
+		elif parsed[0] == 'Null': # get all null entries
 			pass
 
 	@commands.command()
 	async def delete(self, ctx, *args):
+		""" Delete command for delete entire user entry in the database
+
+			this command is high sensible, of course you need rank 4 or higher to use it
+			you can also delete single things like weapons or vehicles, to prevent duping
+
+			you can remove/clear weapons, money, vehicles, maybe sprays
+		"""
 		pass
 
 	@commands.command()
 	async def add(self, ctx, *args):
+		""" Add command to add something like items or weapons to users inventory
+
+			an example when a mod is in the support channel and no one with database permission is online, then you can 
+			add thing to the users entrie.
+
+			you can add usermoney, weapons, vehicles
+		"""
 		pass
 
-	@commands.command()
-	async def clear(self, ctx, *args):
-		pass
 
 	@commands.Command
 	async def einreise(self, ctx, *args):
