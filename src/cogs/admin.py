@@ -147,12 +147,17 @@ class Admin(commands.Cog):
 
 			if args[0]:
 				try:
-					cur.execute("DELETE FROM users WHERE identifier=%s", (args[0].strip('license:'),))
+					cur.execute("SELECT identifier FROM users WHERE identifier=%s;", (args[0].strip('license:'),))
+					if not cur.fetchone():
+						raise Exception
+
+					cur.execute("DELETE FROM users WHERE identifier=%s;", (args[0].strip('license:'),))
 					dbSun.commit()
-					await ctx.send('User got deleted from the Db')
+					
+					return await ctx.send('User got deleted from the Db')
 				except Exception:
 					return await ctx.send('Nothing happens, Contact an dev or try it again.\n**Maybe it was an invalid id!**')
-		return await ctx.send('You are not Authorized to manage the Whitelist')
+		return await ctx.send('You are not Authorized to delete user Entries')
 
 	@commands.Command
 	async def whitelist(self, ctx, *args):
