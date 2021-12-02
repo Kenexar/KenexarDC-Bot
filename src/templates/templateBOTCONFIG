@@ -1,0 +1,53 @@
+import mysql.connector
+## [SQL SHIT] ##
+
+HOST = ''
+PASSWORD = ''
+DBBASE = 'USE dcbots;'
+DBESSENT = 'USE essentialmode;'
+USER = 'root'
+
+dbBase = mysql.connector.connect(
+        host=HOST,
+        user=USER,
+        password=PASSWORD
+)
+
+CUR = dbBase.cursor(buffered=True)
+
+CUR.execute(DBBASE)
+
+## [BOT SHIT] ##
+config_shit = []
+foo = 1
+
+for _ in range(3):
+    CUR.execute("SELECT * FROM tokens WHERE Name='SunSideAdmin'")
+    config_shit.append(CUR.fetchone()[foo])
+    foo += 1
+
+## [BASE BOT] ##
+TOKEN = config_shit[0]
+PREFIX = config_shit[2]
+ESCAPE = '-'
+
+## [COLORES] ##
+EMBED_ST = 0xfff
+COLOR_RED = 0xff0000
+COLOR_GREEN = 0x00ff00
+
+
+## [STATUS QUERY] ##
+def query(query_item):
+    CUR.execute("SELECT Text FROM roll_text WHERE Name='SunSideAdmin';")
+    for item in CUR.fetchall():
+        query_item.append(item[0])
+
+
+# dbSun = mysql.connector.connect(
+#     host='',
+#     user='root',
+#     password='',
+#     database='essentialmode'
+# )
+
