@@ -23,6 +23,7 @@ class Cycle(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_ready(self):
+		
 		if platform == 'Linux':
 			await self.status_task.start()
 
