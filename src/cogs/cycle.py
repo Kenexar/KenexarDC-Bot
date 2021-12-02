@@ -1,4 +1,5 @@
 import nextcord
+import platform
 
 from itertools import cycle
 from nextcord.ext import commands, tasks
@@ -29,7 +30,8 @@ class Cycle(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_ready(self):
-		await self.status_task.start()
+		if platform == 'Linux':
+			await self.status_task.start()
 
 
 	@tasks.loop(seconds=30)
@@ -41,7 +43,7 @@ class Cycle(commands.Cog):
 	@commands.Command
 	async def cycle(self, ctx, *args):
 		if ctx.message.author.id in self.whitelist:
-			if not Preset.get_perm(ctx.message.author.id) >= 6:
+			if not Preset.get_perm(ctx.message.author.id) >= 5:
 				print('coggesr')
 		return await ctx.send('You are not Authorized to Manage the Bot Status menu!')
 
