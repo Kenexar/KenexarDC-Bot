@@ -2,7 +2,7 @@ import socket
 
 
 class Rcon:
-    """ Rcon Module """
+    """ Rcon Module wixxe """
 
     def __init__(self, ip, password, port=30120):
         self.ip = ip
