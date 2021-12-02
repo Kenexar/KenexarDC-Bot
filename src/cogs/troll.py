@@ -16,8 +16,8 @@ class Troll(commands.Cog):
         channel = ctx.author.voice.channel
         await channel.connect()
 
-        option = {1: {'path': 'cogs/sound/Monkie.wav', 'time': 1},
-                  2: {'path': 'cogs/sound/two, four.mp3', 'time': 4}}
+        option = {1: {'path': 'cogs/etc/sounds/Monkie.wav', 'time': 1},
+                  2: {'path': 'cogs/etc/sounds/two, four.mp3', 'time': 4}}
 
         guild = ctx.guild
         voice_client = nextcord.utils.get(self.bot.voice_clients, guild=guild)
