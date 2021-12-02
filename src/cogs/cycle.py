@@ -21,13 +21,6 @@ class Cycle(commands.Cog):
 		self.status_list = []
 		self.status = cycle(status_query(self.status_list))
 
-		self.CYCLE_OPTIONS = [
-			'add', 
-			'remove', 'rm',
-			'list', 'ls',
-			'rl', 'reload'
-		]
-
 	@commands.Cog.listener()
 	async def on_ready(self):
 		if platform == 'Linux':
@@ -39,14 +32,6 @@ class Cycle(commands.Cog):
 		await self.bot.change_presence(status=nextcord.Status.online, 
 							activity=nextcord.Activity(type=nextcord.ActivityType.watching, 
 							name=next(self.status)))
-
-	@commands.Command
-	async def cycle(self, ctx, *args):
-		if ctx.message.author.id in self.whitelist:
-			if not Preset.get_perm(ctx.message.author.id) >= 5:
-				print('coggesr')
-		return await ctx.send('You are not Authorized to Manage the Bot Status menu!')
-
 
 def setup(bot):
 	bot.add_cog(Cycle(bot))
