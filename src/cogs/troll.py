@@ -23,19 +23,13 @@ class Troll(commands.Cog):
         guild = ctx.guild
         voice_client = nextcord.utils.get(self.bot.voice_clients, guild=guild)
 
-        # choice = random.randint(0)
-        # print(choice)
         if True:
             audio_source = nextcord.FFmpegPCMAudio(self.option[1]['path'])
             time_ = self.option[1]['time']
 
-        # else:
-        #     audio_source = nextcord.FFmpegPCMAudio(option[2]['path'])
-        #     time_ = option[2]['time']
-
         if not voice_client.is_playing():
             voice_client.play(audio_source, after=None)
-            time.sleep(time_)
+            await asyncio.sleep(time_)
             await ctx.voice_client.disconnect()
 
     @commands.Command
@@ -46,19 +40,13 @@ class Troll(commands.Cog):
         guild = ctx.guild
         voice_client = nextcord.utils.get(self.bot.voice_clients, guild=guild)
 
-        # choice = random.randint(0)
-        # print(choice)
         if True:
             audio_source = nextcord.FFmpegPCMAudio(self.option[2]['path'])
             time_ = self.option[2]['time']
 
-        # else:
-        #     audio_source = nextcord.FFmpegPCMAudio(option[2]['path'])
-        #     time_ = option[2]['time']
-
         if not voice_client.is_playing():
             voice_client.play(audio_source, after=None)
-            time.sleep(time_)
+            await asyncio.sleep(time_)
             await ctx.voice_client.disconnect()
 
 
@@ -82,7 +70,7 @@ class Troll(commands.Cog):
 
         if not voice_client.is_playing():
             voice_client.play(audio_source, after=None)
-            time.sleep(time_)
+            await asyncio.sleep(time_)
             await ctx.voice_client.disconnect()
 
 
