@@ -166,7 +166,7 @@ class Admin(commands.Cog):
 					await self.logger.send(f'{ctx.message.author} tried to use the `einreise` command!')
 
 
-		if Preset.get_perm(ctx.message.author.id) >= 6:
+		if Preset.get_perm(ctx.message.author.id) >= 4:
 			cur.execute(DBESSENT)
 			if not args:
 				return await ctx.send(embed=help_site('einreise'))
