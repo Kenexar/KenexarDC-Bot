@@ -1,6 +1,7 @@
 from nextcord.ext import commands
 
-from src.cogs.etc.rcon import Rcon
+from cogs.etc.config import HOST, RCON_PSW
+from cogs.etc.rcon import Rcon
 
 
 class Fun(commands.Cog):
@@ -9,7 +10,7 @@ class Fun(commands.Cog):
 
 	@commands.Command
 	async def opfer(self, ctx):
-		rcon = Rcon('host', "password")
+		rcon = Rcon(HOST, RCON_PSW)
 
 		# If you don't need a response and
 		# don't want to wait 3 sec for the timeout

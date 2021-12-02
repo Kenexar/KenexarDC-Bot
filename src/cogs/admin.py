@@ -14,7 +14,7 @@ from cogs.etc.config import cur_db, DBBASE
 from cogs.etc.config import DBESSENT
 from cogs.etc.config import cur, dbSun
 from cogs.etc.config import fetch_whitelist, status_query
-from cogs.etc.config import LOG_CHANNEL
+from cogs.etc.config import LOG_CHANNEL, LOG_SERVER
 
 from cogs.etc.presets import Preset
 
@@ -37,14 +37,15 @@ class Admin(commands.Cog):
 		self.bot = bot
 		self.whitelist = fetch_whitelist()
 
-		self.logger = self.bot.get_channel(LOG_CHANNEL)
+		self.guild = None
+		self.logger = None
 
 		self.GET_OPTIONS = [
 			'user', 'u',
 			'vehicletrunk', 'vh', 'Null']
 
 		self.DEL_OPTIONS = [
-			'user', 'u',
+			'fuser', 'fu',
 			'veh', 'vehicle',
 			'vehtrunk', 'veht',
 			'usermoney', 'um',
@@ -59,8 +60,15 @@ class Admin(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_ready(self):
-		print(f'Ready at {datetime.now().strftime("%H:%M:%S")}', self.logger)
+		print(f'\nReady at {datetime.now().strftime("%H:%M:%S")}')
 
+		for server in self.bot.guilds:
+			if server.id == LOG_SERVER:
+				self.guild = server
+				self.logger = server.get_channel(LOG_CHANNEL)
+
+		print('[LOGGER] Current Logger channel:', self.logger.name)
+		
 
 	@commands.Cog.listener()
 	async def on_command_error(self, ctx, # error handler

@@ -28,12 +28,10 @@ for f in os.listdir('cogs'):
 def load():
 	with alive_bar(count) as bar:
 		for filename in os.listdir("cogs"):
-			print(filename)
 			if filename.endswith(
 				".py"
 			) and filename not in names:
 				loader = f"cogs.{filename[:-3]}"
-				print(loader)
 				bot.load_extension(loader)
 				bar()
 

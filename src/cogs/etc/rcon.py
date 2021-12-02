@@ -27,9 +27,9 @@ class Rcon:
         self.socket.send(query)
 
         if response:
-            ''' self.socket.settimeout(3) '''
+            self.socket.settimeout(3)
             try:
                 data = self.socket.recv(65565)
-                return data
+                return data if data else 'no answer'
             except socket.timeout:
-                return None
+                return 'no answer'
