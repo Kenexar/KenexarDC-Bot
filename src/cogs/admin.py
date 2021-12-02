@@ -84,7 +84,8 @@ class Admin(commands.Cog):
 		
 		"""
 		if not Preset.get_perm(ctx.message.author.id) >= 2 and ctx.message.author.id in self.whitelist: # permission checker if user is mod or higher and in whitelist
-			return await ctx.send('You are not Authorized to use the Get function!')
+			return await ctx.send('You are not Authorized to use the Get function!'), \
+				await self.logger.send(f'{ctx.message.author} tried to use the `get` command!')
 		cur.execute(DBESSENT)
 
 		parsed = Preset.parser(rounds=2, toparse=args, option=self.GET_OPTIONS)
@@ -160,10 +161,9 @@ class Admin(commands.Cog):
 
 	@commands.Command
 	async def einreise(self, ctx, *args):
-		print(self.logger)
 		if not ctx.message.author.id in self.whitelist:
-			return await ctx.send('You are not Authorized to delete user Entries')
-					#await self.logger.send(f'{ctx.message.author} tried to use the `einreise` command!')
+			return await ctx.send('You are not Authorized to delete user Entries'), \
+					await self.logger.send(f'{ctx.message.author} tried to use the `einreise` command!')
 
 
 		if Preset.get_perm(ctx.message.author.id) >= 6:
@@ -183,19 +183,22 @@ class Admin(commands.Cog):
 					return await ctx.send('User got deleted from the Db')
 				except Exception:
 					return await ctx.send('Nothing happens, Contact an dev or try it again.\n**Maybe it was an invalid id!**')
-		return await ctx.send('You are not Authorized to delete user Entries')
-				# await self.logger.send(f'{ctx.message.author} tried to use the `einreise` command!')
+		return await ctx.send('You are not Authorized to delete user Entries'), \
+				await self.logger.send(f'{ctx.message.author} tried to use the `einreise` command!')
 
 	@commands.Command
 	async def whitelist(self, ctx, *args):
 		if not ctx.message.author.id in self.whitelist:
-			return await ctx.send('You are not Authorized to manage the Whitelist')
+			return await ctx.send('You are not Authorized to manage the Whitelist'), \
+				await self.logger.send(f'{ctx.message.author} tried to use the `whitelist` command!')
+
 		cur_db.execute(DBBASE)
 
 		id = ctx.message.author.id
 
 		if not Preset.get_perm(id) == 5:
-			return await ctx.send('You are not Authorized to manage the Whitelist')
+			return await ctx.send('You are not Authorized to manage the Whitelist'), \
+				await self.logger.send(f'{ctx.message.author} tried to use the `whitelist` command!')
 		
 		if not args:
 			return await ctx.send(embed=help_site('whitelist'))
