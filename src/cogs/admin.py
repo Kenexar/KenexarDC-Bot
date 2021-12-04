@@ -175,7 +175,8 @@ class Admin(commands.Cog):
                     dbSun.commit()
 
                     return await ctx.send('User got deleted from the Db')
-                except Exception:
+                except Exception as e:
+                    print(e)
                     return await ctx.send(
                         'Nothing happens, Contact an dev or try it again.\n**Maybe it was an invalid id!**')
         return await ctx.send('You are not Authorized to delete user Entries'), \

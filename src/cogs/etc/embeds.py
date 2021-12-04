@@ -13,6 +13,8 @@ def user_info(user=dict) -> Embed:
 
 	"""
 
+	global s
+
 	username = user.get('username', '-')
 	license_ = user.get('license', '-')
 	group = user.get('group', '-')
@@ -55,6 +57,7 @@ def user_info(user=dict) -> Embed:
 		s = '\n'.join(str(inv[i]) for i in inv)
 	else:
 		f = 'Hat keine Items im Inventar'
+		s = '\u200b'
 
 	embed.add_field(name='Inventar', value=f, inline=True)
 	embed.add_field(name='--', value=s, inline=True)
