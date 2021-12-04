@@ -156,29 +156,26 @@ class Admin(commands.Cog):
 
     @commands.Command
     async def einreise(self, ctx, *args):
+        cur.execute(DBESSENT)
         if not ctx.message.author.id in self.whitelist:
             return await ctx.send('You are not Authorized to delete user Entries'), \
                    await self.logger.send(f'{ctx.message.author} tried to use the `einreise` command!')
 
         if Preset.get_perm(ctx.message.author.id) >= 4:
-            cur.execute(DBESSENT)
+
             if not args:
                 return await ctx.send(embed=help_site('einreise'))
 
             if args[0]:
-                try:
-                    cur.execute("SELECT identifier FROM users WHERE identifier=%s;", (args[0].strip('license:'),))
-                    if not cur.fetchone():
-                        raise Exception
+                cur.execute("SELECT identifier FROM users WHERE identifier=%s;", (args[0],))
+                if not cur.fetchone():
+                    return await ctx.send('Invalid id!')
 
-                    cur.execute("DELETE FROM users WHERE identifier=%s;", (args[0].strip('license:'),))
-                    dbSun.commit()
+                cur.execute("DELETE FROM users WHERE identifier=%s;", (args[0],))
+                dbSun.commit()
 
-                    return await ctx.send('User got deleted from the Db')
-                except Exception as e:
-                    print(e)
-                    return await ctx.send(
-                        'Nothing happens, Contact an dev or try it again.\n**Maybe it was an invalid id!**')
+                return await ctx.send('User got deleted from the Db')
+
         return await ctx.send('You are not Authorized to delete user Entries'), \
                await self.logger.send(f'{ctx.message.author} tried to use the `einreise` command!')
 
