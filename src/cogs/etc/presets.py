@@ -84,7 +84,7 @@ class Preset:
 			return f'`{mode}` is not available'
 
 	@staticmethod
-	def get_perm(user) -> list:
+	def get_perm(user) -> int:
 		""" ger_perm or fetch_perm (old) is for authorization purposes
 
 		:param user: takes an nextcord.Member.id and provide it to the database where you become an numberic value back.
@@ -92,7 +92,10 @@ class Preset:
 		"""
 		cur_db = dbBase.cursor(buffered=True)
 		cur_db.execute('SELECT rank FROM whitelist WHERE uid=%s;', (user,))
-		r = cur_db.fetchone()[0]
+		try:
+			r = cur_db.fetchone()[0]
+		except TypeError:
+			return 0
 		cur_db.close()
 		return r  # fetch from the result the tuples first index
 
