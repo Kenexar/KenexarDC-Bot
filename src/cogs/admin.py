@@ -24,6 +24,8 @@ from nextcord.ext.commands import CommandNotFound
 #       clearVehicleTrunk
 #       clearUserMoney
 #       addUserMoney
+#       whitelist request
+#       help permission system
 
 
 class Admin(commands.Cog):
@@ -77,11 +79,11 @@ class Admin(commands.Cog):
             Get for specific users the player data from the db
 
         """
-        if not Preset.get_perm(
-                ctx.message.author.id) >= 2 and ctx.message.author.id in self.whitelist:  # permission checker if user is mod or higher and in whitelist
+        if not Preset.get_perm(ctx.message.author.id) >= 2 and ctx.message.author.id in self.whitelist:  # permission checker if user is mod or higher and in whitelist
             return await ctx.send('You are not Authorized to use the Get function!'), \
                    await self.logger.send(f'{ctx.message.author} tried to use the `get` command!')
-        cur = dbSun.cursor()
+
+        cur = dbSun.cursor(buffered=True)
         cur.execute(DBESSENT)
 
         parsed = Preset.parser(rounds=2, toparse=args, option=self.GET_OPTIONS)

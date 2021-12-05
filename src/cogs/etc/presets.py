@@ -90,8 +90,8 @@ class Preset:
 		:param user: takes an nextcord.Member.id and provide it to the database where you become an numberic value back.
 		
 		"""
-		cur_db = dbBase.cursor()
-		cur_db.execute('SELECT rank FROM whitelist WHERE uid=%s', (user,))
+		cur_db = dbBase.cursor(buffered=True)
+		cur_db.execute('SELECT rank FROM whitelist WHERE uid=%s;', (user,))
 		r = cur_db.fetchone()[0]
 		cur_db.close()
 		return r  # fetch from the result the tuples first index
