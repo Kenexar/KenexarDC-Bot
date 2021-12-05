@@ -18,5 +18,6 @@ class Fun(commands.Cog):
 		response = rcon.send_command("status")
 		return await ctx.send(response)
 
+
 def setup(bot):
 	bot.add_cog(Fun(bot))

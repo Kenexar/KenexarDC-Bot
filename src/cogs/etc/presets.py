@@ -6,8 +6,7 @@ from nextcord import Embed
 
 from cogs.etc.config import EMBED_ST
 from cogs.etc.config import PROJECT_NAME
-from cogs.etc.config import cur_db
-from cogs.etc.config import dbBase
+from cogs.etc.config import dbBase, dbSun
 from cogs.etc.config import WHITELIST_RANKS
 
 
@@ -50,9 +49,11 @@ class Preset:
 		:returns: String or nextord.Embed object
 		"""
 
+		cur_db = dbBase.cursor()
+
 		if mode == 'list':
 			cur_db.execute(
-			f"SELECT uid, rank FROM whitelist WHERE name='{PROJECT_NAME}'")
+				f"SELECT uid, rank FROM whitelist WHERE name='{PROJECT_NAME}'")
 			fetcher = cur_db.fetchall()
 
 			embed = nextcord.Embed(title='Whitelist', color=EMBED_ST)
@@ -77,6 +78,7 @@ class Preset:
 			cur_db.execute("DELETE FROM whitelist WHERE uid=%s and name=%s;",
 				(member, PROJECT_NAME))
 			dbBase.commit()
+			cur_db.close()
 			return f'Removed <@{member}> from [BOT]whitelist'
 		else:
 			return f'`{mode}` is not available'
@@ -88,6 +90,9 @@ class Preset:
 		:param user: takes an nextcord.Member.id and provide it to the database where you become an numberic value back.
 		
 		"""
+		cur_db = dbBase.cursor()
 		cur_db.execute('SELECT rank FROM whitelist WHERE uid=%s', (user,))
-		return cur_db.fetchone()[0] # fetch from the result the tuples first index
+		r = cur_db.fetchone()[0]
+		cur_db.close()
+		return r  # fetch from the result the tuples first index
 

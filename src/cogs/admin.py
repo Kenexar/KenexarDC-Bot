@@ -3,8 +3,8 @@ from datetime import datetime
 
 from cogs.etc.config import DBESSENT
 from cogs.etc.config import LOG_CHANNEL, LOG_SERVER
-from cogs.etc.config import cur, dbSun
-from cogs.etc.config import cur_db, DBBASE
+from cogs.etc.config import dbSun
+from cogs.etc.config import cur_db, DBBASE, dbBase
 from cogs.etc.config import fetch_whitelist
 from cogs.etc.embeds import help_site
 from cogs.etc.embeds import user_info
@@ -81,6 +81,7 @@ class Admin(commands.Cog):
                 ctx.message.author.id) >= 2 and ctx.message.author.id in self.whitelist:  # permission checker if user is mod or higher and in whitelist
             return await ctx.send('You are not Authorized to use the Get function!'), \
                    await self.logger.send(f'{ctx.message.author} tried to use the `get` command!')
+        cur = dbSun.cursor()
         cur.execute(DBESSENT)
 
         parsed = Preset.parser(rounds=2, toparse=args, option=self.GET_OPTIONS)
@@ -136,6 +137,8 @@ class Admin(commands.Cog):
         elif parsed[0] == 'Null':  # get all null entries
             pass
 
+        cur.close()
+
     @commands.command()
     async def delete(self, ctx, *args):
         """ Delete command for delete entire user entry in the database
@@ -156,12 +159,13 @@ class Admin(commands.Cog):
 
     @commands.Command
     async def einreise(self, ctx, *args):
-        cur.execute(DBESSENT)
         if not ctx.message.author.id in self.whitelist:
             return await ctx.send('You are not Authorized to delete user Entries'), \
                    await self.logger.send(f'{ctx.message.author} tried to use the `einreise` command!')
 
         if Preset.get_perm(ctx.message.author.id) >= 4:
+            cur = dbSun.cursor()
+            cur.execute(DBESSENT)
 
             if not args:
                 return await ctx.send(embed=help_site('einreise'))
@@ -176,6 +180,7 @@ class Admin(commands.Cog):
 
                 return await ctx.send('User got deleted from the Db')
 
+        cur.close()
         return await ctx.send('You are not Authorized to delete user Entries'), \
                await self.logger.send(f'{ctx.message.author} tried to use the `einreise` command!')
 
@@ -185,7 +190,9 @@ class Admin(commands.Cog):
             return await ctx.send('You are not Authorized to manage the Whitelist'), \
                    await self.logger.send(f'{ctx.message.author} tried to use the `whitelist` command!')
 
-        cur_db.execute(DBBASE)
+        cur_base = dbBase.cursor()
+        cur_base.execute(DBBASE)
+        cur_base.close()
 
         id = ctx.message.author.id
 

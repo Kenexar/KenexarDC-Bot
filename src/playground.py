@@ -1,16 +1,14 @@
-from cogs.etc.config import cur
+from cogs.etc.config import cur_db, dbBase
 from cogs.etc.config import DBTEST
 
 
-cur.execute(DBTEST)
-cur.execute("SHOW TABLES;")
+# cur_db.execute(DBTEST)
+cur_db.execute("SHOW TABLES;")
 
-fetcher = cur.fetchall()
-print(fetcher)
+fetcher = cur_db.fetchall()
+print(fetcher, 'f')
+cur_db.close()
 
-
-
-for i in fetcher:
-	print(i[0])
-	cur.execute(f"SHOW COLUMNS FROM {i[0]};")
-	print(cur.fetchall()[:2], '\n')
+cur_db = dbBase.cursor()
+cur_db.execute("SHOW TABLES;")
+print(cur_db.fetchone())
