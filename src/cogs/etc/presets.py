@@ -38,7 +38,7 @@ class Preset:
 			return return_list
 
 	@staticmethod
-	def whitelist(mode=str, member=int, rank=int) -> Embed or str:
+	def whitelist(mode=str, payload=dict) -> Embed or str:
 		"""Whitelist function whitelist a member
 
 		:param mode:str-add: Add a Member to the Whitelist for Administration
@@ -53,9 +53,9 @@ class Preset:
 
 		if mode == 'list':
 			cur_db.execute(
-				f"SELECT uid, rank FROM whitelist WHERE name='{PROJECT_NAME}'")
+				f"SELECT user_name, rank FROM whitelist WHERE name='{PROJECT_NAME}'")
 			fetcher = cur_db.fetchall()
-
+			cur_db.close()
 			embed = nextcord.Embed(title='Whitelist', color=EMBED_ST)
 
 			if fetcher:
@@ -68,20 +68,27 @@ class Preset:
 			return embed
 
 		elif mode == 'add':
+			member = payload.get('member')
+			rank = payload.get('rank')
+			username = payload.get('name')
+
 			cur_db.execute(
-				"INSERT INTO whitelist(name, uid, rank) VALUES (%s, %s, %s)",
-				(PROJECT_NAME, member, rank))
+				"INSERT INTO whitelist(name, uid, rank, user_name) VALUES (%s, %s, %s, %s)",
+				(PROJECT_NAME, member, rank, username))
 			dbBase.commit()
+			cur_db.close()
 			return f'Added <@{member}> to the [BOT]whitelist' 
 
 		elif mode == 'remove':
+			member = payload.get('user')
 			cur_db.execute("DELETE FROM whitelist WHERE uid=%s and name=%s;",
 				(member, PROJECT_NAME))
+
 			dbBase.commit()
 			cur_db.close()
 			return f'Removed <@{member}> from [BOT]whitelist'
-		else:
-			return f'`{mode}` is not available'
+		
+		return f'`{mode}` is not available'
 
 	@staticmethod
 	def get_perm(user) -> int:

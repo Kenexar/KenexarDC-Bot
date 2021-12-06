@@ -205,10 +205,17 @@ class Admin(commands.Cog):
         if not args:
             return await ctx.send(embed=help_site('whitelist'))
 
+
         if args[0] == 'add':
-            return await ctx.send(Preset.whitelist('add', args[1].strip('<!@ >'), args[2] if args[2].isdigit() else 0))
+			payload = {
+				'member': args[1].strip('<!@ >'), 
+				'rank': args[2] if args[2].isdigit() else 0), 
+				'name': ctx.message.author.name}
+
+            return await ctx.send(Preset.whitelist('add', payload)
         elif args[0] == 'remove':
-            return await ctx.send(Preset.whitelist('remove', args[1].strip('<!@ >')))
+			payload = { 'user': args[1].strip('<!@ >') }
+            return await ctx.send(Preset.whitelist('remove', payload))
         elif args[0] == 'list':
             return await ctx.send(embed=Preset.whitelist('list'))
         return await ctx.send('The argument is not valid!')
