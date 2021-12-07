@@ -10,6 +10,7 @@ from cogs.etc.embeds import help_site
 from cogs.etc.embeds import user_info
 from cogs.etc.presets import Preset
 
+from cogs.logger.logger import logger
 from nextcord.ext import commands
 from nextcord.ext.commands import CommandNotFound
 
@@ -66,7 +67,7 @@ class Admin(commands.Cog):
 				self.guild = server
 				self.logger = server.get_channel(LOG_CHANNEL)
 
-		print('[LOGGER] Current Logger channel:', self.logger.name)
+		print(logger('info', f'Current logger channel: {self.logger.name}'))
 
 	@commands.Cog.listener()
 	async def on_command_error(self, ctx, error):  # Function doing intense computing!
