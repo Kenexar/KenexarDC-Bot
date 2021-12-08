@@ -188,37 +188,37 @@ class Admin(commands.Cog):
 			return await ctx.send('You are not Authorized to delete user Entries'), \
 				await self.logger.send(f'{ctx.message.author} tried to use the `einreise` command!')
 
-		@commands.Command
-		async def whitelist(self, ctx, *args):
-			if not ctx.message.author.id in self.whitelist:
-				return await ctx.send('You are not Authorized to manage the Whitelist'), \
-					await self.logger.send(f'{ctx.message.author} tried to use the `whitelist` command!')
+	@commands.Command
+	async def whitelist(self, ctx, *args):
+		if not ctx.message.author.id in self.whitelist:
+			return await ctx.send('You are not Authorized to manage the Whitelist'), \
+				await self.logger.send(f'{ctx.message.author} tried to use the `whitelist` command!')
 
-			cur_base = dbBase.cursor()
-			cur_base.execute(DBBASE)
-			cur_base.close()
+		cur_base = dbBase.cursor()
+		cur_base.execute(DBBASE)
+		cur_base.close()
 
-			id = ctx.message.author.id
+		id = ctx.message.author.id
 
-			if not Preset.get_perm(id) == 5:
-				return await ctx.send('You are not Authorized to manage the Whitelist'), \
-					await self.logger.send(f'{ctx.message.author} tried to use the `whitelist` command!')
+		if not Preset.get_perm(id) == 5:
+			return await ctx.send('You are not Authorized to manage the Whitelist'), \
+				await self.logger.send(f'{ctx.message.author} tried to use the `whitelist` command!')
 
-			if not args:
-				return await ctx.send(embed=help_site('whitelist'))
+		if not args:
+			return await ctx.send(embed=help_site('whitelist'))
 
 
-			if args[0] == 'add':
-				payload = {'member': args[1].strip('<!@ >'), 'rank': args[2] if args[2].isdigit() else 0, 'name': ctx.message.author.name}
+		if args[0] == 'add':
+			payload = {'member': args[1].strip('<!@ >'), 'rank': args[2] if args[2].isdigit() else 0, 'name': ctx.message.author.name}
 
-				return await ctx.send(Preset.whitelist('add', payload))
-			elif args[0] == 'remove':
-				payload = { 'user': args[1].strip('<!@ >') }
+			return await ctx.send(Preset.whitelist('add', payload))
+		elif args[0] == 'remove':
+			payload = { 'user': args[1].strip('<!@ >') }
 
-				return await ctx.send(Preset.whitelist('remove', payload))
-			elif args[0] == 'list':
-				return await ctx.send(embed=Preset.whitelist('list'))
-			return await ctx.send('The argument is not valid!')
+			return await ctx.send(Preset.whitelist('remove', payload))
+		elif args[0] == 'list':
+			return await ctx.send(embed=Preset.whitelist('list'))
+		return await ctx.send('The argument is not valid!')
 
 	@commands.Command
 	async def help(self, ctx):
