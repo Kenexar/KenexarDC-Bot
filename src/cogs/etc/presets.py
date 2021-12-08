@@ -6,7 +6,7 @@ from nextcord import Embed
 
 from cogs.etc.config import EMBED_ST
 from cogs.etc.config import PROJECT_NAME
-from cogs.etc.config import dbBase, dbSun
+from cogs.etc.config import dbBase
 from cogs.etc.config import WHITELIST_RANKS
 
 
