@@ -4,7 +4,6 @@ import platform
 from itertools import cycle
 from nextcord.ext import commands, tasks
 
-from cogs.etc.config import dbBase, dbSun
 from cogs.etc.config import status_query
 from cogs.etc.config import fetch_whitelist
 
