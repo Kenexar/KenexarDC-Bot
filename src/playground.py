@@ -1,2 +1,1 @@
-for i in range(256):
-	print(f'\u001b[{i}m {i} \u001B[0m')
+print('\u001b[38;5;52m█')
