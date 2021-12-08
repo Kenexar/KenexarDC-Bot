@@ -1,6 +1,6 @@
 from nextcord.ext import commands
 
-from cogs.etc.config import SUN_HOST, RCON_PSW
+from cogs.etc.config import HOST, RCON_PSW
 from cogs.etc.rcon import Rcon
 
 

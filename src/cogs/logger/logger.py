@@ -1,7 +1,6 @@
 # here comes the logger function
 from datetime import datetime
 
-
 from cogs.logger.console_color_codes import ANSI
 
 

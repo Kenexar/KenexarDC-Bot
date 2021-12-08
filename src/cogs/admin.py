@@ -3,7 +3,6 @@ from datetime import datetime
 
 from cogs.etc.config import DBESSENT
 from cogs.etc.config import LOG_CHANNEL, LOG_SERVER
-from cogs.etc.config import dbSun
 from cogs.etc.config import cur_db, DBBASE, dbBase
 from cogs.etc.config import fetch_whitelist
 from cogs.etc.embeds import help_site
@@ -85,7 +84,7 @@ class Admin(commands.Cog):
 			return await ctx.send('You are not Authorized to use the Get function!'), \
 				await self.logger.send(f'{ctx.message.author} tried to use the `get` command!')
 
-		cur = dbSun.cursor(buffered=True)
+		cur = dbBase.cursor(buffered=True)
 		cur.execute(DBESSENT)
 
 		parsed = Preset.parser(rounds=2, toparse=args, option=self.GET_OPTIONS)
@@ -168,26 +167,26 @@ class Admin(commands.Cog):
 				await self.logger.send(f'{ctx.message.author} tried to use the `einreise` command!')
 
 		if Preset.get_perm(ctx.message.author.id) >= 4:
-			cur = dbSun.cursor()
+			cur = dbBase.cursor()
 			cur.execute(DBESSENT)
 
-		if not args:
-			return await ctx.send(embed=help_site('einreise'))
+			if not args:
+				return await ctx.send(embed=help_site('einreise'))
 
-		if args[0]:
-			cur.execute("SELECT identifier FROM users WHERE identifier=%s;", (args[0],))
+			if args[0]:
+				cur.execute("SELECT identifier FROM users WHERE identifier=%s;", (args[0],))
 
-			if not cur.fetchone():
-				return await ctx.send('Invalid id!')
+				if not cur.fetchone():
+					return await ctx.send('Invalid id!')
 
-			cur.execute("DELETE FROM users WHERE identifier=%s;", (args[0],))
-			dbSun.commit()
+				cur.execute("DELETE FROM users WHERE identifier=%s;", (args[0],))
+				dbBase.commit()
 
-			return await ctx.send('User got deleted from the Db')
+				return await ctx.send('User got deleted from the Db')
 
-		cur.close()
-		return await ctx.send('You are not Authorized to delete user Entries'), \
-			await self.logger.send(f'{ctx.message.author} tried to use the `einreise` command!')
+			cur.close()
+			return await ctx.send('You are not Authorized to delete user Entries'), \
+				await self.logger.send(f'{ctx.message.author} tried to use the `einreise` command!')
 
 		@commands.Command
 		async def whitelist(self, ctx, *args):
