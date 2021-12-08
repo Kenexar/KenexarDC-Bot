@@ -25,13 +25,13 @@ def logger(mode, message):
 
     with open(f'cogs/logs/log_{datetime.now().date()}', 'a+') as f:
         if mode == 'error':
-            template = f'{ANSI.get("RED", "X")}[ ERROR]{ANSI.get("RESET")}' + ' ' * 2
+            template = f'{ANSI.get("RED", "X")}[ ERROR ]{ANSI.get("RESET")}' + '=>'
 
         if mode == 'warning':
-            template = f'{ANSI.get("YELLOW", "~")}[  WARN]{ANSI.get("RESET")}' + ' ' * 2
+            template = f'{ANSI.get("YELLOW", "~")}[ WARN ]{ANSI.get("RESET")}' + '=> '
 
         if mode == 'info':
-            template = f'{ANSI.get("GREEN", "+")}[  INFO]{ANSI.get("RESET")}' + ' ' * 2
+            template = f'{ANSI.get("GREEN", "+")}[ INFO ]{ANSI.get("RESET")}' + '=> '
 
         if logger_conf.get('enable_logfile', False):
             f.write(f"{template}{message}\n")
