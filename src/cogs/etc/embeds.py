@@ -85,7 +85,14 @@ def help_site(mode='all') -> Embed:
 						inline=False)
 
 	if mode in ('all', 'einreise'):
-		embed.add_field(name=f'`{PREFIX}einreise`', value=f'Usage: `{PREFIX}einreise` user id [Cfx]\n\nDes: Delete user entry from database', inline=False)
+		embed.add_field(name=f'`{PREFIX}einreise`',
+						value=f'Usage: `{PREFIX}einreise` user id [Cfx]\n\nDes: Delete user entry from database',
+						inline=False)
+
+	if str(mode) == 'cadd':
+		embed.add_field(name=f'`{PREFIX}cadd`',
+						value=f'Usage: `{PREFIX}cadd <Words up to 50 Chars>\n\nDes: Adds something to the Status query',
+						inline=False)
 
 	return embed
 
