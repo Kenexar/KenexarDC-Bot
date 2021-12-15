@@ -1,1 +1,6 @@
-print('\u001b[38;5;52m█')
+s = ''
+ls = []
+for i in range(68):
+    ls.append('&nbsp;')
+
+print(''.join(ls))
