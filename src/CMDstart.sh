@@ -8,4 +8,4 @@ screen -U -m -d -S git-updater-kenexar python3.8 git-updater.py
 
 echo "Git-Updater started"
 
-#eval "screen -r kenexardcbot"
+eval "screen -r kenexardcbot"
