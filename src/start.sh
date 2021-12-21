@@ -3,8 +3,8 @@ screen -U -m -d -S kenexardcbot python3.8 __main__.py
 
 echo "Bot is started"
 
-screen -X -S git-updater-kenexar kill
-screen -U -m -d -S git-updater-kenexar python3.8 git-updater.py
+screen -X -S gitUpdaterKenexar kill
+screen -U -m -d -S gitUpdaterKenexar python3.8 git-updater.py
 
 echo "Git-Updater started"
 
