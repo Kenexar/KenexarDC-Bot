@@ -10,7 +10,7 @@ from pyfiglet import Figlet
 
 from cogs.etc.config import TOKEN, PREFIX, FLASK, PROJECT_NAME
 from cogs.etc.flask_server import start_server
-
+# ja
 intents = nextcord.Intents.all()
 bot = commands.Bot(command_prefix=PREFIX,
                    intents=intents,
