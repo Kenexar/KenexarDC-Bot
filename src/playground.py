@@ -1,6 +1,6 @@
-s = ''
-ls = []
-for i in range(68):
-    ls.append('&nbsp;')
+import requests
 
-print(''.join(ls))
+result = requests.request('get', 'https://reddit.com/r/memes/random.json?limit=1')
+
+print(result)
+

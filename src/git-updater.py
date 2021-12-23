@@ -8,6 +8,8 @@ def update_check(result=subprocess.run(['git', 'pull'], stdout=subprocess.PIPE))
     return result.stdout.decode('utf-8')
 
 
+rounds = 0
+
 if __name__ == '__main__':
     while True:
         if datetime.now().strftime('%H') in [12, 0]:
@@ -16,5 +18,7 @@ if __name__ == '__main__':
 
             time.sleep(120)
             os.system('./restart.sh')
+            rounds += 1
+            print(f'restart {rounds}')
 
         time.sleep(3600)
