@@ -12,7 +12,7 @@ rounds = 0
 
 if __name__ == '__main__':
     while True:
-        if datetime.now().strftime('%H') in [12, 0]:
+        if datetime.now().strftime('%H') in ['12', '0']:
             if 'already up to date.' in update_check().lower():
                 continue
 

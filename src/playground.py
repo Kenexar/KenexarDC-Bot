@@ -1,6 +1,5 @@
-import requests
+from datetime import datetime
 
-result = requests.request('get', 'https://reddit.com/r/memes/random.json?limit=1')
 
-print(result)
-
+print(type(datetime.now().strftime('%H')))
+print("yes" if datetime.now().strftime('%H') in ['20'] else "false")
