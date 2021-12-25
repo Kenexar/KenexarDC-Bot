@@ -10,5 +10,9 @@ class Fun(commands.Cog):
         await ctx.send(f'Maul {ctx.message.author.mention}')
 
 
+    @commands.Command
+    async def bug(self, ctx):
+        return await ctx.send(f'There are no Bugs! only features!')
+
 def setup(bot):
     bot.add_cog(Fun(bot))
