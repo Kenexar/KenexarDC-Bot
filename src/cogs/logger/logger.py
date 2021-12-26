@@ -11,6 +11,9 @@ logger_conf = {
 }
 
 
+def line_logge():
+    pass
+
 def logger(mode, message):
     """ Logger function
 

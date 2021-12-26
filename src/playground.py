@@ -1,5 +1,4 @@
-from datetime import datetime
+import logging
 
-
-print(type(datetime.now().strftime('%H')))
-print("yes" if datetime.now().strftime('%H') in ['20'] else "false")
+logging.warning('coggers')
+logging.info('cogges 2')
