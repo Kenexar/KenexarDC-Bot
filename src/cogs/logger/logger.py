@@ -9,10 +9,7 @@ logger_conf = {
     'enable_logging': True,
     'enable_logfile': True,
 }
-
-
-def line_logge():
-    pass
+#git checker
 
 def logger(mode, message):
     """ Logger function
