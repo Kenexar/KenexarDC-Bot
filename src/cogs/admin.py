@@ -86,7 +86,7 @@ class Admin(commands.Cog):
 
 		id = ctx.message.author.id
 
-		if not get_perm(id) == 5:
+		if get_perm(id) != 5:
 			return await ctx.send('You are not Authorized to manage the Whitelist'), \
 				await self.logger.send(f'{ctx.author} tried to use the `whitelist` command!')
 

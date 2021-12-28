@@ -39,7 +39,7 @@ class Cycle(commands.Cog):
         cur = dbBase.cursor(buffered=True)
         cur.execute('USE dcbots;')
 
-        if not get_perm(ctx.message.author.id) >= 5:
+        if get_perm(ctx.message.author.id) < 5:
             return await ctx.send('You are not authorized to add something to the Presence Query')
 
         to_check = ctx.message.content[5:].strip()
