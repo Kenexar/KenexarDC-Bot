@@ -73,7 +73,7 @@ class Admin(commands.Cog):
 
     @commands.Command
     async def whitelist(self, ctx, *args):
-        if not ctx.message.author.id in self.whitelist:
+        if ctx.message.author.id not in self.whitelist:
             return await ctx.send('You are not Authorized to manage the Whitelist'), \
                    await self.logger.send(f'{ctx.message.author} tried to use the `whitelist` command!')
 

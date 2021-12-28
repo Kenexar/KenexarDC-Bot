@@ -17,12 +17,9 @@ def setup(path, template):
     if os.path.isfile(path):
         raise FileExistsError(path)
 
-    else:
-        f = open(path, 'w')
+    with open(path, 'w') as f:
         for i in template:
             f.write(i)
-
-        f.close()
 
 
 def sql_setup():

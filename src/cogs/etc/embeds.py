@@ -12,8 +12,6 @@ def user_info(user=dict) -> Embed:
 
     """
 
-    global s
-
     username = user.get('username', '-')
     license_ = user.get('license', '-')
     group = user.get('group', '-')
