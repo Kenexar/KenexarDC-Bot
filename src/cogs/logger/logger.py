@@ -3,13 +3,14 @@ from datetime import datetime
 
 from cogs.logger.console_color_codes import ANSI
 
-
 logger_conf = {
     'log_mode': 'normal',
     'enable_logging': True,
     'enable_logfile': True,
 }
-#git checker
+
+
+# git checker
 
 def logger(mode, message):
     """ Logger function
@@ -37,4 +38,3 @@ def logger(mode, message):
             f.write(f"{template}{message}\n")
 
     return f"[ {datetime.now().strftime('%H:%M:%S')} ]" + template + message
-

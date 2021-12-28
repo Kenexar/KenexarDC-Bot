@@ -1,14 +1,12 @@
 import os
 import platform
-import time
 from multiprocessing import Process
 
 import nextcord
 from alive_progress import alive_bar
 from nextcord.ext import commands
-from pyfiglet import Figlet
 
-from cogs.etc.config import TOKEN, PREFIX, FLASK, PROJECT_NAME
+from cogs.etc.config import TOKEN, PREFIX, PROJECT_NAME
 
 intents = nextcord.Intents.all()
 bot = commands.Bot(command_prefix=PREFIX,
@@ -44,7 +42,6 @@ if __name__ == '__main__':
     elif platform == 'Linux':
         clear = lambda: os.system('clear')
         clear()
-
 
     load()
 

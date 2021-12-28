@@ -128,5 +128,3 @@ def add_points(user, cur, payload):
     cur.execute("UPDATE points SET Points=%s WHERE User=%s;", (current_exp, user))
     dbBase.commit()
     return
-
-

@@ -1,4 +1,3 @@
-import time
 import asyncio
 
 import nextcord
@@ -14,8 +13,8 @@ class Troll(commands.Cog):
         self.state = True
 
         self.option = {1: {'path': 'cogs/etc/sounds/Monkie.wav', 'time': 1},
-                        2: {'path': 'cogs/etc/sounds/two, four.mp3', 'time': 4},
-                        3: {'path': 'cogs/etc/sounds/zone.wav', 'time': 19}}
+                       2: {'path': 'cogs/etc/sounds/two, four.mp3', 'time': 4},
+                       3: {'path': 'cogs/etc/sounds/zone.wav', 'time': 19}}
 
     @commands.command(aliases=['Monkie', 'zone', 'oneTwo'])
     async def sound(self, ctx):
@@ -41,7 +40,6 @@ class Troll(commands.Cog):
             voice_client.play(audio_source, after=None)
             await asyncio.sleep(time_)
             await ctx.voice_client.disconnect()
-
 
     @commands.Command
     async def leave(self, ctx):

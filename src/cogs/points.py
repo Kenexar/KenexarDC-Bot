@@ -1,13 +1,12 @@
 from datetime import datetime
 
 import nextcord
-from src.cogs.etc.config import dbBase
-from src.cogs.etc.config import PROJECT_NAME
-from src.cogs.etc.presets import lvl_up, add_points
-
 from discord.ext import commands
 
 from src.cogs.etc.config import EMBED_ST
+from src.cogs.etc.config import PROJECT_NAME
+from src.cogs.etc.config import dbBase
+from src.cogs.etc.presets import lvl_up, add_points
 
 
 class Points(commands.Cog):

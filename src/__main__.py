@@ -6,8 +6,6 @@ from multiprocessing import Process
 import nextcord
 from alive_progress import alive_bar
 from nextcord.ext import commands
-from pyfiglet import Figlet
-
 
 from cogs.etc.config import TOKEN, PREFIX, FLASK, PROJECT_NAME
 from cogs.etc.flask_server import start_server
