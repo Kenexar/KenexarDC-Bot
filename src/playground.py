@@ -1,4 +1,3 @@
-import logging
+experience = 5
 
-logging.warning('coggers')
-logging.info('cogges 2')
+print(experience ** (1 / 4))
