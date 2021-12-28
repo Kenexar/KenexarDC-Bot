@@ -4,7 +4,7 @@ import time
 from datetime import datetime
 
 
-def update_check(result=subprocess.run(['git', 'pull'], stdout=subprocess.PIPE)):
+def update_check(result=subprocess.run(['git', 'pull'], stdout=subprocess.PIPE, check=True)):
     return result.stdout.decode('utf-8')
 
 
