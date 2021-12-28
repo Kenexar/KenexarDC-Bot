@@ -97,12 +97,12 @@ class Admin(commands.Cog):
 			payload = {'member': args[1].strip('<!@ >'), 'rank': args[2] if args[2].isdigit() else 0, 'name': ctx.author.name}
 
 			return await ctx.send(whitelist('add', payload))
-		elif args[0] == 'remove':
-			payload = {'user': args[1].strip('<!@ >')}
+		if args[0] == 'remove':
+		    payload = {'user': args[1].strip('<!@ >')}
 
-			return await ctx.send(whitelist('remove', payload))
-		elif args[0] == 'list':
-			return await ctx.send(embed=whitelist('list'))
+		    return await ctx.send(whitelist('remove', payload))
+		if args[0] == 'list':
+		    return await ctx.send(embed=whitelist('list'))
 		return await ctx.send('The argument is not valid!')
 
 	@commands.Command
