@@ -123,7 +123,7 @@ def add_points(user, cur, payload):
     if not isinstance(cur, mysql.connector.cursor.MySQLCursor):
         raise ProgrammingError('Cur Argument is not an MySQLCursor Object')
 
-    current_exp = payload[1] + 5  # EXP Multiplier
+    current_exp = payload[1] + 2  # EXP Multiplier
 
     cur.execute("UPDATE points SET Points=%s WHERE User=%s;", (current_exp, user))
     dbBase.commit()
