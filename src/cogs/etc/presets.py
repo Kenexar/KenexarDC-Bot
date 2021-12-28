@@ -1,10 +1,10 @@
 import mysql.connector.cursor
 import nextcord
 
-from cogs.etc.config import EMBED_ST
-from cogs.etc.config import PROJECT_NAME
-from cogs.etc.config import WHITELIST_RANKS
-from cogs.etc.config import dbBase
+from src.cogs.etc.config import EMBED_ST
+from src.cogs.etc.config import PROJECT_NAME
+from src.cogs.etc.config import WHITELIST_RANKS
+from src.cogs.etc.config import dbBase
 from mysql.connector.errors import ProgrammingError
 from nextcord import Embed
 
