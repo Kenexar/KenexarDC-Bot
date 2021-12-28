@@ -40,12 +40,12 @@ def load():
 if __name__ == '__main__':
     platform = platform.system()
 
-    if platform == 'Windows':
-        command = 'cls'
-    elif platform == 'Linux':
+    command = 'cls'
+
+    if platform == 'Linux':
         command = 'clear'
 
-    os.system(command if not command else '')
+    os.system(command)
 
     print("""
 ┌────────────────────────────────────────────────────────────────────┐
