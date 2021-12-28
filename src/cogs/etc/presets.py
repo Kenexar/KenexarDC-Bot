@@ -49,7 +49,7 @@ def whitelist(mode=str, payload=dict) -> Embed or str:
 
     if mode == 'list':
         cur_db.execute(
-            f"SELECT user_name, rank FROM whitelist WHERE name='{PROJECT_NAME}'")
+            f"SELECT user_name, rank FROM whitelist WHERE name=%s", (PROJECT_NAME,))
         fetcher = cur_db.fetchall()
         cur_db.close()
         embed = nextcord.Embed(title='Whitelist', color=EMBED_ST)
