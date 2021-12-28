@@ -2,11 +2,11 @@ import platform
 from itertools import cycle
 
 import nextcord
-from cogs.etc.config import dbBase, PROJECT_NAME
-from cogs.etc.config import fetch_whitelist
-from cogs.etc.config import status_query
-from cogs.etc.embeds import help_site
-from cogs.etc.presets import get_perm
+from src.cogs.etc.config import dbBase, PROJECT_NAME
+from src.cogs.etc.config import fetch_whitelist
+from src.cogs.etc.config import status_query
+from src.cogs.etc.embeds import help_site
+from src.cogs.etc.presets import get_perm
 from nextcord.ext import commands, tasks
 
 

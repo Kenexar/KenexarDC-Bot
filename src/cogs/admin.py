@@ -1,15 +1,15 @@
 import json
 from datetime import datetime
 
-from cogs.etc.config import DBESSENT
-from cogs.etc.config import LOG_CHANNEL, LOG_SERVER
-from cogs.etc.config import cur_db, DBBASE, dbBase
-from cogs.etc.config import fetch_whitelist
-from cogs.etc.embeds import help_site
-from cogs.etc.embeds import user_info
-from cogs.etc.presets import whitelist, parser, get_perm
+from src.cogs.etc.config import DBESSENT
+from src.cogs.etc.config import LOG_CHANNEL, LOG_SERVER
+from src.cogs.etc.config import cur_db, DBBASE, dbBase
+from src.cogs.etc.config import fetch_whitelist
+from src.cogs.etc.embeds import help_site
+from src.cogs.etc.embeds import user_info
+from src.cogs.etc.presets import whitelist, parser, get_perm
 
-from cogs.logger.logger import logger
+from src.cogs.logger.logger import logger
 from nextcord.ext import commands
 from nextcord.ext.commands import CommandNotFound
 
@@ -70,11 +70,9 @@ class Admin(commands.Cog):
 
 	@commands.Cog.listener()
 	async def on_command_error(self, ctx, error):  # Function doing intense computing!
-		if isinstance(error, CommandNotFound): # error handler
-			return await ctx.send("Command/API not found.")
+		if isinstance(error, CommandNotFound):  # error handler
+			return await ctx.send("Command not found.")
 		raise error
-
-
 
 	@commands.Command
 	async def whitelist(self, ctx, *args):
@@ -100,7 +98,7 @@ class Admin(commands.Cog):
 
 			return await ctx.send(whitelist('add', payload))
 		elif args[0] == 'remove':
-			payload = { 'user': args[1].strip('<!@ >') }
+			payload = {'user': args[1].strip('<!@ >')}
 
 			return await ctx.send(whitelist('remove', payload))
 		elif args[0] == 'list':

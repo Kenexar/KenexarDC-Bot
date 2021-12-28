@@ -1,11 +1,11 @@
 import json
 
-from cogs.etc.config import DBESSENT
-from cogs.etc.config import DBBASE, dbBase
-from cogs.etc.config import fetch_whitelist
-from cogs.etc.embeds import help_site
-from cogs.etc.embeds import user_info
-from cogs.etc.presets import parser, get_perm
+from src.cogs.etc.config import DBESSENT
+from src.cogs.etc.config import DBBASE, dbBase
+from src.cogs.etc.config import fetch_whitelist
+from src.cogs.etc.embeds import help_site
+from src.cogs.etc.embeds import user_info
+from src.cogs.etc.presets import parser, get_perm
 
 from nextcord.ext import commands
 
