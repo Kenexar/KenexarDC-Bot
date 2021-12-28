@@ -117,7 +117,6 @@ def lvl_up(user, cur, fetcher=tuple):
 
         cur.close()
         return True
-    return False
 
 
 def add_points(user, cur, payload):
