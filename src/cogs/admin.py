@@ -7,7 +7,7 @@ from cogs.etc.config import cur_db, DBBASE, dbBase
 from cogs.etc.config import fetch_whitelist
 from cogs.etc.embeds import help_site
 from cogs.etc.embeds import user_info
-from cogs.etc.presets import Preset
+from cogs.etc.presets import whitelist, parser, get_perm
 
 from cogs.logger.logger import logger
 from nextcord.ext import commands
@@ -80,14 +80,14 @@ class Admin(commands.Cog):
 			Get for specific users the player data from the db
 
 		"""
-		if not Preset.get_perm(ctx.message.author.id) >= 2 and ctx.message.author.id in self.whitelist:  # permission checker if user is mod or higher and in whitelist
+		if not get_perm(ctx.message.author.id) >= 2 and ctx.message.author.id in self.whitelist:  # permission checker if user is mod or higher and in whitelist
 			return await ctx.send('You are not Authorized to use the Get function!'), \
 				await self.logger.send(f'{ctx.message.author} tried to use the `get` command!')
 
 		cur = dbBase.cursor(buffered=True)
 		cur.execute(DBESSENT)
 
-		parsed = Preset.parser(rounds=2, toparse=args, option=self.GET_OPTIONS)
+		parsed = parser(rounds=2, toparse=args, option=self.GET_OPTIONS)
 		if parsed[0] in self.GET_OPTIONS[0:2]:  # if argument user or u
 			cur.execute(
 				"SELECT identifier, `accounts`, `group`, inventory, job, job_grade, loadout, firstname, lastname, phone_number FROM users WHERE identifier=%s",
@@ -166,7 +166,7 @@ class Admin(commands.Cog):
 			return await ctx.send('You are not Authorized to delete user Entries'), \
 				await self.logger.send(f'{ctx.message.author} tried to use the `einreise` command!')
 
-		if Preset.get_perm(ctx.message.author.id) >= 4:
+		if get_perm(ctx.message.author.id) >= 4:
 			cur = dbBase.cursor()
 			cur.execute(DBESSENT)
 
@@ -200,24 +200,23 @@ class Admin(commands.Cog):
 
 		id = ctx.message.author.id
 
-		if not Preset.get_perm(id) == 5:
+		if not get_perm(id) == 5:
 			return await ctx.send('You are not Authorized to manage the Whitelist'), \
-				await self.logger.send(f'{ctx.message.author} tried to use the `whitelist` command!')
+				await self.logger.send(f'{ctx.author} tried to use the `whitelist` command!')
 
 		if not args:
 			return await ctx.send(embed=help_site('whitelist'))
 
-
 		if args[0] == 'add':
-			payload = {'member': args[1].strip('<!@ >'), 'rank': args[2] if args[2].isdigit() else 0, 'name': ctx.message.author.name}
+			payload = {'member': args[1].strip('<!@ >'), 'rank': args[2] if args[2].isdigit() else 0, 'name': ctx.author.name}
 
-			return await ctx.send(Preset.whitelist('add', payload))
+			return await ctx.send(whitelist('add', payload))
 		elif args[0] == 'remove':
 			payload = { 'user': args[1].strip('<!@ >') }
 
-			return await ctx.send(Preset.whitelist('remove', payload))
+			return await ctx.send(whitelist('remove', payload))
 		elif args[0] == 'list':
-			return await ctx.send(embed=Preset.whitelist('list'))
+			return await ctx.send(embed=whitelist('list'))
 		return await ctx.send('The argument is not valid!')
 
 	@commands.Command
