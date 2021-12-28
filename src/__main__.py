@@ -41,11 +41,11 @@ if __name__ == '__main__':
     platform = platform.system()
 
     if platform == 'Windows':
-        clear = lambda: os.system('cls')
-        clear()
+        command = 'cls'
     elif platform == 'Linux':
-        clear = lambda: os.system('clear')
-        clear()
+        command = 'clear'
+
+    os.system(command if not command else '')
 
     print("""
 ┌────────────────────────────────────────────────────────────────────┐
