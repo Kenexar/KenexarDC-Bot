@@ -63,7 +63,7 @@ def whitelist(mode=str, payload=dict) -> Embed or str:
             return 'Cannot find any entries'
         return embed
 
-    elif mode == 'add':
+    if mode == 'add':
         member = payload.get('member')
         rank = payload.get('rank')
         username = payload.get('name')
@@ -75,7 +75,7 @@ def whitelist(mode=str, payload=dict) -> Embed or str:
         cur_db.close()
         return f'Added <@{member}> to the [BOT]whitelist'
 
-    elif mode == 'remove':
+    if mode == 'remove':
         member = payload.get('user')
         cur_db.execute("DELETE FROM whitelist WHERE uid=%s and name=%s;",
                        (member, PROJECT_NAME))

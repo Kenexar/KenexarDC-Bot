@@ -52,9 +52,7 @@ class Cycle(commands.Cog):
 
             self.status_list.append(to_check)
             return await ctx.send(f'Added {to_check} to the Presence Query')
-
-        else:
-            return await ctx.send(embed=help_site('cadd'))
+        return await ctx.send(embed=help_site('cadd'))
 
 
 def setup(bot):
