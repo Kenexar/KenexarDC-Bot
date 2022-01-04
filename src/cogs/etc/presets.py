@@ -103,16 +103,17 @@ def get_perm(user) -> int:
     return r  # fetch from the result the tuples first index
 
 
-def lvl_up(user, cur, fetcher=tuple):
+def lvl_up(user, cur, fetcher):
     """ Yeah 8====D """
     if not isinstance(cur, mysql.connector.cursor.MySQLCursor):
         raise ProgrammingError('Cur Argument is not an MySQLCursor Object')
 
     current_lvl = fetcher[0]
     exp = fetcher[1]
+    coins = int(fetcher[3]) + 200
 
     if current_lvl < int(exp ** (1 / 4)):
-        cur.execute("UPDATE points SET Level=%s WHERE User=%s;", (int(exp ** (1 / 4)), user))
+        cur.execute("UPDATE points SET Level=%s, Coins=%s WHERE User=%s;", (int(exp ** (1 / 4)), coins, user))
         dbBase.commit()
 
         cur.close()
@@ -125,6 +126,6 @@ def add_points(user, cur, payload):
 
     current_exp = payload[1] + (2 * payload[2])  # EXP Addition
 
-    cur.execute("UPDATE points SET Points=%s WHERE User=%s;", (current_exp, user))
+    cur.execute("UPDATE points SET Experience=%s WHERE User=%s;", (current_exp, user))
     dbBase.commit()
     return

@@ -20,12 +20,12 @@ class Points(commands.Cog):
 
         cur = dbBase.cursor()
 
-        cur.execute("SELECT Level, Points, Multiplier FROM points WHERE User=%s;", (message.author.id,))
+        cur.execute("SELECT Level, Experience, Multiplier, Coins FROM points WHERE User=%s;", (message.author.id,))
         fetcher = cur.fetchone()
 
         if not fetcher:
-            cur.execute("INSERT INTO points(User, Points, Level, Multiplier, Name) VALUES (%s, %s, %s, %s, %s);",
-                        (message.author.id, 0, 1, 1, PROJECT_NAME))
+            cur.execute("INSERT INTO points(User, Coins, Experience, Level, Multiplier, Name) VALUES (%s, %s, %s, %s, %s, %s);",
+                        (message.author.id, 100, 0, 1, 1, PROJECT_NAME))
             dbBase.commit()
             cur.close()
             return
@@ -55,21 +55,26 @@ class Points(commands.Cog):
         # Show the Player information for the Game lulw, it returns an embed i think
         cur = dbBase.cursor()
 
-        cur.execute("SELECT Level, Points, Multiplier FROM points WHERE User=%s;",
-                    (user.strip("<@!>") if user else ctx.message.author.id,))
+        cur.execute("SELECT Level, Experience, Multiplier, Coins FROM points WHERE User=%s and Name=%s;",
+                    (user.strip("<@!>") if user else ctx.message.author.id, PROJECT_NAME))
 
         fetcher = cur.fetchone()
+
+        if not fetcher:
+            return await ctx.send(f'{ctx.message.author.mention if not user else user} has not send an Message to the Server!')
 
         level = fetcher[0]
         exp = fetcher[1]
         multi = fetcher[2]
+        coins = fetcher[3]
 
         username = await self.bot.fetch_user(user.strip("<@!>")) if user else ctx.message.author.name
 
         embed = nextcord.Embed(title=f'Level info for {username}',
                                description=f'Current Level: {level}\n'
-                                           f'Current Points: {exp}\n'
-                                           f'Current Multiplier: {multi}x',
+                                           f'Current Experience: {exp}\n'
+                                           f'Current Multiplier: {multi}x\n'
+                                           f'Current Coins: {coins}',
                                color=EMBED_ST,
                                timestamp=datetime.now())
 
