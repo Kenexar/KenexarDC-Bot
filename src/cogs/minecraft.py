@@ -34,8 +34,8 @@ class Minecraft(commands.Cog):
 
         return await ctx.send(embed=embed)
 
-    @staticmethod
-    def getServerStatus(ip):
+
+    def getServerStatus(self, ip):
         server = MinecraftServer.lookup(ip)
         try:
             status = server.status()
