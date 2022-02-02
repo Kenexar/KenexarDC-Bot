@@ -34,24 +34,26 @@ def parser(rounds=int, toparse=list, option=list) -> list or str:
         return return_list
 
 
-def whitelist(mode=str, payload=dict) -> Embed or str:
+def whitelist(mode: str, payload: any, cur: mysql.connector.cursor) -> Embed or str:
     """Whitelist function whitelist a member
 
-    :param mode:str-add: Add a Member to the Whitelist for Administration
-    :param mode:str-list: List all members on the whitelist
-    :param mode:str-remove: Remove a Member from the Whitelist
-    :param member: Serve the member
+        :param mode: str-add: Add a Member to the Whitelist for Administration
+                         str-list: List all members on the whitelist
+                         str-remove: Remove a Member from the Whitelist
+        :param payload: give an Member payload to do some stuff
+        :param cur: Give a cursor to prevent mysql errors
+        :param member: Serve the member
 
-    :returns: String or nextord.Embed object
+        :returns: String or nextord.Embed object
     """
 
-    cur_db = dbBase.cursor()
+    cur = dbBase.cursor()
 
     if mode == 'list':
-        cur_db.execute(
+        cur.execute(
             f"SELECT user_name, rank FROM whitelist WHERE name=%s", (PROJECT_NAME,))
-        fetcher = cur_db.fetchall()
-        cur_db.close()
+        fetcher = cur.fetchall()
+        cur.close()
         embed = nextcord.Embed(title='Whitelist', color=EMBED_ST)
 
         if fetcher:
@@ -68,20 +70,20 @@ def whitelist(mode=str, payload=dict) -> Embed or str:
         rank = payload.get('rank')
         username = payload.get('name')
 
-        cur_db.execute(
+        cur.execute(
             "INSERT INTO whitelist(name, uid, rank, user_name) VALUES (%s, %s, %s, %s)",
             (PROJECT_NAME, member, rank, username))
         dbBase.commit()
-        cur_db.close()
+        cur.close()
         return f'Added <@{member}> to the [BOT]whitelist'
 
     if mode == 'remove':
         member = payload.get('user')
-        cur_db.execute("DELETE FROM whitelist WHERE uid=%s and name=%s;",
+        cur.execute("DELETE FROM whitelist WHERE uid=%s and name=%s;",
                        (member, PROJECT_NAME))
 
         dbBase.commit()
-        cur_db.close()
+        cur.close()
         return f'Removed <@{member}> from [BOT]whitelist'
 
     return f'`{mode}` is not available'

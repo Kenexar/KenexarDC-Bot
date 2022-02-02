@@ -8,7 +8,7 @@ class Minecraft(commands.Cog):
         self.bot = bot
 
     @commands.Command
-    async def status(self, ctx):
+    async def MCstatus(self, ctx):
 
         message = ctx.message
         emoji = "<a:loading:859832585483845714>"
