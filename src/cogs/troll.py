@@ -39,7 +39,10 @@ class Troll(commands.Cog):
         if not voice_client.is_playing():
             voice_client.play(audio_source, after=None)
             await asyncio.sleep(time_)
-            await ctx.voice_client.disconnect()
+            try:
+                await ctx.voice_client.disconnect()
+            except Exception:
+                pass
 
     @commands.Command
     async def leave(self, ctx):

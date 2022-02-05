@@ -3,12 +3,12 @@ from datetime import datetime
 from nextcord.ext import commands
 from nextcord.ext.commands import CommandNotFound
 
-from src.cogs.etc.config import DBBASE, dbBase
-from src.cogs.etc.config import LOG_CHANNEL, LOG_SERVER
-from src.cogs.etc.config import fetch_whitelist
-from src.cogs.etc.embeds import help_site
-from src.cogs.etc.presets import whitelist, get_perm
-from src.cogs.logger.logger import logger
+from cogs.etc.config import DBBASE, dbBase
+from cogs.etc.config import LOG_CHANNEL, LOG_SERVER
+from cogs.etc.config import fetch_whitelist
+from cogs.etc.embeds import help_site
+from cogs.etc.presets import whitelist, get_perm
+from cogs.logger.logger import logger
 
 
 # todo:
@@ -105,6 +105,16 @@ class Admin(commands.Cog):
     @commands.Command
     async def help(self, ctx):
         await ctx.send(embed=help_site())
+
+
+    @commands.Command
+    async def credits(self, ctx):
+        return await ctx.send(""" **Credits** 
+            Creater: exersalza#1337
+            **Links:**
+            https://github.com/exersalza
+            https://twitch.tv/exersalza
+        """)
 
 
 def setup(bot):

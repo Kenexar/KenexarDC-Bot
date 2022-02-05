@@ -18,7 +18,7 @@ class Points(commands.Cog):
         if message.author.bot:
             return
 
-        cur = dbBase.cursor()
+        cur = dbBase.cursor(buffered=True)
 
         cur.execute("SELECT Level, Experience, Multiplier, Coins FROM points WHERE User=%s;", (message.author.id,))
         fetcher = cur.fetchone()
@@ -32,13 +32,15 @@ class Points(commands.Cog):
 
         add_points(message.author.id, cur, fetcher)
 
+
         if lvl_up(message.author.id, cur, fetcher):
             await message.channel.send(f'{message.author.mention} Just leveld up to {int(fetcher[0]) + 1}, yippie')
+        cur.close()
 
     @commands.command()
     async def top(self, ctx):
         # Top placed on the Server
-        cursor = dbBase.cursor()
+        cursor = dbBase.cursor(buffered=True)
 
         cursor.execute("SELECT User, Points FROM points WHERE Name=%s", (PROJECT_NAME,))
 

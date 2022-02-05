@@ -122,12 +122,18 @@ def lvl_up(user, cur, fetcher):
         return True
 
 
-def add_points(user, cur, payload):
+def add_points(user, cur, payload) -> None:
+    """
+
+    :param user: use the userid for the points thing
+    :param cur: Take the available cursor from the command
+    :param payload: Yeah, it's the user payload, something like an Union but better
+    :return: None
+    """
     if not isinstance(cur, mysql.connector.cursor.MySQLCursor):
         raise ProgrammingError('Cur Argument is not an MySQLCursor Object')
 
     current_exp = payload[1] + int((2 * float(payload[2])))  # EXP Addition
-
-    cur.execute("UPDATE points SET Experience=%s WHERE User=%s;", (current_exp, user))
+    cur.execute("UPDATE points SET Experience=%s WHERE User=%s;" % (current_exp, user))
     dbBase.commit()
     return
