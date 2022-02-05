@@ -110,10 +110,10 @@ class Admin(commands.Cog):
     @commands.Command
     async def credits(self, ctx):
         return await ctx.send(""" **Credits** 
-            Creater: exersalza#1337
-            **Links:**
-            https://github.com/exersalza
-            https://twitch.tv/exersalza
+Creater: exersalza#1337
+**Links:**
+https://github.com/exersalza
+https://twitch.tv/exersalza
         """)
 
 

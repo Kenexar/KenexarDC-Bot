@@ -91,4 +91,6 @@ def help_site(mode='all') -> Embed:
                         value=f'Usage: `{PREFIX}cadd <Words up to 50 Chars>\n\nDes: Adds something to the Status query',
                         inline=False)
 
+
+
     return embed
