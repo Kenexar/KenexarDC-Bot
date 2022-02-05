@@ -13,8 +13,6 @@ runs = 0
 
 if __name__ == '__main__':
     while True:
-        runs += 1
-        print('run through', runs)
         if datetime.now().strftime('%H') in ['12', '0']:
             if 'already up to date.' in update_check().lower():
                 continue
