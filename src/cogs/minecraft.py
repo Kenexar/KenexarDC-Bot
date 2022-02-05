@@ -1,4 +1,4 @@
-import discord
+import nextcord
 from mcstatus import MinecraftServer
 from nextcord.ext import commands
 
@@ -8,7 +8,7 @@ class Minecraft(commands.Cog):
         self.bot = bot
 
     @commands.Command
-    async def status(self, ctx):
+    async def MCstatus(self, ctx):
 
         message = ctx.message
         emoji = "<a:loading:859832585483845714>"
@@ -16,7 +16,7 @@ class Minecraft(commands.Cog):
 
         await message.add_reaction(emoji)
 
-        embed = discord.Embed(title="Minecraft Server status")
+        embed = nextcord.Embed(title="Minecraft Server status")
 
         embed.add_field(name="IP:  ```Kenexar.eu```", value="--------------------------------------", inline=False)
 
@@ -25,17 +25,17 @@ class Minecraft(commands.Cog):
         embed.add_field(name="Challenge-01:", value=self.getServerStatus("161.97.113.149:10020"), inline=True)
         embed.add_field(name="Survival-01:", value=self.getServerStatus("161.97.113.149:10030"), inline=False)
 
-        embed.color = discord.Color.red()
+        embed.colour = nextcord.Color.red()
 
         if self.getServerStatus("161.97.113.149:25577") == "Online":
-            embed.color = discord.Color.brand_green()
+            embed.colour = nextcord.Color.brand_green()
 
         await message.remove_reaction(emoji, user)
 
         return await ctx.send(embed=embed)
 
-    @staticmethod
-    def getServerStatus(ip):
+
+    def getServerStatus(self, ip):
         server = MinecraftServer.lookup(ip)
         try:
             status = server.status()

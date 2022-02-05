@@ -2,12 +2,13 @@ import platform
 from itertools import cycle
 
 import nextcord
-from cogs.etc.config import dbBase, PROJECT_NAME
-from cogs.etc.config import fetch_whitelist
-from cogs.etc.config import status_query
-from cogs.etc.presets import Preset
-from cogs.etc.embeds import help_site
 from nextcord.ext import commands, tasks
+
+from src.cogs.etc.config import dbBase, PROJECT_NAME
+from src.cogs.etc.config import fetch_whitelist
+from src.cogs.etc.config import status_query
+from src.cogs.etc.embeds import help_site
+from src.cogs.etc.presets import get_perm
 
 
 # todo:
@@ -39,7 +40,7 @@ class Cycle(commands.Cog):
         cur = dbBase.cursor(buffered=True)
         cur.execute('USE dcbots;')
 
-        if not Preset.get_perm(ctx.message.author.id) >= 5:
+        if get_perm(ctx.message.author.id) < 5:
             return await ctx.send('You are not authorized to add something to the Presence Query')
 
         to_check = ctx.message.content[5:].strip()
@@ -52,9 +53,7 @@ class Cycle(commands.Cog):
 
             self.status_list.append(to_check)
             return await ctx.send(f'Added {to_check} to the Presence Query')
-
-        else:
-            return await ctx.send(embed=help_site('cadd'))
+        return await ctx.send(embed=help_site('cadd'))
 
 
 def setup(bot):
