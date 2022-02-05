@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from src.cogs.etc.config import EMBED_ST, PREFIX
+from cogs.etc.config import EMBED_ST, PREFIX
 from nextcord import Embed
 
 
