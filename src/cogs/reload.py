@@ -1,9 +1,92 @@
+import asyncio
+import os
+
+import nextcord
 from nextcord.ext import commands
+from nextcord.ext.commands import has_permissions
+
+from cogs.etc.config import EMBED_ST, PREFIX
+from cogs.etc.config import current_timestamp
+from cogs.etc.config import current_cog_modules
+from cogs.etc.config import AUTHORID
+
+from cogs.etc.embeds import help_site
 
 
 class Reload(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
+        self.unloaded_modules = ['cogs.casino']
+
+    @commands.Command
+    async def stop(self, ctx, cog_module=None):
+        if not ctx.author.id == AUTHORID:
+            return
+
+        if not cog_module:
+            return await ctx.send(embed=help_site('admin-unload'))
+
+        if cog_module in current_cog_modules(self.unloaded_modules):
+            return await ctx.send('The giving module is already unloaded!')
+
+        self.unloaded_modules.append(cog_module)
+
+        self.bot.unload_extension(cog_module)
+        await ctx.send(f'{cog_module} successfully unloaded')
+
+    @commands.Command
+    async def start(self, ctx, cog_module=None):
+        if not ctx.author.id == AUTHORID:
+            return
+
+        if not cog_module:
+            return await ctx.send(embed=help_site('admin-load'))
+
+        if not cog_module in current_cog_modules(self.unloaded_modules):
+            return await ctx.send('The giving module is already loaded!')
+
+        self.unloaded_modules.remove(cog_module)
+
+        self.bot.load_extension(cog_module)
+        await ctx.send(f'{cog_module} successfully loaded')
+
+    @commands.Command
+    async def reload(self, ctx, cog_module=None):
+        if not ctx.author.id == AUTHORID:
+            return
+
+        if not cog_module:
+            return await ctx.send(embed=help_site('admin-reload'))
+
+        if cog_module in self.unloaded_modules:
+            return await ctx.send('The giving module is not Loaded!')
+
+        self.bot.unload_extension(cog_module)
+        await asyncio.sleep(1)
+
+        self.bot.load_extension(cog_module)
+        await ctx.send(f'{cog_module} Reloaded!')
+
+    @commands.Command
+    async def listmodules(self, ctx):
+        if not ctx.author.id == AUTHORID:
+            return
+
+        embed = nextcord.Embed(title='All Cogs that are loaded are listed here!',
+                               color=EMBED_ST,
+                               timestamp=current_timestamp())
+
+        unloaded = '\n'.join(self.unloaded_modules) if self.unloaded_modules else 'All modules running down da street, i here AH AH AH AH '
+
+        embed.add_field(name='Loaded Modules', value='\n'.join(await current_cog_modules(self.unloaded_modules)), inline=False)
+        embed.add_field(name='Unloaded Modules', value=unloaded, inline=False)
+
+        embed.add_field(name=f'To reload cog modules, write `{PREFIX}reload (cog_module)`',
+                        value=f'Example: `{PREFIX}reload cogs.casino`',
+                        inline=False)
+
+        await ctx.send(embed=embed)
 
 
 def setup(bot):
