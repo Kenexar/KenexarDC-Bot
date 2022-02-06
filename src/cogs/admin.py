@@ -71,8 +71,8 @@ class Admin(commands.Cog):
             return await ctx.send("Command not found.")
         raise error
 
-    @commands.Command
-    async def whitelist(self, ctx, *args):
+    @commands.command(name='whitelist')
+    async def _whitelist(self, ctx, *args):
         if ctx.message.author.id not in self.whitelist:
             return await ctx.send('You are not Authorized to manage the Whitelist'), \
                    await self.logger.send(f'{ctx.message.author} tried to use the `whitelist` command!')
@@ -82,7 +82,7 @@ class Admin(commands.Cog):
 
         id = ctx.message.author.id
 
-        if get_perm(id) != 5:
+        if await get_perm(id) != 5:
             return await ctx.send('You are not Authorized to manage the Whitelist'), \
                    await self.logger.send(f'{ctx.author} tried to use the `whitelist` command!')
 
@@ -93,13 +93,13 @@ class Admin(commands.Cog):
             payload = {'member': args[1].strip('<!@ >'), 'rank': args[2] if args[2].isdigit() else 0,
                        'name': ctx.author.name}
 
-            return await ctx.send(whitelist('add', payload, cur_base))
+            return await ctx.send(await whitelist('add', payload, cur_base))
         if args[0] == 'remove':
             payload = {'user': args[1].strip('<!@ >')}
 
-            return await ctx.send(whitelist('remove', payload, cur_base))
+            return await ctx.send(await whitelist('remove', payload, cur_base))
         if args[0] == 'list':
-            return await ctx.send(embed=whitelist('list', 'payload', cur_base))
+            return await ctx.send(embed=await whitelist('list', 'payload', cur_base))
         return await ctx.send('The argument is not valid!')
 
     @commands.Command

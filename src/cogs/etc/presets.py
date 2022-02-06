@@ -9,14 +9,14 @@ from mysql.connector.errors import ProgrammingError
 from nextcord import Embed
 
 
-def parser(rounds=int, toparse=list, option=list) -> list or str:
+async def parser(rounds: int, toparse: list, option: list) -> list or str:
     """ This is a small self written Argparser
 
     This Function parse given Arguments for administration
 
-    :param rounds:int: Insert the max number of words for the return
-    :param toparse:list: Gives the Arg to Parse
-    :param option:list: Insert option for parsing
+    :param rounds: Insert the max number of words for the return
+    :param toparse: Gives the Arg to Parse
+    :param option: Insert option for parsing
 
     :return: list
     """
@@ -34,7 +34,7 @@ def parser(rounds=int, toparse=list, option=list) -> list or str:
         return return_list
 
 
-def whitelist(mode: str, payload: any, cur: mysql.connector.cursor) -> Embed or str:
+async def whitelist(mode: str, payload: any, cur: mysql.connector.cursor) -> Embed or str:
     """Whitelist function whitelist a member
 
         :param mode: str-add: Add a Member to the Whitelist for Administration
@@ -89,7 +89,7 @@ def whitelist(mode: str, payload: any, cur: mysql.connector.cursor) -> Embed or 
     return f'`{mode}` is not available'
 
 
-def get_perm(user) -> int:
+async def get_perm(user) -> int:
     """ ger_perm or fetch_perm (old) is for authorization purposes
 
     :param user: takes an nextcord.Member.id and provide it to the database where you become an numberic value back.
@@ -105,7 +105,7 @@ def get_perm(user) -> int:
     return r  # fetch from the result the tuples first index
 
 
-def lvl_up(user, cur, fetcher):
+async def lvl_up(user, cur, fetcher):
     """ Yeah 8====D """
     if not isinstance(cur, mysql.connector.cursor.MySQLCursor):
         raise ProgrammingError('Cur Argument is not an MySQLCursor Object')
@@ -122,7 +122,7 @@ def lvl_up(user, cur, fetcher):
         return True
 
 
-def add_points(user, cur, payload) -> None:
+async def add_points(user, cur, payload) -> None:
     """
 
     :param user: use the userid for the points thing
@@ -137,3 +137,7 @@ def add_points(user, cur, payload) -> None:
     cur.execute("UPDATE points SET Experience=%s WHERE User=%s;" % (current_exp, user))
     dbBase.commit()
     return
+
+
+async def fillup():
+    pass

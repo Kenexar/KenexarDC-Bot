@@ -1,10 +1,14 @@
 import nextcord
 from nextcord.ext import commands
 
+from cogs.etc.presets import fillup
+
 
 class JoinToCreate(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
+        self.jointocreate_channel = fillup
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):

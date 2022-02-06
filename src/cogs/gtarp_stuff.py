@@ -43,7 +43,7 @@ class GtaRP(commands.Cog):
             Get for specific users the player data from the db
 
         """
-        if get_perm(
+        if await get_perm(
                 ctx.message.author.id) < 2 and ctx.message.author.id in self.whitelist:  # permission checker if user is mod or higher and in whitelist
             return await ctx.send('You are not Authorized to use the Get function!'), \
                    await self.logger.send(f'{ctx.message.author} tried to use the `get` command!')
@@ -51,7 +51,7 @@ class GtaRP(commands.Cog):
         cur = dbBase.cursor(buffered=True)
         cur.execute(DBESSENT)
 
-        parsed = parser(rounds=2, toparse=args, option=self.GET_OPTIONS)
+        parsed = await parser(rounds=2, toparse=args, option=self.GET_OPTIONS)
         if parsed[0] in self.GET_OPTIONS[0:2]:  # if argument user or u
             cur.execute(
                 "SELECT identifier, `accounts`, `group`, inventory, job, job_grade, loadout, firstname, lastname, phone_number FROM users WHERE identifier=%s",

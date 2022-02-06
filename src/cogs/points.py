@@ -30,10 +30,9 @@ class Points(commands.Cog):
             cur.close()
             return
 
-        add_points(message.author.id, cur, fetcher)
+        await add_points(message.author.id, cur, fetcher)
 
-
-        if lvl_up(message.author.id, cur, fetcher):
+        if await lvl_up(message.author.id, cur, fetcher):
             await message.channel.send(f'{message.author.mention} Just leveld up to {int(fetcher[0]) + 1}, yippie')
         cur.close()
 

@@ -91,6 +91,18 @@ def help_site(mode='all') -> Embed:
                         value=f'Usage: `{PREFIX}cadd <Words up to 50 Chars>\n\nDes: Adds something to the Status query',
                         inline=False)
 
+    if mode in ('admin-reload', 'admin'):
+        embed.add_field(name=f'{PREFIX}listmodules', value='Des: List all current modules in Cogs', inline=False)
+        embed.add_field(name=f'{PREFIX}reload (module name)', value=f'Des: Reload giving Cog module\nExample: {PREFIX}reload cogs.casino', inline=False)
 
+    if mode in ('admin-load', 'admin'):
+        embed.add_field(name=f'{PREFIX}listmodules', value='Des: List all Loaded/Unloaded modules in Cogs', inline=False)
+        embed.add_field(name=f'{PREFIX}start (module name)', value=f'Des: Loads giving Cog module\nExample: {PREFIX}load cogs.casino', inline=False)
+
+    if mode in ('admin-unload', 'admin'):
+        embed.add_field(name=f'{PREFIX}listmodules', value='Des: List all Loaded/Unloaded modules in Cogs',
+                        inline=False)
+        embed.add_field(name=f'{PREFIX}stop (module name)',
+                        value=f'Des: Unloads giving Cog module\nExample: {PREFIX}unload cogs.casino', inline=False)
 
     return embed

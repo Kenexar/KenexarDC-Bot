@@ -32,9 +32,8 @@ class Troll(commands.Cog):
         guild = ctx.guild
         voice_client = nextcord.utils.get(self.bot.voice_clients, guild=guild)
 
-        if True:
-            audio_source = nextcord.FFmpegPCMAudio(self.option[option[command]]['path'])
-            time_ = self.option[option[command]]['time']
+        audio_source = nextcord.FFmpegPCMAudio(self.option[option[command]]['path'])
+        time_ = self.option[option[command]]['time']
 
         if not voice_client.is_playing():
             voice_client.play(audio_source, after=None)
