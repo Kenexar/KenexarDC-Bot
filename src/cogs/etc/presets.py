@@ -139,5 +139,22 @@ async def add_points(user, cur, payload) -> None:
     return
 
 
-async def fillup():
-    pass
+def fillup(channel_type) -> dict:
+    cur = dbBase.cursor()
+
+    cur.execute('use dcbots;')
+    cur.execute("SELECT server_id, channel_id FROM serverchannel WHERE channel_type=%s" % channel_type)
+
+    fetcher = cur.fetchall()
+    cur.close()
+
+    ret = {}
+    channel_dict_creator(channel_type, fetcher, ret)
+
+    return ret
+
+
+def channel_dict_creator(channel_type, fetcher, ret):
+    for channel in fetcher:
+        ret[channel[0]] = (channel[1], channel_type)
+

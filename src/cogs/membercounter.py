@@ -45,6 +45,9 @@ class MemberCounter(commands.Cog):
                 }
 
                 for channel in fetcher:
+                    if channel[1] in [5, 6]:
+                        continue
+
                     channel_to_edit = server.get_channel(channel[0])
                     await channel_to_edit.edit(name=channel_names[channel[1]] + str(channel_types[channel[1]]))
 
