@@ -11,9 +11,9 @@ class MemberCounter(commands.Cog):
 
         self.current_user.start()
 
-    @tasks.loop(minutes=10)
+    @tasks.loop(minutes=5)
     async def current_user(self):
-        """ here comes the current user count on the server """
+        """ Server Stats are created here, its being triggerd every 10 minutes """
 
         cur = dbBase.cursor()
 
@@ -23,23 +23,17 @@ class MemberCounter(commands.Cog):
 
             if fetcher:
                 channel_count = []
-                member_count = []
+                user_in_voice = []
                 user_online = []
 
-                for channel in server.channels:
-                    if 'voice' in str(channel.type):
-                        for member in channel.members:
-                            member_count.append(member.id)
-                        channel_count.append(channel)
+                await self.user_appender(channel_count, fetcher, user_in_voice, server)
 
-                for user in server.members:
-                    if str(user.status) != "offline":
-                        user_online.append(user.id)
+                await self.check_for_state(server, user_online)
 
                 channel_types = {
                     1: server.member_count,
                     2: len(user_online),
-                    3: len(member_count),
+                    3: len(user_in_voice),
                     4: len(channel_count),
                 }
 
@@ -55,6 +49,21 @@ class MemberCounter(commands.Cog):
                     await channel_to_edit.edit(name=channel_names[channel[1]] + str(channel_types[channel[1]]))
 
         cur.close()
+
+    async def check_for_state(self, server, user_online):
+        for user in server.members:
+            if str(user.status) != "offline":
+                user_online.append(user.id)
+
+    async def user_appender(self, channel_count, fetcher, user_in_voice, server):
+        for channel in server.channels:
+            if 'voice' in str(channel.type) and channel.id not in fetcher:
+                await self.member_in_voice(channel, user_in_voice)
+                channel_count.append(channel)
+
+    async def member_in_voice(self, channel, user_in_voice):
+        for member in channel.members:
+            user_in_voice.append(member.id)
 
     @commands.Command
     @has_permissions(administrator=True)
