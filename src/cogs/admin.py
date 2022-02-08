@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from nextcord.ext import commands
+from nextcord.ext.commands.errors import MissingPermissions
 from nextcord.ext.commands import CommandNotFound, has_permissions
 
 from cogs.etc.config import DBBASE, dbBase
@@ -69,6 +70,9 @@ class Admin(commands.Cog):
     async def on_command_error(self, ctx, error):  # Function doing intense computing!
         if isinstance(error, CommandNotFound):  # error handler
             return await ctx.send("Command not found.")
+
+        if isinstance(error, MissingPermissions):
+            return await ctx.send('Insufficient permission')
         raise error
 
     @commands.command(name='whitelist')
