@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from nextcord.ext import commands
-from nextcord.ext.commands import CommandNotFound
+from nextcord.ext.commands import CommandNotFound, has_permissions
 
 from cogs.etc.config import DBBASE, dbBase
 from cogs.etc.config import LOG_CHANNEL, LOG_SERVER

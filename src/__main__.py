@@ -10,6 +10,7 @@ from nextcord.ext import commands
 from cogs.etc.config import TOKEN, PREFIX, FLASK, PROJECT_NAME
 from cogs.etc.flask_server import start_server
 
+
 intents = nextcord.Intents.all()
 bot = commands.Bot(command_prefix=PREFIX,
                    intents=intents,
@@ -20,7 +21,7 @@ count = 0
 names = ['__init__.py', 'playground.py', 'gtarp_stuff.py']
 
 for f in os.listdir('cogs'):
-    if f.endswith(".py") and not f in names:
+    if f.endswith(".py") and f not in names:
         count += 1
 
 

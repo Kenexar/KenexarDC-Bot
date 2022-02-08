@@ -7,17 +7,27 @@ from nextcord.ext.commands import has_permissions
 
 from cogs.etc.config import EMBED_ST, PREFIX
 from cogs.etc.config import current_timestamp
-from cogs.etc.config import current_cog_modules
 from cogs.etc.config import AUTHORID
 
 from cogs.etc.embeds import help_site
+
+names = ['__init__.py', 'playground.py', 'gtarp_stuff.py']
+
+
+async def current_cog_modules(unloaded: list) -> list:
+    current_modules = []
+    for f in os.listdir('cogs'):
+        if f.endswith(".py") and f not in names:
+            if f not in unloaded:
+                current_modules.append('cogs.' + f[:-3])
+    return current_modules
 
 
 class Reload(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-        self.unloaded_modules = ['cogs.casino']
+        self.unloaded_modules = []
 
     @commands.Command
     async def stop(self, ctx, cog_module=None):
@@ -27,7 +37,7 @@ class Reload(commands.Cog):
         if not cog_module:
             return await ctx.send(embed=help_site('admin-unload'))
 
-        if cog_module in current_cog_modules(self.unloaded_modules):
+        if cog_module in await current_cog_modules(self.unloaded_modules):
             return await ctx.send('The giving module is already unloaded!')
 
         self.unloaded_modules.append(cog_module)
@@ -43,7 +53,7 @@ class Reload(commands.Cog):
         if not cog_module:
             return await ctx.send(embed=help_site('admin-load'))
 
-        if not cog_module in current_cog_modules(self.unloaded_modules):
+        if cog_module not in await current_cog_modules(self.unloaded_modules):
             return await ctx.send('The giving module is already loaded!')
 
         self.unloaded_modules.remove(cog_module)
