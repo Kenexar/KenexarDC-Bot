@@ -46,7 +46,7 @@ class Roles(commands.Cog):
                 'Immortal3': '<:Immortal3:940594882760806420>',
             },
 
-            'Radiant': {'radiant': '<:Radiant:940594882387517491>', }
+            'radiant': {'radiant': '<:Radiant:940594882387517491>', }
         }
 
         self.emotes = {
@@ -72,7 +72,35 @@ class Roles(commands.Cog):
             '1': {
                 'Iron': {
                     'title': 'Eisen 1|Eisen 2|Eisen 3',
-                    'ranks': self.ranks['Iron']
+                    'ranks': self.ranks['iron']
+                }, 
+                'Bronze': {
+                    'title': 'Bronze 1|Bronze 2|Bronze 3',
+                    'ranks': self.ranks['bronze']
+                },
+                'Silver':{
+                    'title': 'Silber 1|Silber 2|Silber 3',
+                    'ranks': self.ranks['silver']
+                },
+                'Gold': {
+                    'title': 'Gold 1|Gold 2|Gold 3',
+                    'ranks': self.ranks['gold']
+                },
+                'Platin': {
+                    'title': 'Platin 1|Platin 2|Platin 3',
+                    'ranks': self.ranks['platin']
+                },
+                'Diamond': {
+                    'title': 'Diamant 1|Diamant 2|Diamant 3',
+                    'ranks': self.ranks['diamond']
+                },
+                'Immortal': {
+                    'title': 'Immortal 1|Immortal 2|Immortal 3',
+                    'ranks': self.ranks['immortal']
+                },
+                'Radiant': {
+                    'title': 'Radiant',
+                    'ranks': self.ranks['radiant']
                 }
             },
             '2': {
@@ -90,15 +118,27 @@ class Roles(commands.Cog):
 
         ect = self.embed_content_type[msg_type]
 
-        e = nextcord.Embed(title=key,
-                           description=ect[key]['des'],
-                           color=EMBED_ST,
-                           timestamp=current_timestamp)
+        if msg_type == '1':  # Extract it too
+            for rank in ect:
+                e = nextcord.Embed(title=ect[key]['title'],
+                                    color=EMBED_ST,
+                                    timestamp=current_timestamp)
+                
+                m = await ctx.send(embed=e)
+                
+                for emote in ect[key]['ranks']:
+                    await m.add_reaction(emote)
 
-        message = await ctx.send(embed=e)
+        if msg_type == '2':  # Extract function
 
-        for key in ect['list']:
-            for entry in ect['list'][key]:
+            e = nextcord.Embed(title=ect['title'],
+                            description=ect['description'],
+                            color=EMBED_ST,
+                            timestamp=current_timestamp)
+
+            message = await ctx.send(embed=e)
+
+            for key in ect['list']:
                 await message.add_reaction(ect['list'][key])
 
     @commands.Cog.listener()

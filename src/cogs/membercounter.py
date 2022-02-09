@@ -55,7 +55,7 @@ class MemberCounter(commands.Cog):
 
     async def check_for_state(self, server, user_online):
         for user in server.members:
-            if str(user.status) != "offline":
+            if str(user.status) != "offline" and not user.bot:
                 user_online.append(user.id)
 
     async def user_appender(self, channel_count, fetcher, user_in_voice, server):
