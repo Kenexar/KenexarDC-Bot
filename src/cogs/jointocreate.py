@@ -33,15 +33,14 @@ class JoinToCreate(commands.Cog):
                     await self.channel_creator(channel, member)
             except AttributeError:
                 pass
-
-        if before.channel.id in self.jtc_current_channel and guild_has_jtc:
-            try:
+        try:
+            if before.channel.id in self.jtc_current_channel and guild_has_jtc:
                 channel = self.bot.get_channel(before.channel.id)
 
                 if not await self.member_in_voice(channel):
                     await channel.delete()
-            except AttributeError:
-                pass
+        except AttributeError:
+            pass
 
     async def member_in_voice(self, channel):
         user_in_voice = []
