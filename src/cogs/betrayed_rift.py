@@ -66,36 +66,38 @@ class Roles(commands.Cog):
             'Jett': '<:Jett:940535488085909504>',
             'Omen': '<:Omen:940535567937048576>',
             'Sova': '<:Sova:940535719041069106>',
+            'Neon': '<:Neon:940535547481440286>',
+            'Sage': '<:Sage:940535669908979732>'
         }
 
         self.embed_content_type = {
             '1': {
                 'Iron': {
-                    'title': 'Eisen 1|Eisen 2|Eisen 3',
+                    'title': 'Eisen 1 | Eisen 2 | Eisen 3',
                     'ranks': self.ranks['iron']
                 }, 
                 'Bronze': {
-                    'title': 'Bronze 1|Bronze 2|Bronze 3',
+                    'title': 'Bronze 1 | Bronze 2 | Bronze 3',
                     'ranks': self.ranks['bronze']
                 },
                 'Silver':{
-                    'title': 'Silber 1|Silber 2|Silber 3',
+                    'title': 'Silber 1 | Silber 2 | Silber 3',
                     'ranks': self.ranks['silver']
                 },
                 'Gold': {
-                    'title': 'Gold 1|Gold 2|Gold 3',
+                    'title': 'Gold 1 | Gold 2 | Gold 3',
                     'ranks': self.ranks['gold']
                 },
                 'Platin': {
-                    'title': 'Platin 1|Platin 2|Platin 3',
+                    'title': 'Platin 1 | Platin 2 | Platin 3',
                     'ranks': self.ranks['platin']
                 },
                 'Diamond': {
-                    'title': 'Diamant 1|Diamant 2|Diamant 3',
+                    'title': 'Diamant 1 | Diamant 2 | Diamant 3',
                     'ranks': self.ranks['diamond']
                 },
                 'Immortal': {
-                    'title': 'Immortal 1|Immortal 2|Immortal 3',
+                    'title': 'Immortal 1 | Immortal 2 | Immortal 3',
                     'ranks': self.ranks['immortal']
                 },
                 'Radiant': {
@@ -120,21 +122,22 @@ class Roles(commands.Cog):
 
         if msg_type == '1':  # Extract it too
             for rank in ect:
-                e = nextcord.Embed(title=ect[key]['title'],
+                e = nextcord.Embed(title=ect[rank]['title'],
                                     color=EMBED_ST,
-                                    timestamp=current_timestamp)
+                                    timestamp=current_timestamp())
                 
                 m = await ctx.send(embed=e)
                 
-                for emote in ect[key]['ranks']:
-                    await m.add_reaction(emote)
+                for emote in ect[rank]['ranks']:
+                    # print(ect[rank]['ranks'][emote])
+                    await m.add_reaction(ect[rank]['ranks'][emote])
 
         if msg_type == '2':  # Extract function
 
             e = nextcord.Embed(title=ect['title'],
                             description=ect['description'],
                             color=EMBED_ST,
-                            timestamp=current_timestamp)
+                            timestamp=current_timestamp())
 
             message = await ctx.send(embed=e)
 
