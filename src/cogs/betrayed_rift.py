@@ -9,7 +9,7 @@ class Roles(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-        self.valid_channel = [939179519955320902, 939179547449000006]
+        self.valid_channel = [939179519955320902, 939179547449000006, 799010601270509578]
 
         self.ranks = {
             'iron': {
@@ -146,13 +146,6 @@ class Roles(commands.Cog):
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
-        # <RawReactionActionEvent message_id=940555116665253898 user_id=327140448638599168
-        #   channel_id=799010601270509579 guild_id=797891536746315808
-        # emoji=<PartialEmoji animated=False name='viper' id=940535750619963392>
-        # event_type='REACTION_ADD'
-        # member=<Member id=327140448638599168 name="exersalza[>'-']>" discriminator='1337' bot=False nick=None
-        # guild=<Guild id=797891536746315808 name='betrayed Rift' shard_id=0 chunked=True member_count=67>>>
-
         if payload.member.bot:
             return
 
@@ -161,9 +154,16 @@ class Roles(commands.Cog):
 
         member = payload.member
         roles: list = member.roles
+        role_name: str = 'Followers'
+
+        if not payload.emoji.name == '✅':
+            role_name: str = payload.emoji.name
 
         guild = self.bot.get_guild(payload.guild_id)
-        role = nextcord.utils.get(guild.roles, name=payload.emoji.name)
+        role = nextcord.utils.get(guild.roles, name=role_name)
+
+        if payload.emoji.name == '✅':
+            return await member.add_roles(role)
 
         ch = self.bot.get_channel(payload.channel_id)
         message = await ch.fetch_message(payload.message_id)
