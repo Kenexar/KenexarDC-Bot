@@ -131,6 +131,7 @@ dmypy.json
 
 .replit
 src/cogs/etc/config.py
+twitch/etc/config.py
 
 poetry.lock
 pyproject.toml
