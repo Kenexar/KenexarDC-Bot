@@ -61,10 +61,10 @@ class MemberCounter(commands.Cog):
     async def user_appender(self, channel_count, fetcher, user_in_voice, server):
         for channel in server.channels:
             if 'voice' in str(channel.type) and channel.id not in fetcher:
-                await self.member_in_voice(channel, user_in_voice)
+                await self.count_member_in_voice(channel, user_in_voice)
                 channel_count.append(channel)
 
-    async def member_in_voice(self, channel, user_in_voice):
+    async def count_member_in_voice(self, channel, user_in_voice):
         for member in channel.members:
             user_in_voice.append(member.id)
 
