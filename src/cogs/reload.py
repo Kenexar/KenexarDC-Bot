@@ -85,7 +85,7 @@ class Reload(commands.Cog):
 
         embed = nextcord.Embed(title='All Cogs that are loaded are listed here!',
                                color=EMBED_ST,
-                               timestamp=current_timestamp())
+                               timestamp=current_timestamp)
 
         unloaded = '\n'.join(self.unloaded_modules) if self.unloaded_modules else 'All modules running down da street, i here AH AH AH AH '
 

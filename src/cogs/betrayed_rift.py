@@ -12,6 +12,7 @@ class Roles(commands.Cog):
         self.bot = bot
 
         self.valid_channel = [939179519955320902, 939179547449000006, 799010601270509578]
+        self.AGENT_CH = 939179519955320902
 
         self.ranks = {
             'iron': {
@@ -114,6 +115,11 @@ class Roles(commands.Cog):
             }
         }
 
+    @commands.Cog.listener()
+    async def on_ready(self):
+        ect = self.embed_content_type['2']
+        await self.agent_selector_msg(ect)
+
     @commands.Command
     @has_permissions(administrator=True)
     async def selfrole(self, ctx, msg_type):
@@ -124,7 +130,6 @@ class Roles(commands.Cog):
 
         if msg_type == '1':  # Extract it too, Rank select
             for rank in ect:
-                view = View()
                 e = nextcord.Embed(title=ect[rank]['title'],
                                    color=EMBED_ST,
                                    timestamp=current_timestamp())
@@ -135,16 +140,25 @@ class Roles(commands.Cog):
                     await m.add_reaction(ect[rank]['ranks'][emote])
 
         if msg_type == '2':  # Extract function, Agent Select
+            return await self.agent_selector_msg(ect)
 
-            e = nextcord.Embed(title=ect['title'],
-                               description=ect['description'],
-                               color=EMBED_ST,
-                               timestamp=current_timestamp())
+    async def agent_selector_msg(self, ect):
+        e = nextcord.Embed(title=ect['title'],
+                           description=ect['description'],
+                           color=EMBED_ST,
+                           timestamp=current_timestamp)
 
-            message = await ctx.send(embed=e)
+        view = await self.create_view(ect)
+        ch = self.bot.get_channel(self.AGENT_CH)
 
-            for key in ect['list']:
-                await message.add_reaction(ect['list'][key])
+        await ch.purge()
+        return await ch.send(embed=e, view=view)
+
+    async def create_view(self, ect):
+        view = View()
+        for key in ect['list']:
+            view.add_item(Button(label=key, style=ButtonStyle.blurple, emoji=ect['list'][key], custom_id=key))
+        return view
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
@@ -170,6 +184,22 @@ class Roles(commands.Cog):
         ch = self.bot.get_channel(payload.channel_id)
         message = await ch.fetch_message(payload.message_id)
         await message.remove_reaction(payload.emoji, member)
+
+        if role not in roles:
+            return await member.add_roles(role)
+        await member.remove_roles(role)
+
+    @commands.Cog.listener()
+    async def on_interaction(self, interaction):
+        reaction_id = interaction.data['custom_id']
+
+        member = interaction.user
+        roles: list = member.roles
+
+        role_name: str = reaction_id
+
+        guild = self.bot.get_guild(interaction.guild.id)
+        role = nextcord.utils.get(guild.roles, name=role_name)
 
         if role not in roles:
             return await member.add_roles(role)
