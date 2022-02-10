@@ -1,3 +1,5 @@
+import nextcord
+
 from datetime import datetime
 
 from nextcord.ext import commands
@@ -7,6 +9,7 @@ from nextcord.ext.commands import CommandNotFound, has_permissions
 from cogs.etc.config import DBBASE, dbBase
 from cogs.etc.config import LOG_CHANNEL, LOG_SERVER
 from cogs.etc.config import fetch_whitelist
+from cogs.etc.config import current_timestamp, EMBED_ST
 from cogs.etc.embeds import help_site
 from cogs.etc.presets import whitelist, get_perm
 from cogs.logger.logger import logger
@@ -113,12 +116,27 @@ class Admin(commands.Cog):
 
     @commands.Command
     async def credits(self, ctx):
-        return await ctx.send(""" **Credits** 
-Creater: exersalza#1337
+        message = """
+Creater: exersalza#1337, ZerxDE#8183
+Maintained by: exersalza#1337
+
 **Links:**
-https://github.com/exersalza
-https://twitch.tv/exersalza
-        """)
+**Github:** https://github.com/kenexar
+**Github:** https://github.com/exersalza
+**Github:** https://github.com/ZerXGIT
+
+**Website:** https://kenexar.eu
+
+**Twitch:** https://twitch.tv/exersalza
+**Twitch:** https://twitch.tv/ZerXDElive
+                """
+
+
+        embed = nextcord.Embed(title='Credits',
+                               description=message,
+                               color=EMBED_ST,
+                               timestamp=current_timestamp)
+        return await ctx.send(embed=embed)
 
 
 def setup(bot):

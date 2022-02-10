@@ -1,6 +1,8 @@
 import nextcord
 from cogs.etc.config import EMBED_ST
 from cogs.etc.config import current_timestamp
+from nextcord.ui import View, Button
+from nextcord import ButtonStyle
 from nextcord.ext import commands
 from nextcord.ext.commands import has_permissions
 
@@ -75,12 +77,12 @@ class Roles(commands.Cog):
                 'Iron': {
                     'title': 'Eisen 1 | Eisen 2 | Eisen 3',
                     'ranks': self.ranks['iron']
-                }, 
+                },
                 'Bronze': {
                     'title': 'Bronze 1 | Bronze 2 | Bronze 3',
                     'ranks': self.ranks['bronze']
                 },
-                'Silver':{
+                'Silver': {
                     'title': 'Silber 1 | Silber 2 | Silber 3',
                     'ranks': self.ranks['silver']
                 },
@@ -120,24 +122,24 @@ class Roles(commands.Cog):
 
         ect = self.embed_content_type[msg_type]
 
-        if msg_type == '1':  # Extract it too
+        if msg_type == '1':  # Extract it too, Rank select
             for rank in ect:
+                view = View()
                 e = nextcord.Embed(title=ect[rank]['title'],
-                                    color=EMBED_ST,
-                                    timestamp=current_timestamp())
-                
+                                   color=EMBED_ST,
+                                   timestamp=current_timestamp())
+
                 m = await ctx.send(embed=e)
-                
+
                 for emote in ect[rank]['ranks']:
-                    # print(ect[rank]['ranks'][emote])
                     await m.add_reaction(ect[rank]['ranks'][emote])
 
-        if msg_type == '2':  # Extract function
+        if msg_type == '2':  # Extract function, Agent Select
 
             e = nextcord.Embed(title=ect['title'],
-                            description=ect['description'],
-                            color=EMBED_ST,
-                            timestamp=current_timestamp())
+                               description=ect['description'],
+                               color=EMBED_ST,
+                               timestamp=current_timestamp())
 
             message = await ctx.send(embed=e)
 
