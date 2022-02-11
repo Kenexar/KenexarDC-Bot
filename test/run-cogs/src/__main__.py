@@ -1,15 +1,12 @@
 import os
 import platform
-import time
 from multiprocessing import Process
 
 import nextcord
 from alive_progress import alive_bar
 from nextcord.ext import commands
 
-from cogs.etc.config import TOKEN, PREFIX, FLASK, PROJECT_NAME
-from cogs.etc.flask_server import start_server
-
+from cogs.etc.config import TOKEN, PREFIX, PROJECT_NAME
 
 intents = nextcord.Intents.all()
 bot = commands.Bot(command_prefix=PREFIX,
@@ -59,12 +56,6 @@ if __name__ == '__main__':
 └────────────────────────┤ ZerXDE & exersalza├───────────────────────┘\n""")
 
     load()
-    if FLASK:
-        print('\u001b[32m/----------[ FLASK ]----------\\\u001b[0m'.center(80))
-        start_server()
-        time.sleep(.5)
-
-        print('\u001b[32m\\----------[ FLASK ]----------/\u001b[0m'.center(80))
 
     Client = Process(target=bot.run(TOKEN))
     Client.start()
