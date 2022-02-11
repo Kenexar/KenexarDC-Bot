@@ -80,7 +80,7 @@ async def whitelist(mode: str, payload: any, cur: mysql.connector.cursor) -> Emb
     if mode == 'remove':
         member = payload.get('user')
         cur.execute("DELETE FROM whitelist WHERE uid=%s and name=%s;",
-                       (member, PROJECT_NAME))
+                    (member, PROJECT_NAME))
 
         dbBase.commit()
         cur.close()
@@ -157,4 +157,3 @@ def fillup(channel_type) -> dict:
 def channel_dict_creator(channel_type, fetcher, ret):
     for channel in fetcher:
         ret[channel[0]] = (channel[1], channel_type)
-

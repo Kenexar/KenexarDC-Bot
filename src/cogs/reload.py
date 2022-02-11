@@ -2,14 +2,12 @@ import asyncio
 import os
 
 import nextcord
-from nextcord.ext import commands
-from nextcord.ext.commands import has_permissions
-
+from cogs.etc.config import AUTHORID
 from cogs.etc.config import EMBED_ST, PREFIX
 from cogs.etc.config import current_timestamp
-from cogs.etc.config import AUTHORID
-
 from cogs.etc.embeds import help_site
+from nextcord.ext import commands
+from nextcord.ext.commands import CommandNotFound
 
 names = ['__init__.py', 'playground.py', 'gtarp_stuff.py']
 
@@ -32,7 +30,7 @@ class Reload(commands.Cog):
     @commands.Command
     async def stop(self, ctx, cog_module=None):
         if not ctx.author.id == AUTHORID:
-            return
+            return CommandNotFound()
 
         if not cog_module:
             return await ctx.send(embed=help_site('admin-unload'))
@@ -48,7 +46,7 @@ class Reload(commands.Cog):
     @commands.Command
     async def start(self, ctx, cog_module=None):
         if not ctx.author.id == AUTHORID:
-            return
+            return CommandNotFound()
 
         if not cog_module:
             return await ctx.send(embed=help_site('admin-load'))
@@ -64,7 +62,7 @@ class Reload(commands.Cog):
     @commands.Command
     async def reload(self, ctx, cog_module=None):
         if not ctx.author.id == AUTHORID:
-            return
+            return CommandNotFound()
 
         if not cog_module:
             return await ctx.send(embed=help_site('admin-reload'))
@@ -81,15 +79,17 @@ class Reload(commands.Cog):
     @commands.Command
     async def listmodules(self, ctx):
         if not ctx.author.id == AUTHORID:
-            return
+            return CommandNotFound()
 
         embed = nextcord.Embed(title='All Cogs that are loaded are listed here!',
                                color=EMBED_ST,
                                timestamp=current_timestamp)
 
-        unloaded = '\n'.join(self.unloaded_modules) if self.unloaded_modules else 'All modules running down da street, i here AH AH AH AH '
+        unloaded = '\n'.join(
+            self.unloaded_modules) if self.unloaded_modules else 'All modules running down da street, i here AH AH AH AH '
 
-        embed.add_field(name='Loaded Modules', value='\n'.join(await current_cog_modules(self.unloaded_modules)), inline=False)
+        embed.add_field(name='Loaded Modules', value='\n'.join(await current_cog_modules(self.unloaded_modules)),
+                        inline=False)
         embed.add_field(name='Unloaded Modules', value=unloaded, inline=False)
 
         embed.add_field(name=f'To reload cog modules, write `{PREFIX}reload (cog_module)`',

@@ -1,6 +1,6 @@
 from threading import Thread
 
-from flask import Flask, request, json, abort
+from flask import Flask, request, abort
 
 app = Flask(__name__)
 

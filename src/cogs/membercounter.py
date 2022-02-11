@@ -1,8 +1,6 @@
-import nextcord
+from cogs.etc.config import dbBase
 from nextcord.ext import commands, tasks
 from nextcord.ext.commands import has_permissions
-
-from cogs.etc.config import dbBase
 
 
 class MemberCounter(commands.Cog):
@@ -78,7 +76,7 @@ class MemberCounter(commands.Cog):
 
     @commands.Command
     @has_permissions(administrator=True)
-    async def set(self, ctx):
+    async def set(self, ctx, category):
         print(ctx.message.content.split(" "))
 
 

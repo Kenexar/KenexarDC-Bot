@@ -2,13 +2,12 @@ import platform
 from itertools import cycle
 
 import nextcord
-from nextcord.ext import commands, tasks
-
 from cogs.etc.config import dbBase, PROJECT_NAME
 from cogs.etc.config import fetch_whitelist
 from cogs.etc.config import status_query
 from cogs.etc.embeds import help_site
 from cogs.etc.presets import get_perm
+from nextcord.ext import commands, tasks
 
 
 # todo:

@@ -1,7 +1,5 @@
-import nextcord
-from nextcord.ext import commands
-
 from cogs.etc.config import dbBase
+from nextcord.ext import commands
 
 
 class AutoResponse(commands.Cog):

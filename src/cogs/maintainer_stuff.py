@@ -1,8 +1,7 @@
-import nextcord
-from nextcord.ext import commands
 import os
 
 from cogs.etc.config import AUTHORID
+from nextcord.ext import commands
 
 
 class MaintainerStuff(commands.Cog):
@@ -15,7 +14,6 @@ class MaintainerStuff(commands.Cog):
             return
 
         await ctx.send('Starting doomsday protocol, please wait...')
-        print(os.listdir('.'))
         os.system('./restart.sh')
 
 

@@ -34,7 +34,6 @@ class Minecraft(commands.Cog):
 
         return await ctx.send(embed=embed)
 
-
     def getServerStatus(self, ip):
         server = MinecraftServer.lookup(ip)
         try:

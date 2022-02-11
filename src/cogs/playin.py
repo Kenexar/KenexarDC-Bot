@@ -1,7 +1,6 @@
+from cogs.etc.config import AUTHORID
 from nextcord.ext import commands
 from nextcord.ext.commands import CommandNotFound
-
-from cogs.etc.config import AUTHORID
 
 
 class Playin(commands.Cog):
@@ -9,7 +8,7 @@ class Playin(commands.Cog):
         self.bot = bot
 
     @commands.Command
-    async def get_guild_emotes(self, ctx):
+    async def crop_guild_emotes(self, ctx):
         if not ctx.author.id == AUTHORID:
             raise CommandNotFound()
 
@@ -20,6 +19,7 @@ class Playin(commands.Cog):
                 emojis[i.name] = f'<:{i.name}:{i.id}>'
             print(f'file created, all_emotes_{ctx.guild.name}')
             file.write(str(emojis))
+
 
 def setup(bot):
     bot.add_cog(Playin(bot))

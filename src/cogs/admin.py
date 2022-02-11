@@ -1,18 +1,16 @@
-import nextcord
-
 from datetime import datetime
 
-from nextcord.ext import commands
-from nextcord.ext.commands.errors import MissingPermissions
-from nextcord.ext.commands import CommandNotFound, has_permissions
-
+import nextcord
 from cogs.etc.config import DBBASE, dbBase
 from cogs.etc.config import LOG_CHANNEL, LOG_SERVER
-from cogs.etc.config import fetch_whitelist
 from cogs.etc.config import current_timestamp, EMBED_ST
+from cogs.etc.config import fetch_whitelist
 from cogs.etc.embeds import help_site
 from cogs.etc.presets import whitelist, get_perm
 from cogs.logger.logger import logger
+from nextcord.ext import commands
+from nextcord.ext.commands import CommandNotFound
+from nextcord.ext.commands.errors import MissingPermissions
 
 
 # todo:
@@ -113,7 +111,6 @@ class Admin(commands.Cog):
     async def help(self, ctx):
         await ctx.send(embed=help_site())
 
-
     @commands.Command
     async def credits(self, ctx):
         message = """
@@ -130,7 +127,6 @@ Maintained by: exersalza#1337
 **Twitch:** https://twitch.tv/exersalza
 **Twitch:** https://twitch.tv/ZerXDElive
                 """
-
 
         embed = nextcord.Embed(title='Credits',
                                description=message,

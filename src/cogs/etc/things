@@ -1,6 +1,60 @@
-939176685440491530 - User - 1
-939176814784438272 - VoiceChannel - 4
-939176889786970222 - UserOnline - 2
-939176987115810816 - UserInVoice - 3
+admin - whitelist -> add, remove, list
+casino - blackjack(bj) -> not ready
+fun - bug
 
 
+MemberCounter:
+
+
+JTC:
+    when channel is set, the user can join the
+    givin channel, when all members are leaving this channel and no one is inside of it
+    the channel gets deleted
+
+    channel configuration->
+        size (number up to 99)
+        owner
+        claim-owner member mention
+        set-owner member mention
+        name (new channel name)
+        info
+
+
+    admin->
+        set
+
+betrayedrift ->
+    admin:
+        selfrole -> 1: resend ranks, 2: resend agent selection
+
+--------------
+admin admin ->
+    cadd add something to the status query
+
+--------------
+credits
+
+
+--------------
+gta_rp management ->
+    get license:<user id>
+    delete (license) -> not finished yet
+        Delete whole user in the database
+    add -> not finished yet
+        add some money or items like cars or weapons to the users inventory
+
+    einreise -> for people who are missed the entry
+
+----------------
+
+points:
+    top -> shows the Top one from all servers
+    level <member mention> -> shows to the givin member the level and points to
+        when nothing is givin, your stats will be shown
+
+    enablepoints -> enable or disable point system on server (standart enabled)
+
+
+----------
+verify:
+    setchannel -> channel where the verification message should goto

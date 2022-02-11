@@ -1,13 +1,15 @@
 from datetime import datetime
 
 import nextcord
-from discord.ext import commands
-
 from cogs.etc.config import EMBED_ST
 from cogs.etc.config import PROJECT_NAME
 from cogs.etc.config import dbBase
 from cogs.etc.presets import lvl_up, add_points
+from discord.ext import commands
 
+
+# Todo:
+# server deactivate/activate
 
 class Points(commands.Cog):
     def __init__(self, bot):
@@ -24,8 +26,9 @@ class Points(commands.Cog):
         fetcher = cur.fetchone()
 
         if not fetcher:
-            cur.execute("INSERT INTO points(User, Coins, Experience, Level, Multiplier, Name) VALUES (%s, %s, %s, %s, %s, %s);",
-                        (message.author.id, 100, 0, 1, 1, PROJECT_NAME))
+            cur.execute(
+                "INSERT INTO points(User, Coins, Experience, Level, Multiplier, Name) VALUES (%s, %s, %s, %s, %s, %s);",
+                (message.author.id, 100, 0, 1, 1, PROJECT_NAME))
             dbBase.commit()
             cur.close()
             return
@@ -62,7 +65,8 @@ class Points(commands.Cog):
         fetcher = cur.fetchone()
 
         if not fetcher:
-            return await ctx.send(f'{ctx.message.author.mention if not user else user} has not send an Message to the Server!')
+            return await ctx.send(
+                f'{ctx.message.author.mention if not user else user} has not send an Message to the Server!')
 
         level = fetcher[0]
         exp = fetcher[1]
@@ -81,6 +85,9 @@ class Points(commands.Cog):
 
         await ctx.send(embed=embed)
         cur.close()
+
+    @commands.Command
+    async def enablepoints(self, ctx):
         pass
 
 

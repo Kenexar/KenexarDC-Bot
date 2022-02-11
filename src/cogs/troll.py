@@ -1,9 +1,8 @@
 import asyncio
 
 import nextcord
-from nextcord.ext import commands
-
 from cogs.etc.config import PREFIX
+from nextcord.ext import commands
 
 
 class Troll(commands.Cog):

@@ -1,7 +1,5 @@
-import nextcord
-from nextcord.ext import commands
-
 from cogs.etc.presets import fillup
+from nextcord.ext import commands
 
 
 class JoinToCreate(commands.Cog):
@@ -15,9 +13,6 @@ class JoinToCreate(commands.Cog):
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
-        # Todo: remove channel when no ones is inside of it
-        #
-        # You delete a channel from the user category and don't delete the main channel
         guild_has_jtc = self.jtc_channel.get(member.guild.id)
 
         if guild_has_jtc:
@@ -38,6 +33,7 @@ class JoinToCreate(commands.Cog):
                 channel = self.bot.get_channel(before.channel.id)
 
                 if not await self.count_member_in_voice(channel):
+                    self.jtc_current_channel.remove(channel.id)
                     await channel.delete()
         except AttributeError:
             pass

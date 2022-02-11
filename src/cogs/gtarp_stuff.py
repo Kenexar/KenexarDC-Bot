@@ -1,13 +1,12 @@
 import json
 
-from nextcord.ext import commands
-
 from cogs.etc.config import DBESSENT
 from cogs.etc.config import dbBase
 from cogs.etc.config import fetch_whitelist
 from cogs.etc.embeds import help_site
 from cogs.etc.embeds import user_info
 from cogs.etc.presets import parser, get_perm
+from nextcord.ext import commands
 
 
 class GtaRP(commands.Cog):
