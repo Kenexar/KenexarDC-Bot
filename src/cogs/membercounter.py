@@ -1,4 +1,3 @@
-from cogs.etc.config import dbBase
 from nextcord.ext import commands, tasks
 from nextcord.ext.commands import has_permissions
 
@@ -13,7 +12,7 @@ class MemberCounter(commands.Cog):
     async def current_user(self):
         """ Server Stats are created here, its being triggerd every 10 minutes """
 
-        cur = dbBase.cursor()
+        cur = self.bot.dbBase.cursor()
 
         for server in self.bot.guilds:
             cur.execute("SELECT channel_id, channel_type FROM serverchannel WHERE server_id=%s" % server.id)

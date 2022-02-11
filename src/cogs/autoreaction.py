@@ -1,4 +1,3 @@
-from cogs.etc.config import dbBase
 from nextcord.ext import commands
 
 
@@ -8,7 +7,7 @@ class AutoResponse(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        cur = dbBase.cursor(buffered=True)
+        cur = self.bot.dbBase.cursor(buffered=True)
 
         cur.execute('select channel_id from serverchannel where server_id=%s', (int(message.guild.id),))
         fetcher = cur.fetchone()

@@ -9,7 +9,7 @@ class Playin(commands.Cog):
 
     @commands.Command
     async def crop_guild_emotes(self, ctx):
-        if not ctx.author.id == AUTHORID:
+        if not ctx.author.id == self.bot.authorid:
             raise CommandNotFound()
 
         emojis = {}

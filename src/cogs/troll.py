@@ -1,7 +1,6 @@
 import asyncio
 
 import nextcord
-from cogs.etc.config import PREFIX
 from nextcord.ext import commands
 
 
@@ -18,7 +17,7 @@ class Troll(commands.Cog):
     @commands.command(aliases=['Monkie', 'zone', 'oneTwo'])
     async def sound(self, ctx):
         channel = ctx.author.voice.channel
-        command = ctx.message.content[ctx.message.content.index(PREFIX) + 1:]
+        command = ctx.message.content[ctx.message.content.index(self.bot.prefix) + 1:]
 
         option = {
             'zone': 3,

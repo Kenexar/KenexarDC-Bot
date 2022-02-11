@@ -1,9 +1,6 @@
 from datetime import datetime
 
 import nextcord
-from cogs.etc.config import EMBED_ST
-from cogs.etc.config import PROJECT_NAME
-from cogs.etc.config import dbBase
 from cogs.etc.presets import lvl_up, add_points
 from discord.ext import commands
 
@@ -20,7 +17,7 @@ class Points(commands.Cog):
         if message.author.bot:
             return
 
-        cur = dbBase.cursor(buffered=True)
+        cur = self.bot.dbBase.cursor(buffered=True)
 
         cur.execute("SELECT Level, Experience, Multiplier, Coins FROM points WHERE User=%s;", (message.author.id,))
         fetcher = cur.fetchone()
@@ -28,8 +25,8 @@ class Points(commands.Cog):
         if not fetcher:
             cur.execute(
                 "INSERT INTO points(User, Coins, Experience, Level, Multiplier, Name) VALUES (%s, %s, %s, %s, %s, %s);",
-                (message.author.id, 100, 0, 1, 1, PROJECT_NAME))
-            dbBase.commit()
+                (message.author.id, 100, 0, 1, 1, self.bot.project_name))
+            self.bot.dbBase.commit()
             cur.close()
             return
 
@@ -42,9 +39,9 @@ class Points(commands.Cog):
     @commands.command()
     async def top(self, ctx):
         # Top placed on the Server
-        cursor = dbBase.cursor(buffered=True)
+        cursor = self.bot.dbBase.cursor(buffered=True)
 
-        cursor.execute("SELECT User, Points FROM points WHERE Name=%s", (PROJECT_NAME,))
+        cursor.execute("SELECT User, Points FROM points WHERE Name=%s", (self.bot.project_name,))
 
         fetcher = cursor.fetchall()
 
@@ -57,10 +54,10 @@ class Points(commands.Cog):
     @commands.command()
     async def level(self, ctx, user=None):
         # Show the Player information for the Game lulw, it returns an embed i think
-        cur = dbBase.cursor()
+        cur = self.bot.dbBase.cursor()
 
         cur.execute("SELECT Level, Experience, Multiplier, Coins FROM points WHERE User=%s and Name=%s;",
-                    (user.strip("<@!>") if user else ctx.message.author.id, PROJECT_NAME))
+                    (user.strip("<@!>") if user else ctx.message.author.id, self.bot.project_name))
 
         fetcher = cur.fetchone()
 
@@ -80,8 +77,8 @@ class Points(commands.Cog):
                                            f'Current Experience: {exp}\n'
                                            f'Current Multiplier: {multi}x\n'
                                            f'Current Coins: {coins}',
-                               color=EMBED_ST,
-                               timestamp=datetime.now())
+                               color=self.bot.embed_st,
+                               timestamp=self.bot.current_timestamp)
 
         await ctx.send(embed=embed)
         cur.close()

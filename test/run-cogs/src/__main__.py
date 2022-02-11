@@ -6,7 +6,8 @@ import nextcord
 from alive_progress import alive_bar
 from nextcord.ext import commands
 
-from cogs.etc.config import TOKEN, PREFIX, PROJECT_NAME
+from cogs.etc.config import TOKEN, PREFIX, PROJECT_NAME, AUTHORID
+
 
 intents = nextcord.Intents.all()
 bot = commands.Bot(command_prefix=PREFIX,
@@ -33,6 +34,10 @@ def load():
                 bar()
 
 
+def define_globals():
+    bot.authorid = AUTHORID
+
+
 if __name__ == '__main__':
     platform = platform.system()
 
@@ -56,6 +61,7 @@ if __name__ == '__main__':
 └────────────────────────┤ ZerXDE & exersalza├───────────────────────┘\n""")
 
     load()
+    define_globals()
 
-    Client = Process(target=bot.run(TOKEN))
+    Client = Process(target=bot.run(bot.token))
     Client.start()

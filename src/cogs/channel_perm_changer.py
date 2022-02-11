@@ -1,8 +1,7 @@
-from cogs.etc.config import PREFIX
 from nextcord.ext import commands
 
 
-# todo:
+#todo:
 # Changeable channel sizes
 # Channel Name
 # Channel Current owner, Change owner, Claim owner
@@ -39,7 +38,7 @@ class ChannelPermChanger(commands.Cog):
         if attr == 'size':
             if not len(args) == 1:
                 return await ctx.send(
-                    f'Du hast für diesen Befehl zu viele/zu wenig argumente angegeben, \nBeispiel: {PREFIX}channel size 5')
+                    f'Du hast für diesen Befehl zu viele/zu wenig argumente angegeben, \nBeispiel: {self.bot.prefix}channel size 5')
 
             if not args[0].isdigit():
                 return await ctx.send('Das angegebene argument ist keine Zahl !')

@@ -2,9 +2,6 @@ import platform
 from itertools import cycle
 
 import nextcord
-from cogs.etc.config import dbBase, PROJECT_NAME
-from cogs.etc.config import fetch_whitelist
-from cogs.etc.config import status_query
 from cogs.etc.embeds import help_site
 from cogs.etc.presets import get_perm
 from nextcord.ext import commands, tasks
@@ -17,10 +14,10 @@ from nextcord.ext import commands, tasks
 class Cycle(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.whitelist = fetch_whitelist()
+        self.whitelist = self.bot.fetch_whitelist()
 
         self.status_list = []
-        self.status = cycle(status_query(self.status_list))
+        self.status = cycle(self.bot.status_query(self.status_list))
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -36,7 +33,7 @@ class Cycle(commands.Cog):
 
     @commands.command()
     async def cadd(self, ctx):
-        cur = dbBase.cursor(buffered=True)
+        cur = self.bot.dbBase.cursor(buffered=True)
         cur.execute('USE dcbots;')
 
         if await get_perm(ctx.message.author.id) < 5:
@@ -46,8 +43,8 @@ class Cycle(commands.Cog):
 
         if not len(to_check) > 50 and not len(to_check) <= 0:
             cur.execute("insert into roll_text (Name, Text) values (%s, %s);",
-                        (PROJECT_NAME, to_check))
-            dbBase.commit()
+                        (self.bot.project_name, to_check))
+            self.bot.dbBase.commit()
             cur.close()
 
             self.status_list.append(to_check)

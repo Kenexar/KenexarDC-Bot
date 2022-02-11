@@ -1,10 +1,6 @@
 from datetime import datetime
 
 import nextcord
-from cogs.etc.config import DBBASE, dbBase
-from cogs.etc.config import LOG_CHANNEL, LOG_SERVER
-from cogs.etc.config import current_timestamp, EMBED_ST
-from cogs.etc.config import fetch_whitelist
 from cogs.etc.embeds import help_site
 from cogs.etc.presets import whitelist, get_perm
 from cogs.logger.logger import logger
@@ -32,7 +28,7 @@ class Admin(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.whitelist = fetch_whitelist()
+        self.whitelist = self.bot.fetch_whitelist
 
         self.guild = None
         self.logger = None
@@ -58,12 +54,12 @@ class Admin(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print(f'\nReady at {datetime.now().strftime("%H:%M:%S")}')
+        print(f'\nReady at {datetime.now().strftime("%H:%M:%S - %d.%m.%y")}')
 
         for server in self.bot.guilds:
-            if server.id == LOG_SERVER:
+            if server.id == self.bot.log_server:
                 self.guild = server
-                self.logger = server.get_channel(LOG_CHANNEL)
+                self.logger = server.get_channel(self.bot.log_channel)
 
         print(logger('info', f'Current logger channel: {self.logger.name}'))
 
@@ -82,8 +78,8 @@ class Admin(commands.Cog):
             return await ctx.send('You are not Authorized to manage the Whitelist'), \
                    await self.logger.send(f'{ctx.message.author} tried to use the `whitelist` command!')
 
-        cur_base = dbBase.cursor()
-        cur_base.execute(DBBASE)
+        cur_base = self.bot.dbBase.cursor()
+        cur_base.execute("use dcbots;")
 
         id = ctx.message.author.id
 
@@ -130,8 +126,8 @@ Maintained by: exersalza#1337
 
         embed = nextcord.Embed(title='Credits',
                                description=message,
-                               color=EMBED_ST,
-                               timestamp=current_timestamp)
+                               color=self.bot.embed_st,
+                               timestamp=self.bot.current_timestamp)
         return await ctx.send(embed=embed)
 
 

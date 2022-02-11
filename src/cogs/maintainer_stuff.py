@@ -1,6 +1,5 @@
 import os
 
-from cogs.etc.config import AUTHORID
 from nextcord.ext import commands
 
 
@@ -10,7 +9,7 @@ class MaintainerStuff(commands.Cog):
 
     @commands.Command
     async def restart(self, ctx):
-        if not ctx.author.id == AUTHORID:
+        if not ctx.author.id == self.bot.authorid:
             return
 
         await ctx.send('Starting doomsday protocol, please wait...')

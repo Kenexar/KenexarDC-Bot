@@ -1,8 +1,5 @@
 import json
 
-from cogs.etc.config import DBESSENT
-from cogs.etc.config import dbBase
-from cogs.etc.config import fetch_whitelist
 from cogs.etc.embeds import help_site
 from cogs.etc.embeds import user_info
 from cogs.etc.presets import parser, get_perm
@@ -12,7 +9,7 @@ from nextcord.ext import commands
 class GtaRP(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.whitelist = fetch_whitelist()
+        self.whitelist = self.bot.fetch_whitelist()
 
         self.guild = None
         self.logger = None
@@ -47,8 +44,8 @@ class GtaRP(commands.Cog):
             return await ctx.send('You are not Authorized to use the Get function!'), \
                    await self.logger.send(f'{ctx.message.author} tried to use the `get` command!')
 
-        cur = dbBase.cursor(buffered=True)
-        cur.execute(DBESSENT)
+        cur = self.bot.dbBase.cursor(buffered=True)
+        cur.execute(self.bot.dbessent)
 
         parsed = await parser(rounds=2, toparse=args, option=self.GET_OPTIONS)
         if parsed[0] in self.GET_OPTIONS[0:2]:  # if argument user or u
@@ -132,8 +129,8 @@ class GtaRP(commands.Cog):
                    await self.logger.send(f'{ctx.message.author} tried to use the `einreise` command!')
 
         if get_perm(ctx.message.author.id) >= 4:
-            cur = dbBase.cursor()
-            cur.execute(DBESSENT)
+            cur = self.bot.dbBase.cursor()
+            cur.execute(self.bot.dbessent)
 
             if not args:
                 return await ctx.send(embed=help_site('einreise'))
@@ -145,7 +142,7 @@ class GtaRP(commands.Cog):
                     return await ctx.send('Invalid id!')
 
                 cur.execute("DELETE FROM users WHERE identifier=%s;", (args[0],))
-                dbBase.commit()
+                self.bot.dbBase.commit()
 
                 return await ctx.send('User got deleted from the Db')
 

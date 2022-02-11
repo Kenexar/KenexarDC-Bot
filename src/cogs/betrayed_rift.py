@@ -1,6 +1,4 @@
 import nextcord
-from cogs.etc.config import EMBED_ST
-from cogs.etc.config import current_timestamp
 from nextcord import ButtonStyle
 from nextcord.ext import commands
 from nextcord.ext.commands import has_permissions
@@ -131,8 +129,8 @@ class Roles(commands.Cog):
         if msg_type == '1':  # Extract it too, Rank select
             for rank in ect:
                 e = nextcord.Embed(title=ect[rank]['title'],
-                                   color=EMBED_ST,
-                                   timestamp=current_timestamp())
+                                   color=self.bot.embed_st,
+                                   timestamp=self.bot.current_timestamp)
 
                 m = await ctx.send(embed=e)
 
@@ -145,8 +143,8 @@ class Roles(commands.Cog):
     async def agent_selector_msg(self, ect):
         e = nextcord.Embed(title=ect['title'],
                            description=ect['description'],
-                           color=EMBED_ST,
-                           timestamp=current_timestamp)
+                           color=self.bot.embed_st,
+                           timestamp=self.bot.current_timestamp)
 
         view = await self.create_view(ect)
         ch = self.bot.get_channel(self.AGENT_CH)
