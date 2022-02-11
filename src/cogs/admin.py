@@ -103,7 +103,7 @@ class Admin(commands.Cog):
             return await ctx.send(embed=await whitelist('list', 'payload', cur_base))
         return await ctx.send('The argument is not valid!')
 
-    @commands.Command
+    @commands.Command  # heres a comment
     async def help(self, ctx, mode=''):
         if ctx.message.author.id == self.bot.authorid and mode == 'f':
             await ctx.send(embed=await help_site('full'))
