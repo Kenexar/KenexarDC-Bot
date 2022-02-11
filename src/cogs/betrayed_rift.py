@@ -3,6 +3,7 @@ from nextcord import ButtonStyle
 from nextcord.ext import commands
 from nextcord.ext.commands import has_permissions
 from nextcord.ui import View, Button
+from cogs.etc.embeds import help_site
 
 
 class Roles(commands.Cog):
@@ -122,7 +123,7 @@ class Roles(commands.Cog):
     @has_permissions(administrator=True)
     async def selfrole(self, ctx, msg_type):
         if msg_type not in ['1', '2']:
-            return await ctx.send('Invalid msg_type. Possible [1, 2]')
+            return await ctx.send(await help_site('betrayedrift'))
 
         ect = self.embed_content_type[msg_type]
 

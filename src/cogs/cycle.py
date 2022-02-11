@@ -21,7 +21,6 @@ class Cycle(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-
         if platform.system() == 'Linux':
             await self.status_task.start()
 
@@ -49,7 +48,7 @@ class Cycle(commands.Cog):
 
             self.status_list.append(to_check)
             return await ctx.send(f'Added {to_check} to the Presence Query')
-        return await ctx.send(embed=help_site('cadd'))
+        return await ctx.send(embed=await help_site('cadd'))
 
 
 def setup(bot):

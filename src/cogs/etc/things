@@ -6,7 +6,7 @@ fun - bug
 
 
 MemberCounter:
-
+create -> sets category
 
 JTC:
     when channel is set, the user can join the

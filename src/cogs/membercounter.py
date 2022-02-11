@@ -75,7 +75,7 @@ class MemberCounter(commands.Cog):
 
     @commands.Command
     @has_permissions(administrator=True)
-    async def set(self, ctx, category):
+    async def create(self, ctx):
         print(ctx.message.content.split(" "))
 
 
