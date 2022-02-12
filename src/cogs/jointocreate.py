@@ -55,6 +55,7 @@ class JoinToCreate(commands.Cog):
     @has_permissions(administrator=True)
     async def setjtc(self, ctx):
         arg = ctx.message.content.split()
+        print(arg)
         if len(arg) != 2:
             return await ctx.send('No valid argument range')
 
