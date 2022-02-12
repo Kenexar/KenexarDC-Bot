@@ -13,6 +13,8 @@ class JoinToCreate(commands.Cog):
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
+        # Todo:
+        #  Restart resitense
         guild_has_jtc = self.jtc_channel.get(member.guild.id)
 
         if guild_has_jtc:
