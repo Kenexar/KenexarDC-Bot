@@ -2,10 +2,9 @@
 
 screen -X -S MrPython kill
 
-echo "Bot is stoped"
+echo "Bot is stopped"
 
 screen -X -S gitUpdaterMrPython kill
 
-echo "Git-Updater stoped"
+echo "Git-Updater stopped"
 
-#eval "screen -r kenexardcbot"

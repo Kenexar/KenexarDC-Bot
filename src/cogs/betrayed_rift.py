@@ -12,6 +12,7 @@ class Roles(commands.Cog):
 
         self.valid_channel = [939179519955320902, 939179547449000006, 799010601270509578]
         self.AGENT_CH = 939179519955320902
+        self.ch = None
 
         self.ranks = {
             'iron': {
@@ -118,6 +119,17 @@ class Roles(commands.Cog):
     async def on_ready(self):
         ect = self.embed_content_type['2']
         await self.agent_selector_msg(ect)
+        self.ch = self.bot.get_channel(801843320543641652)
+
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if message.channel.id == 942082659885146133:
+            if 'MessageType.premium_guild' in str(message.type):
+                await self.ch.send(f'{message.author.name} hat den Server geboosted, Danke :)')
+
+    @commands.Cog.listener()
+    async def on_member_join(self, member):
+        await self.ch.send(f'{member.name} ist dem Server beigetreten. Willkommen im Rift')
 
     @commands.Command
     @has_permissions(administrator=True)
