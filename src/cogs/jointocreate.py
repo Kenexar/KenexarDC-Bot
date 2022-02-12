@@ -1,5 +1,6 @@
 from cogs.etc.presets import fillup
 from nextcord.ext import commands
+from nextcord.ext.commands import has_permissions
 
 
 class JoinToCreate(commands.Cog):
@@ -49,6 +50,7 @@ class JoinToCreate(commands.Cog):
     async def channel_creator(self, channel, member):
         await channel.edit(sync_permissions=True)
         await member.move_to(channel=channel)
+
 
 
 def setup(bot):
