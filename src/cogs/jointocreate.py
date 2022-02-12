@@ -51,6 +51,26 @@ class JoinToCreate(commands.Cog):
         await channel.edit(sync_permissions=True)
         await member.move_to(channel=channel)
 
+    @commands.Command
+    @has_permissions(administrator=True)
+    async def setjtc(self, ctx):
+        arg = ctx.message.content.split()
+        if len(arg) != 2:
+            return await ctx.send('No valid argument range')
+
+        cur = self.bot.dbBase.cursor()
+        ch = self.bot.get_channel(int(arg[1]))
+        channel_ids = [(ch.id, 5), (ch.category.id, 6)]
+
+        for i in channel_ids:
+            cur.execute("insert into serverchannel(server_id, channel_id, channel_type) values (%s, %s, %s);",
+                        (ctx.message.guild.id,) + i)
+        self.bot.dbBase.commit()
+        cur.close()
+
+        self.jtc_channel: dict = fillup(5)
+        self.jtc_category: dict = fillup(6)
+
 
 
 def setup(bot):
