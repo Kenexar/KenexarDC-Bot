@@ -70,6 +70,9 @@ class Admin(commands.Cog):
 
         if isinstance(error, MissingPermissions):
             return await ctx.send('Insufficient permission')
+
+        if isinstance(error, nextcord.errors.NotFound):
+            return
         raise error
 
     @commands.command(name='whitelist')
