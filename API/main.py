@@ -7,8 +7,6 @@ from fastapi.openapi.utils import get_openapi
 from starlette.status import HTTP_403_FORBIDDEN
 from starlette.responses import RedirectResponse, JSONResponse
 
-import mysql.connector
-
 import config
 
 auto_err = False
@@ -68,11 +66,9 @@ async def get_open_api_endpoint(api_key: APIKey = Depends(get_api_key)):
 
 @app.get('/api/v1/get_whitelist_{}')
 async def get_whitelist_member(bot_name: str, api_key: APIKey = Depends(get_api_key)):
-    return 0
+    return 200
 
 
 @app.get('/api/v1/get_server_channel')
 async def get_server_channel():
-    cur = config.db.cursor()
-
-    cur.execute()
+    return 200

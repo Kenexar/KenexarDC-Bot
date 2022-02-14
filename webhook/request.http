@@ -1,0 +1,12 @@
+GET https://discord.com/api/webhooks/942766195155824640/X1w9Qxo82mKDn8VqHckt_sqN_PqHfOqIIhWuGbe-wJwTi04EhefZgXgSWLwkedgbGffk
+#Content-Type: application/json
+#
+#{
+#  "name": "sub",
+#  "content": {
+#    "user": "username",
+#    "tier": "1-3"
+#  }
+#}
+
+###

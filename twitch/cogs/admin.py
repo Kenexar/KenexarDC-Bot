@@ -6,6 +6,10 @@ class Welcome(commands.Cog):
         self.bot = bot
 
     @commands.Cog.event()
+    async def event_ready(self):
+        print('ready')
+
+    @commands.Cog.event()
     async def event_message(self, message):
         print(message)
         if message.echo:

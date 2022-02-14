@@ -1,10 +1,22 @@
-import argparse
+from pydispatch import dispatcher
+
+SIGNAL = 'my-first-signal'
 
 
-args_to_parse = ['channel', 'name', 'coggers']
+def event_handler(sender):
+    print('signal sender', sender)
 
 
-parser = argparse.ArgumentParser()
-parser.add_argument('name', help='Change name')
+dispatcher.connect(event_handler, signal=SIGNAL, sender=dispatcher.Any)
 
-print(parser.parse_args(args_to_parse))
+first_sender = object()
+second_sender = {}
+
+
+def main():
+    dispatcher.send(signal=SIGNAL, sender=first_sender)
+    dispatcher.send(signal=SIGNAL, sender=second_sender)
+
+
+if __name__ == '__main__':
+    main()
