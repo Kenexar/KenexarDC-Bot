@@ -1,6 +1,6 @@
 import ssl
 
-from etc import config
+# from etc import config
 import socket
 
 

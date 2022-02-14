@@ -125,20 +125,24 @@ async def help_site(mode='user') -> Embed:
                         inline=False)
 
     if mode in ('admin-reload', 'admin', 'full'):
-        embed.add_field(name=f'{PREFIX}listmodules', value='Des: List all current modules in Cogs', inline=False)
+        embed.add_field(name=f'{PREFIX}listmodules', value='Des: List all current modules in Cogs',
+                        inline=False)
         embed.add_field(name=f'{PREFIX}reload (module name)',
-                        value=f'Des: Reload giving Cog module\nExample: {PREFIX}reload cogs.casino', inline=False)
+                        value=f'Des: Reload giving Cog module\nExample: {PREFIX}reload cogs.casino',
+                        inline=False)
 
     if mode in ('admin-load', 'admin', 'full'):
         embed.add_field(name=f'{PREFIX}listmodules', value='Des: List all Loaded/Unloaded modules in Cogs',
                         inline=False)
         embed.add_field(name=f'{PREFIX}start (module name)',
-                        value=f'Des: Loads giving Cog module\nExample: {PREFIX}load cogs.casino', inline=False)
+                        value=f'Des: Loads giving Cog module\nExample: {PREFIX}load cogs.casino',
+                        inline=False)
 
     if mode in ('admin-unload', 'admin', 'full'):
         embed.add_field(name=f'{PREFIX}listmodules', value='Des: List all Loaded/Unloaded modules in Cogs',
                         inline=False)
         embed.add_field(name=f'{PREFIX}stop (module name)',
-                        value=f'Des: Unloads giving Cog module\nExample: {PREFIX}unload cogs.casino', inline=False)
+                        value=f'Des: Unloads giving Cog module\nExample: {PREFIX}unload cogs.casino',
+                        inline=False)
 
     return embed

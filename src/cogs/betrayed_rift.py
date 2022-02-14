@@ -5,6 +5,9 @@ from nextcord.ext.commands import has_permissions
 from nextcord.ui import View, Button
 from cogs.etc.embeds import help_site
 
+#todo:
+# on restart the thing
+
 
 class Roles(commands.Cog):
     def __init__(self, bot):
@@ -12,6 +15,7 @@ class Roles(commands.Cog):
 
         self.valid_channel = [939179519955320902, 939179547449000006, 799010601270509578]
         self.AGENT_CH = 939179519955320902
+        self.ch = None
 
         self.ranks = {
             'iron': {
@@ -116,16 +120,34 @@ class Roles(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        ect = self.embed_content_type['2']
-        await self.agent_selector_msg(ect)
+        ch = self.bot.get_channel(939179519955320902)
+        view = View()
+        async for message in ch.history():
+            if not message.components:
+                continue
+
+            new_view = view.from_message(message)
+            origin_view = view.from_message(message)
+            new_view.clear_items()
+
+            await message.edit(view=new_view)
+            await message.edit(view=origin_view)
+
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if message.channel.id == 942082659885146133:
+            if 'MessageType.premium_guild' in str(message.type):
+                await self.ch.send(f'{message.author.name} hat den Server geboosted, Danke :)')
+
+    @commands.Cog.listener()
+    async def on_member_join(self, member):
+        await self.ch.send(f'{member.name} ist dem Server beigetreten. Willkommen im Rift')
 
     @commands.Command
     @has_permissions(administrator=True)
     async def selfrole(self, ctx, msg_type):
         if msg_type not in ['1', '2']:
             return await ctx.send(await help_site('betrayedrift'))
-
-        ect = self.embed_content_type[msg_type]
 
         if msg_type == '1':  # Extract it too, Rank select
             for rank in ect:

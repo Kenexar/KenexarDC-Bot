@@ -29,10 +29,12 @@ class Reload(commands.Cog):
         if not ctx.author.id == self.bot.authorid:
             return CommandNotFound()
 
-        if not cog_module:
-            return await ctx.send(embed=help_site('admin-unload'))
+        print(self.unloaded_modules)
 
-        if cog_module in await current_cog_modules(self.unloaded_modules):
+        if not cog_module:
+            return await ctx.send(embed=await help_site('admin-unload'))
+
+        if cog_module not in await current_cog_modules(self.unloaded_modules):
             return await ctx.send('The giving module is already unloaded!')
 
         self.unloaded_modules.append(cog_module)

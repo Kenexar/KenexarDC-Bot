@@ -8,6 +8,8 @@ from nextcord.ext import commands
 
 from cogs.etc.config import TOKEN, PREFIX, PROJECT_NAME, AUTHORID
 
+from define_global_vars import define_global_vars
+
 
 intents = nextcord.Intents.all()
 bot = commands.Bot(command_prefix=PREFIX,
@@ -34,10 +36,6 @@ def load():
                 bar()
 
 
-def define_globals():
-    bot.authorid = AUTHORID
-
-
 if __name__ == '__main__':
     platform = platform.system()
 
@@ -48,20 +46,8 @@ if __name__ == '__main__':
 
     os.system(command)
 
-    print("""
-┌────────────────────────────────────────────────────────────────────┐
-│                                                                    │
-│     ██╗  ██╗███████╗███╗   ██╗███████╗██╗  ██╗ █████╗ ██████╗      │
-│     ██║ ██╔╝██╔════╝████╗  ██║██╔════╝╚██╗██╔╝██╔══██╗██╔══██╗     │
-│     █████╔╝ █████╗  ██╔██╗ ██║█████╗   ╚███╔╝ ███████║██████╔╝     │
-│     ██╔═██╗ ██╔══╝  ██║╚██╗██║██╔══╝   ██╔██╗ ██╔══██║██╔══██╗     │
-│     ██║  ██╗███████╗██║ ╚████║███████╗██╔╝ ██╗██║  ██║██║  ██║     │
-│     ╚═╝  ╚═╝╚══════╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝     │
-│                                                                    │
-└────────────────────────┤ ZerXDE & exersalza├───────────────────────┘\n""")
-
     load()
-    define_globals()
+    bot = define_global_vars(bot)
 
     Client = Process(target=bot.run(bot.token))
     Client.start()
