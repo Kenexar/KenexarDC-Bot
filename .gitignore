@@ -130,8 +130,8 @@ dmypy.json
 .idea
 
 .replit
-src/cogs/etc/config.py
-twitch/etc/config.py
+discord/cogs/etc/config.py
+twitch/cogs/etc/config.py
 
 poetry.lock
 pyproject.toml
@@ -139,5 +139,6 @@ pyproject.toml
 .breakpoints
 
 
-src/cogs/logs/
+discord/cogs/logs/
 test/run-cogs/cogs/etc/config.py
+API/config.py
