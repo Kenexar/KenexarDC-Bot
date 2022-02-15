@@ -1,22 +1,20 @@
-from pydispatch import dispatcher
-
-SIGNAL = 'my-first-signal'
-
-
-def event_handler(sender):
-    print('signal sender', sender)
+import argparse
+import pprint
+from typing import Optional
+from typing import Sequence
 
 
-dispatcher.connect(event_handler, signal=SIGNAL, sender=dispatcher.Any)
+def main(argv: Optional[Sequence[str]] = None) -> int:
+    parser = argparse.ArgumentParser()
 
-first_sender = object()
-second_sender = {}
+    # parser.add_argument('filename', help='config file')
+    # parser.add_argument('-c', '--config', '--jsonfile', help='config file')
+    parser.add_argument('-c', '--config', '--jsonfile', help='config file')
 
-
-def main():
-    dispatcher.send(signal=SIGNAL, sender=first_sender)
-    dispatcher.send(signal=SIGNAL, sender=second_sender)
+    args = parser.parse_args(argv)
+    pprint.pprint(vars(args))
+    return 0
 
 
 if __name__ == '__main__':
-    main()
+    exit(main())
