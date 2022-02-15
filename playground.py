@@ -1,20 +1,11 @@
-import argparse
-import pprint
-from typing import Optional
-from typing import Sequence
+import socket
 
+HOST = '127.0.0.1'
+PORT = 5555
 
-def main(argv: Optional[Sequence[str]] = None) -> int:
-    parser = argparse.ArgumentParser()
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+    sock.connect((HOST, PORT))
+    sock.sendall(b'Hello, here am I')
+    data = sock.recv(1024)
 
-    # parser.add_argument('filename', help='config file')
-    # parser.add_argument('-c', '--config', '--jsonfile', help='config file')
-    parser.add_argument('-c', '--config', '--jsonfile', help='config file')
-
-    args = parser.parse_args(argv)
-    pprint.pprint(vars(args))
-    return 0
-
-
-if __name__ == '__main__':
-    exit(main())
+print('Received: ', repr(data))

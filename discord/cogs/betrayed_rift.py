@@ -9,6 +9,13 @@ from cogs.etc.embeds import help_site
 # on restart the thing
 
 
+async def send_interaction_msg(message: str, interaction: nextcord.Interaction, tmp=True):
+    try:
+        await interaction.followup.send(message, ephemeral=tmp)
+    except Exception as e:
+        print('interaction failed', e)
+
+
 class Roles(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -123,15 +130,17 @@ class Roles(commands.Cog):
         ch = self.bot.get_channel(939179519955320902)
         view = View()
         async for message in ch.history():
-            if not message.components:
-                continue
+            # if not message.components:
+            #     continue
 
             new_view = view.from_message(message)
             origin_view = view.from_message(message)
             new_view.clear_items()
 
+            origin_view.timeout = None
             await message.edit(view=new_view)
-            await message.edit(view=origin_view)
+            ect = self.embed_content_type['2']
+            await message.edit(view=await self.create_view(ect))
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -148,6 +157,8 @@ class Roles(commands.Cog):
     async def selfrole(self, ctx, msg_type):
         if msg_type not in ['1', '2']:
             return await ctx.send(await help_site('betrayedrift'))
+
+        ect = self.embed_content_type[msg_type]
 
         if msg_type == '1':  # Extract it too, Rank select
             for rank in ect:
@@ -211,7 +222,7 @@ class Roles(commands.Cog):
         await member.remove_roles(role)
 
     @commands.Cog.listener()
-    async def on_interaction(self, interaction):
+    async def on_interaction(self, interaction: nextcord.Interaction):
         reaction_id = interaction.data['custom_id']
 
         member = interaction.user
@@ -223,7 +234,9 @@ class Roles(commands.Cog):
         role = nextcord.utils.get(guild.roles, name=role_name)
 
         if role not in roles:
+            await send_interaction_msg(f'Der Agent `{reaction_id}` wurde dir hinzugefügt', interaction)
             return await member.add_roles(role)
+        await send_interaction_msg(f'Der Agent `{reaction_id}` wurde dir entfernt', interaction)
         await member.remove_roles(role)
 
 

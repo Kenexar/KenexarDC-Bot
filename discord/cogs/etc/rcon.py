@@ -2,7 +2,7 @@ import socket
 
 
 class Rcon:
-    """ Rcon Module wixxe """
+    """ Rcon Module, interact with the citizen-fx server"""
 
     def __init__(self, ip, password, port=30120):
         self.ip = ip

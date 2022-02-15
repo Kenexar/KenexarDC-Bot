@@ -5,11 +5,10 @@ from nextcord import Embed
 
 
 def user_info(user=dict) -> Embed:
-    """ An embed for the get user command
+    """ Create an User information Embed to send
 
-    :param user: User takes an dictionairy with harcoded values, that comes from
-    a SQL query
-
+    :param user: Enter a dict that you gotten from the SQL request from the user db
+    :return: An sendable embed for ctx
     """
 
     username = user.get('username', '-')
@@ -63,9 +62,9 @@ def user_info(user=dict) -> Embed:
 
 
 async def help_site(mode='user') -> Embed:
-    """ Creates an Help embed
+    """ Creates a Help embed
 
-    :param mode: Standart is all but you can deliever a argument for the
+    :param mode: Standard is all but you can deliver an argument for the
     help embed that is needed
 
     :return: nextcord.Embed object
@@ -79,10 +78,6 @@ async def help_site(mode='user') -> Embed:
                         value=f'`Blackjack:` `{PREFIX}blackjack` (points), alias: `bj`\n'
                               f'`Des`: Play a round of BlackJack (-Currently not available-)',
                         inline=False)
-
-    # if mode in ('all', 'fun'):
-    #     embed.add_field(name=f'Fun Commands',
-    #                     value=)
 
     if mode in ('user', 'MemberCounter', 'full'):
         embed.add_field(name=f'Server stats',

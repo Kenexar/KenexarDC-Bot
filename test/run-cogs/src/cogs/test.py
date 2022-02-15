@@ -26,7 +26,7 @@ class Test(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print('ready')
-        dispatcher.send(signal='moo', sender='me')
+        # dispatcher.send(signal='moo', sender='me')
 
 
     @commands.Command

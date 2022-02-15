@@ -92,7 +92,7 @@ async def whitelist(mode: str, payload: any, cur: mysql.connector.cursor) -> Emb
 async def get_perm(user) -> int:
     """ ger_perm or fetch_perm (old) is for authorization purposes
 
-    :param user: takes an nextcord.Member.id and provide it to the database where you become an numberic value back.
+    :param user: takes a nextcord.Member.id and provide it to the database where you become a Numeric value back.
 
     """
     cur_db = dbBase.cursor(buffered=True)
@@ -123,7 +123,7 @@ async def lvl_up(user, cur, fetcher):
 
 
 async def add_points(user, cur, payload) -> None:
-    """
+    """ Out-sourced function for the Level system
 
     :param user: use the userid for the points thing
     :param cur: Take the available cursor from the command
@@ -139,7 +139,16 @@ async def add_points(user, cur, payload) -> None:
     return
 
 
-def fillup(channel_type) -> dict:
+def fillup(channel_type: int) -> dict:
+    """ Get newest channel informaton from the database
+
+
+    :param channel_type: Give an Valid channel type, like 5, 6
+    :type channel_type: int
+    :return: {server_id [channel_ids...]}
+    :rtype: dict
+    """
+
     cur = dbBase.cursor()
 
     cur.execute('use dcbots;')
