@@ -7,6 +7,8 @@ class AutoResponse(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
+        if message.author.bot:
+            return
         cur = self.bot.dbBase.cursor(buffered=True)
 
         cur.execute('select channel_id from serverchannel where server_id=%s', (int(message.guild.id),))
