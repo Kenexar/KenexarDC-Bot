@@ -51,11 +51,15 @@ class JoinToCreate(commands.Cog):
         await channel.edit(sync_permissions=True)
         await member.move_to(channel=channel)
 
-    @commands.Command
+    @commands.group(no_pm=True)
     @has_permissions(administrator=True)
-    async def setjtc(self, ctx):
+    async def jtc(self, ctx):
+        pass
+
+    @jtc.command()
+    async def set(self, ctx):
         arg = ctx.message.content.split()
-        print(arg)
+        # print(arg)
         if len(arg) != 2:
             return await ctx.send('No valid argument range')
 

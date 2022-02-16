@@ -1,6 +1,7 @@
 import os
 
 from nextcord.ext import commands
+from nextcord.ext.commands import CommandNotFound
 
 
 class MaintainerStuff(commands.Cog):
@@ -17,7 +18,7 @@ class MaintainerStuff(commands.Cog):
         :rtype:
         """
         if not ctx.author.id == self.bot.authorid:
-            return
+            raise CommandNotFound
 
         await ctx.send('Starting doomsday protocol, please wait...')
         os.system('./restart.sh')

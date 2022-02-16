@@ -144,7 +144,7 @@ class Roles(commands.Cog):
             await message.edit(view=await self.create_view(ect))
 
     @commands.Cog.listener()
-    async def on_message(self, message): #
+    async def on_message(self, message):
         if message.channel.id == 942082659885146133:
             if 'MessageType.premium_guild' in str(message.type):
                 await self.ch.send(f'{message.author.name} hat den Server geboosted, Danke :)')
@@ -251,6 +251,10 @@ class Roles(commands.Cog):
 
     @commands.Cog.listener()
     async def on_interaction(self, interaction: nextcord.Interaction):  # Todo Notice
+        if str(interaction.type) == 'InteractionType.application_command':
+            return
+
+        print()
         reaction_id = interaction.data['custom_id']
 
         member = interaction.user

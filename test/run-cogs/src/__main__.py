@@ -8,7 +8,7 @@ from alive_progress import alive_bar
 from nextcord.ext import commands
 
 from cogs.etc.config import TOKEN, PREFIX, PROJECT_NAME, AUTHORID
-from cogs.etc.config import OAUTH, BOT_USERNAME, tPREFIX, CHANNEL_NAME
+# from cogs.etc.config import OAUTH, BOT_USERNAME, tPREFIX, CHANNEL_NAME
 
 from define_global_vars import define_global_vars
 
@@ -23,11 +23,11 @@ bot = commands.Bot(command_prefix=PREFIX,
                    help_command=None,
                    description=f"Created by exersalza. Project: {PROJECT_NAME}")
 
-tbot = tcommands.Bot(
-    token=OAUTH,
-    nick=BOT_USERNAME,
-    prefix=tPREFIX,
-    initial_channels=CHANNEL_NAME)
+# tbot = tcommands.Bot(
+#     token=OAUTH,
+#     nick=BOT_USERNAME,
+#     prefix=tPREFIX,
+#     initial_channels=CHANNEL_NAME)
 
 # tbot.load_module('cogs.twitchXdiscord')
 

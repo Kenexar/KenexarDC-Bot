@@ -3,7 +3,7 @@ import sys
 import aiohttp
 import os
 
-from nextcord import Interaction, SlashOption, ChannelType
+from nextcord import Interaction, ChannelType
 from nextcord.abc import GuildChannel
 
 from nextcord import Webhook
@@ -19,14 +19,14 @@ from utils import is_owner
 
 from cogs.etc.embeds import help_site
 
-from pydispatch import dispatcher
+# from pydispatch import dispatcher
 
 
 def event_handler(self, sender):
     print('signal sender', sender)
 
 
-dispatcher.connect(event_handler, signal='signal', sender=dispatcher.Any)
+# dispatcher.connect(event_handler, signal='signal', sender=dispatcher.Any)
 testingServer = 762815486823891014
 
 
