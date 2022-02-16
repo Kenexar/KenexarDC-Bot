@@ -1,3 +1,4 @@
+import nextcord
 from nextcord.ext import commands
 
 
@@ -22,26 +23,11 @@ class ChannelPermChanger(commands.Cog):
             'info'
         ]
 
-    @commands.command(name='channel')
-    async def _channel(self, ctx, attr=None, *args: str):
-
-        return await ctx.send('...Maintenance...')
-        if attr not in self.changeable_perm_list:
-            return await ctx.send('Command Attribut ist nicht Valide')
-
-        try:
-            member = ctx.author
-            channel = ctx.author.voice.channel
-        except AttributeError:
-            return await ctx.send('Du must für diese aktion in einen Voice channel sein')
-
-        if attr == 'size':
-            if not len(args) == 1:
-                return await ctx.send(
-                    f'Du hast für diesen Befehl zu viele/zu wenig argumente angegeben, \nBeispiel: {self.bot.prefix}channel size 5')
-
-            if not args[0].isdigit():
-                return await ctx.send('Das angegebene argument ist keine Zahl !')
+    # @commands.command(name='channel')
+    @nextcord.slash_command(name='channel', description='Change settings in your Private voice channel', guild_ids=[], force_global=True)
+    async def _channel(self, interaction: nextcord.Interaction):
+        # Maybe subcommands?
+        return await interaction.response.send_message('...Maintenance...')
 
 
 def setup(bot):

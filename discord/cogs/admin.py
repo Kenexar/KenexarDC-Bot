@@ -77,6 +77,15 @@ class Admin(commands.Cog):
 
     @commands.command(name='whitelist')
     async def _whitelist(self, ctx, *args):
+        """ Configure the whitelist settings,
+
+        :param ctx: -
+        :type ctx: context.Context
+        :param args:
+        :type args: Sequence[str]
+        :return: None
+        :rtype:
+        """
         if ctx.message.author.id not in self.whitelist:
             return await ctx.send('You are not Authorized to manage the Whitelist'), \
                    await self.logger.send(f'{ctx.message.author} tried to use the `whitelist` command!')
@@ -106,15 +115,15 @@ class Admin(commands.Cog):
             return await ctx.send(embed=await whitelist('list', 'payload', cur_base))
         return await ctx.send('The argument is not valid!')
 
-    @commands.Command  # heres a comment
-    async def help(self, ctx, mode=''):
-        if ctx.message.author.id == self.bot.authorid and mode == 'f':
-            await ctx.send(embed=await help_site('full'))
+    @nextcord.slash_command(name='help', description='Show the help site for the Bot', force_global=True, guild_ids=[])
+    async def help(self, interaction: nextcord.Interaction):
+        if interaction.user.id == self.bot.authorid:
+            await interaction.response.send_message(embed=await help_site('full'))
             return
-        await ctx.send(embed=await help_site())
+        await interaction.response.send_message(embed=await help_site())
 
-    @commands.Command
-    async def credits(self, ctx):
+    @nextcord.slash_command(name='credits', description='Show the credits for the Bot', guild_ids=[], force_global=True)
+    async def credits(self, interaction: nextcord.Interaction):
         message = """
 Creater: exersalza#1337, ZerxDE#8183
 Maintained by: exersalza#1337
@@ -134,7 +143,7 @@ Maintained by: exersalza#1337
                                description=message,
                                color=self.bot.embed_st,
                                timestamp=self.bot.current_timestamp)
-        return await ctx.send(embed=embed)
+        return await interaction.response.send_message(embed=embed)
 
 
 def setup(bot):
