@@ -15,7 +15,6 @@ class MemberCounter(commands.Cog):
         """ Server Stats are created here, its being triggerd every 10 minutes """
 
         cur = self.bot.dbBase.cursor()
-
         for server in self.bot.guilds:
             cur.execute("SELECT channel_id, channel_type FROM serverchannel WHERE server_id=%s" % server.id)
             fetcher = cur.fetchall()

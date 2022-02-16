@@ -11,7 +11,7 @@ class AutoResponse(commands.Cog):
             return
         cur = self.bot.dbBase.cursor(buffered=True)
 
-        cur.execute('select channel_id from serverchannel where server_id=%s', (int(message.guild.id),))
+        cur.execute('select channel_id from dcbots.serverchannel where server_id=%s', (int(message.guild.id),))
         fetcher = cur.fetchone()
         cur.close()
 

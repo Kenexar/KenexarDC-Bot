@@ -9,6 +9,13 @@ class MaintainerStuff(commands.Cog):
 
     @commands.Command
     async def restart(self, ctx):
+        """ Owner Bot restart command. Thre bot has also an Module reload module, but its not here
+
+        :param ctx:
+        :type ctx:
+        :return:
+        :rtype:
+        """
         if not ctx.author.id == self.bot.authorid:
             return
 

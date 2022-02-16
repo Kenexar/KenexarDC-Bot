@@ -1,3 +1,5 @@
+from typing import Coroutine, Any
+
 import nextcord
 from nextcord import ButtonStyle
 from nextcord.ext import commands
@@ -24,7 +26,7 @@ class Roles(commands.Cog):
         self.AGENT_CH = 939179519955320902
         self.ch = None
 
-        self.ranks = {
+        self.ranks = {  # All ranks in Valorant are listed here
             'iron': {
                 'Eisen1': '<:Eisen1:940594881951301683>',
                 'Eisen2': '<:Eisen2:940594882454618192>',
@@ -42,7 +44,6 @@ class Roles(commands.Cog):
                 'Gold2': '<:Gold2:940594882316234833>',
                 'Gold3': '<:Gold3:940594882823720970>',
             },
-
             'platin': {
                 'Platin1': '<:Platin1:940594882320404520>',
                 'Platin2': '<:Platin2:940594882131664896>',
@@ -58,7 +59,6 @@ class Roles(commands.Cog):
                 'Immortal2': '<:Immortal2:940594882735669328>',
                 'Immortal3': '<:Immortal3:940594882760806420>',
             },
-
             'radiant': {'radiant': '<:Radiant:940594882387517491>', }
         }
 
@@ -126,7 +126,7 @@ class Roles(commands.Cog):
         }
 
     @commands.Cog.listener()
-    async def on_ready(self):
+    async def on_ready(self):  # Here is work, it should be able to create the view new without sending a new message
         ch = self.bot.get_channel(939179519955320902)
         view = View()
         async for message in ch.history():
@@ -139,42 +139,63 @@ class Roles(commands.Cog):
 
             origin_view.timeout = None
             await message.edit(view=new_view)
+
             ect = self.embed_content_type['2']
             await message.edit(view=await self.create_view(ect))
 
     @commands.Cog.listener()
-    async def on_message(self, message):
+    async def on_message(self, message): #
         if message.channel.id == 942082659885146133:
             if 'MessageType.premium_guild' in str(message.type):
                 await self.ch.send(f'{message.author.name} hat den Server geboosted, Danke :)')
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        await self.ch.send(f'{member.name} ist dem Server beigetreten. Willkommen im Rift')
+        await self.ch.send(f'{member.name} ist dem Server beigetreten. Willkommen im Rift')  # Maybe insert here Mention without ping
 
-    @commands.Command
+    @commands.group(no_pm=True)
     @has_permissions(administrator=True)
-    async def selfrole(self, ctx, msg_type):
-        if msg_type not in ['1', '2']:
-            return await ctx.send(await help_site('betrayedrift'))
+    async def selfrole(self, ctx):
+        return await ctx.send(await help_site('betrayedrift'))
 
-        ect = self.embed_content_type[msg_type]
+    @selfrole.command(no_pm=True)
+    async def agent(self, ctx):
+        ect = self.embed_content_type['2']
+        return await self.agent_selector_msg(ect)
 
-        if msg_type == '1':  # Extract it too, Rank select
-            for rank in ect:
-                e = nextcord.Embed(title=ect[rank]['title'],
-                                   color=self.bot.embed_st,
-                                   timestamp=self.bot.current_timestamp)
+    @selfrole.command(no_pm=True)
+    async def rank(self, ctx):
+        ect = self.embed_content_type['1']
 
-                m = await ctx.send(embed=e)
+        for rank in ect:
+            e = nextcord.Embed(title=ect[rank]['title'],
+                               color=self.bot.embed_st,
+                               timestamp=self.bot.current_timestamp)
 
-                for emote in ect[rank]['ranks']:
-                    await m.add_reaction(ect[rank]['ranks'][emote])
+            m = await ctx.send(embed=e)
 
-        if msg_type == '2':  # Extract function, Agent Select
-            return await self.agent_selector_msg(ect)
+            await self.add_reactions_to_rank_message(ect, m, rank)
+
+    async def add_reactions_to_rank_message(self, ect, m, rank):
+        """ Adds needed reaction to ranks embeds message
+
+        :param ect: embed_content_type -> Dictionary get from self.embed_content_type
+        :type ect: Dict
+        :param m: message
+        :param rank: the current rank
+        :return: -
+        """
+        for emote in ect[rank]['ranks']:
+            await m.add_reaction(ect[rank]['ranks'][emote])
 
     async def agent_selector_msg(self, ect):
+        """ Creates the agent selector Embed and send it Automatically
+
+        :param ect: embed content type -> Dictionary get from self.embed_content_type
+        :type ect: dict
+        :return: -
+        :rtype: -
+        """
         e = nextcord.Embed(title=ect['title'],
                            description=ect['description'],
                            color=self.bot.embed_st,
@@ -186,7 +207,14 @@ class Roles(commands.Cog):
         await ch.purge()
         return await ch.send(embed=e, view=view)
 
-    async def create_view(self, ect):
+    async def create_view(self, ect) -> View:
+        """ Creates a view
+
+        :param ect: embed content type -> Dictionary get from self.embed_content_type
+        :type ect: Dict
+        :return: ViewObject
+        :rtype: Object
+        """
         view = View()
         for key in ect['list']:
             view.add_item(Button(label=key, style=ButtonStyle.blurple, emoji=ect['list'][key], custom_id=key))
@@ -222,7 +250,7 @@ class Roles(commands.Cog):
         await member.remove_roles(role)
 
     @commands.Cog.listener()
-    async def on_interaction(self, interaction: nextcord.Interaction):
+    async def on_interaction(self, interaction: nextcord.Interaction):  # Todo Notice
         reaction_id = interaction.data['custom_id']
 
         member = interaction.user

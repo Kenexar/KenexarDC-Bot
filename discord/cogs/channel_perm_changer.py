@@ -24,7 +24,7 @@ class ChannelPermChanger(commands.Cog):
 
     @commands.command(name='channel')
     async def _channel(self, ctx, attr=None, *args: str):
-
+        # Maybe subcommands?
         return await ctx.send('...Maintenance...')
         if attr not in self.changeable_perm_list:
             return await ctx.send('Command Attribut ist nicht Valide')

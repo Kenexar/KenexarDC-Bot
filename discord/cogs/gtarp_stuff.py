@@ -5,6 +5,8 @@ from cogs.etc.embeds import user_info
 from cogs.etc.presets import parser, get_perm
 from nextcord.ext import commands
 
+# I don't wanna touch this thingi here
+
 
 class GtaRP(commands.Cog):
     def __init__(self, bot):

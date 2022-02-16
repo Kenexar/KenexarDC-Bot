@@ -73,6 +73,5 @@ class JoinToCreate(commands.Cog):
         self.jtc_category: dict = fillup(6)
 
 
-
 def setup(bot):
     bot.add_cog(JoinToCreate(bot))
