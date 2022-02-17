@@ -159,7 +159,9 @@ class Roles(commands.Cog):
     @commands.group(no_pm=True)
     @has_permissions(administrator=True)
     async def selfrole(self, ctx):
-        return await ctx.send(await help_site('betrayedrift'))
+        msg_len = len(ctx.message.content.split())
+        if msg_len == 1:
+            return await ctx.send(embed=await help_site('betrayedrift'))
 
     @selfrole.command(no_pm=True)
     async def agent(self, ctx):
