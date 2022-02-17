@@ -1,13 +1,12 @@
-from typing import Coroutine, Any
-
 import nextcord
+from cogs.etc.embeds import help_site
 from nextcord import ButtonStyle
 from nextcord.ext import commands
 from nextcord.ext.commands import has_permissions
 from nextcord.ui import View, Button
-from cogs.etc.embeds import help_site
 
-#todo:
+
+# todo:
 # on restart the thing
 
 
@@ -129,19 +128,22 @@ class Roles(commands.Cog):
     async def on_ready(self):  # Here is work, it should be able to create the view new without sending a new message
         ch = self.bot.get_channel(939179519955320902)
         view = View()
-        async for message in ch.history():
-            # if not message.components:
-            #     continue
+        ect = self.embed_content_type['2']
 
-            new_view = view.from_message(message)
-            origin_view = view.from_message(message)
-            new_view.clear_items()
+        # await self.agent_selector_msg(ect)
 
-            origin_view.timeout = None
-            await message.edit(view=new_view)
-
-            ect = self.embed_content_type['2']
-            await message.edit(view=await self.create_view(ect))
+        # async for message in ch.history():
+        #     # if not message.components:
+        #     #     continue
+        #
+        #     new_view = view.from_message(message)
+        #     origin_view = view.from_message(message)
+        #     new_view.clear_items()
+        #
+        #     origin_view.timeout = None
+        #     await message.edit(view=new_view)
+        #
+        #     await message.edit(view=await self.create_view(ect))
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -151,7 +153,8 @@ class Roles(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        await self.ch.send(f'{member.name} ist dem Server beigetreten. Willkommen im Rift')  # Maybe insert here Mention without ping
+        await self.ch.send(
+            f'{member.name} ist dem Server beigetreten. Willkommen im Rift')  # Maybe insert here Mention without ping
 
     @commands.group(no_pm=True)
     @has_permissions(administrator=True)

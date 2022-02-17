@@ -73,7 +73,10 @@ class Admin(commands.Cog):
 
         if isinstance(error, nextcord.errors.NotFound):
             return
-        raise error
+
+        ch = self.bot.get_channel(self.bot.log_channel)
+        err_message = f"""{error}\n<@{self.bot.authorid}>"""
+        return await ch.send(err_message)
 
     @commands.command(name='whitelist')
     async def _whitelist(self, ctx, *args):
@@ -93,9 +96,9 @@ class Admin(commands.Cog):
         cur_base = self.bot.dbBase.cursor()
         cur_base.execute("use dcbots;")
 
-        id = ctx.message.author.id
+        uid = ctx.message.author.id
 
-        if await get_perm(id) != 5:
+        if await get_perm(uid) != 5:
             return await ctx.send('You are not Authorized to manage the Whitelist'), \
                    await self.logger.send(f'{ctx.author} tried to use the `whitelist` command!')
 

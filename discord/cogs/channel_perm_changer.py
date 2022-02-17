@@ -2,7 +2,7 @@ import nextcord
 from nextcord.ext import commands
 
 
-#todo:
+# todo:
 # Changeable channel sizes
 # Channel Name
 # Channel Current owner, Change owner, Claim owner
@@ -24,7 +24,8 @@ class ChannelPermChanger(commands.Cog):
         ]
 
     # @commands.command(name='channel')
-    @nextcord.slash_command(name='channel', description='Change settings in your Private voice channel', guild_ids=[], force_global=True)
+    @nextcord.slash_command(name='channel', description='Change settings in your Private voice channel', guild_ids=[],
+                            force_global=True)
     async def _channel(self, interaction: nextcord.Interaction):
         # Maybe subcommands?
         return await interaction.response.send_message('...Maintenance...')

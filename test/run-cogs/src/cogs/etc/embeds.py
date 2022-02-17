@@ -93,11 +93,14 @@ def help_site(mode='all') -> Embed:
 
     if mode in ('admin-reload', 'admin'):
         embed.add_field(name=f'{PREFIX}listmodules', value='Des: List all current modules in Cogs', inline=False)
-        embed.add_field(name=f'{PREFIX}reload (module name)', value=f'Des: Reload giving Cog module\nExample: {PREFIX}reload cogs.casino', inline=False)
+        embed.add_field(name=f'{PREFIX}reload (module name)',
+                        value=f'Des: Reload giving Cog module\nExample: {PREFIX}reload cogs.casino', inline=False)
 
     if mode in ('admin-load', 'admin'):
-        embed.add_field(name=f'{PREFIX}listmodules', value='Des: List all Loaded/Unloaded modules in Cogs', inline=False)
-        embed.add_field(name=f'{PREFIX}start (module name)', value=f'Des: Loads giving Cog module\nExample: {PREFIX}load cogs.casino', inline=False)
+        embed.add_field(name=f'{PREFIX}listmodules', value='Des: List all Loaded/Unloaded modules in Cogs',
+                        inline=False)
+        embed.add_field(name=f'{PREFIX}start (module name)',
+                        value=f'Des: Loads giving Cog module\nExample: {PREFIX}load cogs.casino', inline=False)
 
     if mode in ('admin-unload', 'admin'):
         embed.add_field(name=f'{PREFIX}listmodules', value='Des: List all Loaded/Unloaded modules in Cogs',

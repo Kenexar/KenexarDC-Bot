@@ -1,4 +1,5 @@
 import os
+import subprocess
 
 from nextcord.ext import commands
 from nextcord.ext.commands import CommandNotFound
@@ -21,7 +22,7 @@ class MaintainerStuff(commands.Cog):
             raise CommandNotFound
 
         await ctx.send('Starting doomsday protocol, please wait...')
-        os.system('./restart.sh')
+        subprocess.call('./restart.sh', shell=False)
 
 
 def setup(bot):

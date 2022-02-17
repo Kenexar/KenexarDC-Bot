@@ -1,21 +1,15 @@
 import os
 import platform
 from multiprocessing import Process
-import threading
 
 import nextcord
 from alive_progress import alive_bar
 from nextcord.ext import commands
 
-from cogs.etc.config import TOKEN, PREFIX, PROJECT_NAME, AUTHORID
-# from cogs.etc.config import OAUTH, BOT_USERNAME, tPREFIX, CHANNEL_NAME
-
+from cogs.etc.config import PREFIX, PROJECT_NAME
 from define_global_vars import define_global_vars
 
-from twitchio.ext import commands as tcommands
-
-import utils
-
+# from cogs.etc.config import OAUTH, BOT_USERNAME, tPREFIX, CHANNEL_NAME
 
 intents = nextcord.Intents.all()
 bot = commands.Bot(command_prefix=PREFIX,

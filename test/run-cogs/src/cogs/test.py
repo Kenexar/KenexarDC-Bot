@@ -1,23 +1,9 @@
-import sys
+from datetime import datetime, timedelta
 
-import aiohttp
-import os
-
-from nextcord import Interaction, ChannelType
-from nextcord.abc import GuildChannel
-
-from nextcord import Webhook
 import nextcord
+from nextcord import Interaction
 from nextcord.ext import commands
-from nextcord.ext.commands import has_permissions
-from nextcord.ui import View
 
-from flask import Flask, request, abort
-
-from cogs.etc import config
-from utils import is_owner
-
-from cogs.etc.embeds import help_site
 
 # from pydispatch import dispatcher
 
@@ -39,14 +25,27 @@ class Test(commands.Cog):
         print('ready')
         # dispatcher.send(signal='moo', sender='me')
 
+    @commands.Cog.listener()
+    async def on_command_error(self, ctx: nextcord.ext.commands.Context, error: nextcord.ext.commands.CommandError):
+        print(ctx, error.args)
+        ch = self.bot.get_channel(self.bot.log_channel)
+        message = f""" 
+{error}
+<@{self.bot.authorid}>
+               """
+        await ch.send(message)
+
     @commands.group(no_pm=True)
     async def admin(self, ctx):
         if ctx.invoked_subcommand is None:
             print('inside')
 
+    @commands.Command
+    async def throwexception(self, ctx):
+        await ctx.send(embed=nextcord.Embed(title='test', timestamp=datetime.now() + timedelta(days=2)))
+
     @nextcord.slash_command(name='moretesting', description='only testing some stuff', guild_ids=[testingServer])
     async def moretesting(self, interaction: Interaction):
-
         return await interaction.response.send_message('tes')
 
     @nextcord.slash_command(name='testin', description='only testing some stuff', guild_ids=[testingServer])
@@ -76,5 +75,3 @@ class Test(commands.Cog):
 
 def setup(bot):
     bot.add_cog(Test(bot))
-
-

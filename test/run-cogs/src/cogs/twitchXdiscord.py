@@ -1,8 +1,6 @@
 from nextcord.ext import commands as dcommands
-
-from twitchio.ext import commands as tcommands
-
 from pydispatch import dispatcher
+from twitchio.ext import commands as tcommands
 
 
 def handle_event(sender):
@@ -44,8 +42,5 @@ def prepare(bot):
     print('twitch')
     bot.add_cog(DiscordIntegration(bot))
 
-
 # def setup(bot):
 #     bot.add_cog(TwitchIntegration(bot))
-
-

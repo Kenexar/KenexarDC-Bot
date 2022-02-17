@@ -1,6 +1,6 @@
 from threading import Thread
 
-from flask import Flask, request, json
+from flask import Flask, request
 
 app = Flask('')
 

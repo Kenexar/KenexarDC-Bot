@@ -1,5 +1,5 @@
-import socket
 import selectors
+import socket
 import types
 
 HOST = '127.0.0.1'
@@ -31,5 +31,3 @@ while True:
             accept_wrapper(key.fileobj)
         else:
             sevice_connection(key, mask)
-
-
