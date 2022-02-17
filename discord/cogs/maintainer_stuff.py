@@ -11,7 +11,7 @@ class MaintainerStuff(commands.Cog):
 
     @commands.Command
     async def restart(self, ctx):
-        """ Owner Bot restart command. Thre bot has also an Module reload module, but its not here
+        """ Owner Bot restart command. The bot has also a Module reload module, but it's not here
 
         :param ctx:
         :type ctx:
