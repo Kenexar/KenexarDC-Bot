@@ -41,6 +41,7 @@ def load():
                     ".py"
             ) and filename not in names:
                 loader = f"cogs.{filename[:-3]}"
+                print(loader)
                 bot.load_extension(loader)
                 bar()
 

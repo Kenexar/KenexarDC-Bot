@@ -28,7 +28,7 @@ class DiscordIntegration(tcommands.Cog):  # For twitch
     def __init__(self, bot, **kwargs):
         self.bot = bot
 
-        self.discord = kwargs.get('discord')
+        self.discord = kwargs.get('discord')  ##
 
         self.disp = dispatcher.connect(handle_event, signal='msg.send::discord', sender=dispatcher.Any)
 

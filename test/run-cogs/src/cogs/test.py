@@ -29,7 +29,7 @@ class Test(commands.Cog):
     async def on_command_error(self, ctx: nextcord.ext.commands.Context, error: nextcord.ext.commands.CommandError):
         print(ctx, error.args)
         ch = self.bot.get_channel(self.bot.log_channel)
-        message = f""" 
+        message = f"""
 {error}
 <@{self.bot.authorid}>
                """
