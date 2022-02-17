@@ -1,18 +1,10 @@
-from datetime import datetime, timedelta
+import json
 
-import nextcord
-from nextcord import Interaction
+
+import requests
 from nextcord.ext import commands
+from nextcord.ext import tasks
 
-
-# from pydispatch import dispatcher
-
-
-def event_handler(self, sender):
-    print('signal sender', sender)
-
-
-# dispatcher.connect(event_handler, signal='signal', sender=dispatcher.Any)
 testingServer = 762815486823891014
 
 
@@ -20,57 +12,68 @@ class Test(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+        self.config = None
+
+        self.helix_header = {}
+
     @commands.Cog.listener()
     async def on_ready(self):
         print('ready')
-        # dispatcher.send(signal='moo', sender='me')
 
-    @commands.Cog.listener()
-    async def on_command_error(self, ctx: nextcord.ext.commands.Context, error: nextcord.ext.commands.CommandError):
-        print(ctx, error.args)
-        ch = self.bot.get_channel(self.bot.log_channel)
-        message = f"""
-{error}
-<@{self.bot.authorid}>
-               """
-        await ch.send(message)
+        with open('twitchconfig.json', 'r') as c:
+            self.config = json.load(c)
 
-    @commands.group(no_pm=True)
-    async def admin(self, ctx):
-        if ctx.invoked_subcommand is None:
-            print('inside')
+        self.helix_header = {
+            'Authorization': f'Bearer {self.config.get("OAUTH")}',
+            'Client-Id': self.config.get('CLIENT_ID')
+        }
 
-    @commands.Command
-    async def throwexception(self, ctx):
-        await ctx.send(embed=nextcord.Embed(title='test', timestamp=datetime.now() + timedelta(days=2)))
+        await self.twitch_notify.start()
 
-    @nextcord.slash_command(name='moretesting', description='only testing some stuff', guild_ids=[testingServer])
-    async def moretesting(self, interaction: Interaction):
-        return await interaction.response.send_message('tes')
+    @tasks.loop(minutes=2, seconds=30)
+    async def twitch_notify(self):
+        print(await self.__get_streams(await self.__get_user()))
 
-    @nextcord.slash_command(name='testin', description='only testing some stuff', guild_ids=[testingServer])
-    async def testin(self, interaction: Interaction, timeout=None):
-        return await interaction.response.send_message('tes')
+    async def __get_app_access_token(self):
+        """ PRIVATE - Gets a new OAUTH token when the other is running out
 
-    # @testin.subcommand(name='testout', description='subcommand?')
-    # async def testout(self, interaction: Interaction, payload):
-    #     print(payload)
-    #     await interaction.response.send_message('test')
-    #     return interaction.response.is_done()
-    #
-    # @testin.subcommand(name='testinside', description='subcommand? nr.2')
-    # async def testinside(self, interaction: Interaction, payload, options):
-    #     print(payload, options)
-    #
-    #     return await interaction.send('test')
+        :return:
+        :rtype:
+        """
+        params = {
+            "client_id": self.config.get('CLIENT_ID'),
+            "client_secret": self.config.get('CLIENT_SECRET'),
+            "grant_type": "client_credentials"
+        }
 
-    @admin.command(no_pm=True)
-    async def testing(self, ctx):
-        return await ctx.send(ctx.message.content.split()[1:])
+        res = requests.post('https://id.twitch.tv/oauth2/token', params=params)
+        access_token = res.json()
+        return access_token['access_token']
 
-    @commands.Command
-    async def get_avatar(self, ctx: commands.Context, member: nextcord.Member):
-        print(member.avatar.url)
+    async def __get_user(self):
+        params = {
+            "login": self.config.get('CHANNEL_NAME'),
+        }
+
+        res = requests.get('https://api.twitch.tv/helix/users', params=params, headers=self.helix_header)
+
+        if '<Response [401]>' in str(res):
+            self.config['OAUTH'] = await self.__get_app_access_token()
+            with open('twitchconfig.json', 'w') as config:
+                json.dump(self.config, config)
+            with open('twitchconfig.json', 'r') as c:
+                self.config = json.load(c)
+            return
+
+        return {entry['login']: entry['id'] for entry in res.json()['data']}
+
+    async def __get_streams(self, user: dict):
+        params = {
+            'user_id': user.values()
+        }
+
+        res = requests.get('https://api.twitch.tv/helix/streams', params=params, headers=self.helix_header)
+        return {entry['user_login']: entry for entry in res.json()['data']}
 
 
 def setup(bot):
