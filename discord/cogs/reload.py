@@ -118,7 +118,7 @@ class AutoModuleReloader(commands.Cog):
 
     async def module_reload_list_updater(self):
         now = datetime.now()
-        ago = now - timedelta(minutes=5)
+        ago = now - timedelta(minutes=4)
         for root, dirs, files in os.walk('cogs/'):
             for fname in files:
                 path = os.path.join(root, fname)
