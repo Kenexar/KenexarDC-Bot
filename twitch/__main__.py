@@ -1,5 +1,6 @@
 import os
 import platform
+import subprocess
 from multiprocessing import Process
 
 from alive_progress import alive_bar
@@ -42,7 +43,7 @@ if __name__ == '__main__':
     if platform == 'Linux':
         command = 'clear'
 
-    os.system(command)
+    subprocess.call(command, shell=False)
 
     load()
 

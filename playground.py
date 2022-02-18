@@ -10,7 +10,19 @@
 #
 # print('Received: ', repr(data))
 
-from datetime import datetime
-import pytz
 
-print(datetime.now(pytz.timezone('Europe/')))
+# Streamer list => ['user_id']
+# if streamer_id in streamer_list: ret
+# streamer_list.append(streamer_id)
+#
+
+
+streamer_list = []
+
+
+def list_filler(user: dict):
+    for channel in user:
+        if channel['user_id'] in streamer_list:
+            return
+
+        streamer_list.append(channel['user_id'])
