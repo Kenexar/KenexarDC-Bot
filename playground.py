@@ -15,14 +15,4 @@
 # if streamer_id in streamer_list: ret
 # streamer_list.append(streamer_id)
 #
-
-
-streamer_list = []
-
-
-def list_filler(user: dict):
-    for channel in user:
-        if channel['user_id'] in streamer_list:
-            return
-
-        streamer_list.append(channel['user_id'])
+# print('12345' in streamer_list.values())

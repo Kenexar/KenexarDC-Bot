@@ -124,7 +124,7 @@ class AutoModuleReloader(commands.Cog):
                 path = os.path.join(root, fname)
                 st = os.stat(path)
 
-                if '__pycache__' in str(path) or 'logs' in str(path):
+                if '__pycache__' in str(path) or 'logs' in str(path) or 'etc' in str(path):
                     continue
 
                 mtime = datetime.fromtimestamp(st.st_mtime)
