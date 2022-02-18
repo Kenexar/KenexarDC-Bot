@@ -1,6 +1,7 @@
 import json
 from datetime import datetime
 
+import nextcord
 import requests
 from nextcord.ext import commands
 from nextcord.ext import tasks
@@ -16,13 +17,13 @@ class Test(commands.Cog):
 
         self.config = None
         self.streamer = {}
-        self.current = []
+        self.current = {}
 
         self.helix_header = {}
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print('ready')
+        print('ready g')
 
         with open('twitchconfig.json', 'r') as c:
             self.config = json.load(c)
@@ -31,16 +32,30 @@ class Test(commands.Cog):
             'Authorization': f'Bearer {self.config.get("OAUTH")}',
             'Client-Id': self.config.get('CLIENT_ID')
         }
+        live = await self.__get_notify()
+        # await self.twitch_notify.start()
+        print('debug')
 
-        await self.twitch_notify.start()
+        ch = self.bot.get_channel(910950168537485332)
+        print('debug', live)
+        for streamer in live:
+            print(ch)
+            embed = nextcord.Embed(title=f'{streamer.get("user_name")} jetzt Live!',
+                                   description=f'[{streamer.get("title")}](https://twitch.tv/{streamer.get("user_name")})',
+                                   color=0x9146FF,
+                                   timestamp=self.bot.current_timestamp)
+            await ch.send(embed=embed)
 
     @tasks.loop(minutes=2, seconds=30)
     async def twitch_notify(self):
-
+        channels = [797891537219747842, 942117088267489340, 942117476991389756]
         user = await self.__get_user(self.config.get('CHANNEL_NAME'))
         online_streamer: dict = await self.__get_streams(user)
 
-        tmp = []
+        for channel in channels:
+            channel = self.bot.get_channel(channel)
+            for name, data in online_streamer.items():
+                pass
 
     async def __get_app_access_token(self):
         """ PRIVATE - Gets a new OAUTH token when the other is running out
@@ -86,11 +101,11 @@ class Test(commands.Cog):
     async def __get_notify(self):
         user = await self.__get_user(self.config.get('CHANNEL_NAME'))
         current_streams = await self.__get_streams(user)
-
         notify = []
         for user_name in self.config.get('CHANNEL_NAME'):
             if user_name not in self.streamer:
                 self.streamer[user_name] = datetime.utcnow()
+            print(user_name)
 
             if user_name not in current_streams:
                 self.streamer[user_name] = None
@@ -101,8 +116,6 @@ class Test(commands.Cog):
                     self.streamer[user_name] = started_at
 
         return notify
-
-
 
 
 def setup(bot):
