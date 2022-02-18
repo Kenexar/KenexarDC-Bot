@@ -24,6 +24,10 @@ def accept_wrapper(sock):
     sel.register(conn, events, data=data)
 
 
+def sevice_connection(key, mask):
+    return
+
+
 while True:
     events = sel.select(timeout=None)
     for key, mask in events:
