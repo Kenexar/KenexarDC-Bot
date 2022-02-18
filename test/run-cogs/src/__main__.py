@@ -55,7 +55,7 @@ if __name__ == '__main__':
     if platform == 'Linux':
         command = 'clear'
 
-    subprocess.call(command, shell=False)
+    # subprocess.call([command], shell=False)
 
     load()
     bot = define_global_vars(bot)

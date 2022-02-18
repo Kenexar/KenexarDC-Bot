@@ -144,3 +144,4 @@ test/run-cogs/cogs/etc/config.py
 API/config.py
 
 /test/run-cogs/src/twitchconfig.json
+/discord/twitchconfig.json
