@@ -1,5 +1,6 @@
 import os
 import platform
+import subprocess
 from multiprocessing import Process
 
 import nextcord
@@ -54,13 +55,13 @@ if __name__ == '__main__':
     if platform == 'Linux':
         command = 'clear'
 
-    os.system(command)
+    subprocess.call(command, shell=False)
 
     load()
     bot = define_global_vars(bot)
 
     discord = Process(target=bot.run(bot.token))
-    twitch = Process(target=tbot.run())
+    # twitch = Process(target=tbot.run())
 
     discord.start()
     # discord.run()

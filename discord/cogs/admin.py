@@ -9,20 +9,6 @@ from nextcord.ext.commands import CommandNotFound
 from nextcord.ext.commands.errors import MissingPermissions
 
 
-# todo:
-#   get, del, add, clear
-#       getVehicleTrunk
-#		delUser
-#       delVehicles
-#       delWeapon
-#       clearInventory
-#       clearVehicleTrunk
-#       clearUserMoney
-#       addUserMoney
-#       whitelist request
-#       help permission system
-
-
 class Admin(commands.Cog):
     """ Admin class for Moderation actions """
 
@@ -32,25 +18,6 @@ class Admin(commands.Cog):
 
         self.guild = None
         self.logger = None
-
-        self.GET_OPTIONS = [
-            'user', 'u',
-            'vehicletrunk', 'vh', 'Null'
-        ]
-
-        self.DEL_OPTIONS = [
-            'fuser', 'fu',
-            'veh', 'vehicle',
-            'vehtrunk', 'veht',
-            'usermoney', 'um',
-            'inv', 'inventory',
-            'weapons', 'Null'
-        ]
-
-        self.ADD_OPTIONS = [
-            'um', 'usermoney',
-            'weapons'
-        ]
 
     @commands.Cog.listener()
     async def on_ready(self):

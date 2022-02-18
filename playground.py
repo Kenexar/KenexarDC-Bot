@@ -10,7 +10,9 @@
 #
 # print('Received: ', repr(data))
 
-from datetime import datetime
-import pytz
 
-print(datetime.now(pytz.timezone('Europe/')))
+# Streamer list => ['user_id']
+# if streamer_id in streamer_list: ret
+# streamer_list.append(streamer_id)
+#
+# print('12345' in streamer_list.values())
