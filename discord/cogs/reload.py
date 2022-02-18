@@ -111,7 +111,7 @@ class AutoModuleReloader(commands.Cog):
     async def module_reload_auto_filler(self):
         await self.module_reload_list_updater()
 
-    @commands.group()
+    @commands.group(aliases=['mr'])
     async def modulereload(self, ctx):
         if ctx.author.id != self.bot.authorid:
             raise CommandNotFound
@@ -133,7 +133,7 @@ class AutoModuleReloader(commands.Cog):
                     self.changed_modules.append(module_name)
 
     @modulereload.command()
-    async def reload(self, ctx):
+    async def rl(self, ctx):
         if ctx.author.id != self.bot.authorid:
             raise CommandNotFound
 
@@ -145,7 +145,7 @@ class AutoModuleReloader(commands.Cog):
         await ctx.send('Reload was successfully')
 
     @modulereload.command()
-    async def list(self, ctx):
+    async def ls(self, ctx):
         if ctx.author.id != self.bot.authorid:
             raise CommandNotFound
 
