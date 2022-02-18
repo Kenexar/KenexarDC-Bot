@@ -130,7 +130,7 @@ class Roles(commands.Cog):
         view = View()
         ect = self.embed_content_type['2']
 
-        # await self.agent_selector_msg(ect)
+        await self.agent_selector_msg(ect)
 
         # async for message in ch.history():
         #     # if not message.components:
@@ -220,7 +220,9 @@ class Roles(commands.Cog):
         :return: ViewObject
         :rtype: Object
         """
-        view = View()
+        view = View(timeout=None)
+        print(view.is_persistent())
+        print(view.__repr__())
         for key in ect['list']:
             view.add_item(Button(label=key, style=ButtonStyle.blurple, emoji=ect['list'][key], custom_id=key))
         return view
@@ -259,7 +261,6 @@ class Roles(commands.Cog):
         if str(interaction.type) == 'InteractionType.application_command':
             return
 
-        print()
         reaction_id = interaction.data['custom_id']
 
         member = interaction.user

@@ -118,15 +118,17 @@ class Admin(commands.Cog):
             return await ctx.send(embed=await whitelist('list', 'payload', cur_base))
         return await ctx.send('The argument is not valid!')
 
-    @nextcord.slash_command(name='help', description='Show the help site for the Bot', force_global=True, guild_ids=[])
-    async def help(self, interaction: nextcord.Interaction):
-        if interaction.user.id == self.bot.authorid:
-            await interaction.response.send_message(embed=await help_site('full'))
+    # @nextcord.slash_command(name='help', description='Show the help site for the Bot', force_global=True, guild_ids=[])
+    @commands.Command
+    async def help(self, ctx: commands.Context):
+        if ctx.author.id == self.bot.authorid:
+            await ctx.send(embed=await help_site('full'))
             return
-        await interaction.response.send_message(embed=await help_site())
+        await ctx.send(embed=await help_site())
 
-    @nextcord.slash_command(name='credits', description='Show the credits for the Bot', guild_ids=[], force_global=True)
-    async def credits(self, interaction: nextcord.Interaction):
+    # @nextcord.slash_command(name='credits', description='Show the credits for the Bot', guild_ids=[], force_global=True)
+    @commands.Command
+    async def credits(self, ctx: commands.Context):
         message = """
 Creater: exersalza#1337, ZerxDE#8183
 Maintained by: exersalza#1337
@@ -146,7 +148,7 @@ Maintained by: exersalza#1337
                                description=message,
                                color=self.bot.embed_st,
                                timestamp=self.bot.current_timestamp)
-        return await interaction.response.send_message(embed=embed)
+        return await ctx.send(embed=embed)
 
 
 def setup(bot):

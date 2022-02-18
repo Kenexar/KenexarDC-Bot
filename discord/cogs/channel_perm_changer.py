@@ -24,8 +24,9 @@ class ChannelPermChanger(commands.Cog):
         ]
 
     # @commands.command(name='channel')
-    @nextcord.slash_command(name='channel', description='Change settings in your Private voice channel', guild_ids=[],
-                            force_global=True)
+    # @nextcord.slash_command(name='channel', description='Change settings in your Private voice channel', guild_ids=[],
+                            #force_global=True)
+    @commands.command(name='channel')
     async def _channel(self, interaction: nextcord.Interaction):
         # Maybe subcommands?
         return await interaction.response.send_message('...Maintenance...')
