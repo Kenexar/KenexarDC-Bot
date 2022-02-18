@@ -1,4 +1,3 @@
-from cogs.etc.config import AUTHORID
 from nextcord.ext import commands
 from nextcord.ext.commands import CommandNotFound
 

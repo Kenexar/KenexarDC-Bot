@@ -68,7 +68,7 @@ class JoinToCreate(commands.Cog):
         channel_ids = [(ch.id, 5), (ch.category.id, 6)]
 
         for i in channel_ids:
-            cur.execute("insert into serverchannel(server_id, channel_id, channel_type) values (%s, %s, %s);",
+            cur.execute("insert into dcbots.serverchannel(server_id, channel_id, channel_type) values (%s, %s, %s);",
                         (ctx.message.guild.id,) + i)
         self.bot.dbBase.commit()
         cur.close()

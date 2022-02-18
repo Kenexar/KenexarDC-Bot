@@ -5,6 +5,7 @@ from cogs.etc.embeds import user_info
 from cogs.etc.presets import parser, get_perm
 from nextcord.ext import commands
 
+
 # I don't wanna touch this thingi here
 
 
@@ -112,7 +113,7 @@ class GtaRP(commands.Cog):
             you can remove/clear weapons, money, vehicles, maybe sprays
         """
 
-    pass
+        pass
 
     @commands.command()
     async def add(self, ctx, *args):
@@ -121,8 +122,7 @@ class GtaRP(commands.Cog):
             add thing to the users entrie.
             you can add usermoney, weapons, vehicles
         """
-
-    pass
+        pass
 
     @commands.Command
     async def einreise(self, ctx, *args):
@@ -149,6 +149,7 @@ class GtaRP(commands.Cog):
                 return await ctx.send('User got deleted from the Db')
 
             cur.close()
+
             return await ctx.send('You are not Authorized to delete user Entries'), \
                    await self.logger.send(f'{ctx.message.author} tried to use the `einreise` command!')
 

@@ -142,3 +142,5 @@ pyproject.toml
 discord/cogs/logs/
 test/run-cogs/cogs/etc/config.py
 API/config.py
+
+/test/run-cogs/src/twitchconfig.json

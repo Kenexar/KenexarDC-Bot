@@ -1,14 +1,13 @@
-import pytz
 from datetime import datetime
 
 import mysql.connector
+import pytz
 
 AUTHORID = 123123123  # Discord id
 
-
 ## [SQL STUFF] ##
 
-HOST = 'YOUR HOST IP' # usally to test something, you use the 127.0.0.1 or localhost
+HOST = 'YOUR HOST IP'  # usally to test something, you use the 127.0.0.1 or localhost
 PASSWORD = 'YOUR DB PASSWORD'
 
 DBBASE = 'USE dcbots;'
@@ -32,7 +31,6 @@ PROJECT_NAME = 'KenexarBot'
 
 config = []
 foo = 1
-
 
 cur_db.execute("SELECT * FROM tokens WHERE Name=%s;", (PROJECT_NAME,))
 config.append(cur_db.fetchall()[::])

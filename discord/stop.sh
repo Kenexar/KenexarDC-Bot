@@ -7,4 +7,3 @@ echo "Bot is stopped"
 screen -X -S gitUpdaterMrPython kill
 
 echo "Git-Updater stopped"
-

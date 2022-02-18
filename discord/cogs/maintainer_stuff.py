@@ -1,4 +1,5 @@
 import os
+import subprocess
 
 from nextcord.ext import commands
 from nextcord.ext.commands import CommandNotFound
@@ -10,7 +11,7 @@ class MaintainerStuff(commands.Cog):
 
     @commands.Command
     async def restart(self, ctx):
-        """ Owner Bot restart command. Thre bot has also an Module reload module, but its not here
+        """ Owner Bot restart command. The bot has also a Module reload module, but it's not here
 
         :param ctx:
         :type ctx:
@@ -21,7 +22,7 @@ class MaintainerStuff(commands.Cog):
             raise CommandNotFound
 
         await ctx.send('Starting doomsday protocol, please wait...')
-        os.system('./restart.sh')
+        subprocess.call('./restart.sh', shell=False)
 
 
 def setup(bot):

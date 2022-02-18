@@ -12,4 +12,3 @@ def get_new_access_token():
     token = res.json()['access_token']
     print(token)
     return str('oauth:' + token)
-

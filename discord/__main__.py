@@ -1,5 +1,6 @@
 import os
 import platform
+import subprocess
 import time
 from multiprocessing import Process
 
@@ -7,9 +8,8 @@ import nextcord
 from alive_progress import alive_bar
 from nextcord.ext import commands
 
-from cogs.etc.config import TOKEN, PREFIX, FLASK, PROJECT_NAME
+from cogs.etc.config import PREFIX, PROJECT_NAME
 from cogs.etc.flask_server import start_server
-
 from define_global_vars import define_global_vars
 
 intents = nextcord.Intents.all()
@@ -45,7 +45,7 @@ if __name__ == '__main__':
     if platform == 'Linux':
         command = 'clear'
 
-    os.system(command)
+    subprocess.call(command, shell=False)
 
     print("""
 ┌────────────────────────────────────────────────────────────────────┐

@@ -1,12 +1,11 @@
 import os
 import platform
-import time
 from multiprocessing import Process
-from alive_progress import alive_bar
 
+from alive_progress import alive_bar
 from twitchio.ext import commands
+
 from cogs.etc import config
-from new_token import get_new_access_token
 
 # event_usernotice_subscription(payload)
 
@@ -15,7 +14,6 @@ bot = commands.Bot(token=config.OAUTH,
                    nick=config.BOT_USERNAME,
                    prefix=config.PREFIX,
                    initial_channels=config.CHANNEL_NAME)
-
 
 names = ['__init__.py']
 count = 0
@@ -50,4 +48,3 @@ if __name__ == '__main__':
 
     Client = Process(target=bot.run())
     Client.start()
-

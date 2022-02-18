@@ -1,5 +1,3 @@
-from datetime import datetime
-
 import nextcord
 from cogs.etc.presets import lvl_up, add_points
 from nextcord.ext import commands

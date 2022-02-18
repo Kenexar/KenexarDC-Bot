@@ -9,7 +9,7 @@ class Fun(commands.Cog):
     async def opfer(self, ctx):
         await ctx.send(f'Maul {ctx.message.author.mention}')
 
-    @commands.Command
+    @commands.Command  # testing some stuff
     async def bug(self, ctx):
         return await ctx.send(f'There are no Bugs! only features!')
 

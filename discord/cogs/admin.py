@@ -73,7 +73,10 @@ class Admin(commands.Cog):
 
         if isinstance(error, nextcord.errors.NotFound):
             return
-        raise error
+
+        ch = self.bot.get_channel(self.bot.log_channel)
+        err_message = f"""{error}\n<@{self.bot.authorid}>"""
+        return await ch.send(err_message)
 
     @commands.command(name='whitelist')
     async def _whitelist(self, ctx, *args):
@@ -93,9 +96,9 @@ class Admin(commands.Cog):
         cur_base = self.bot.dbBase.cursor()
         cur_base.execute("use dcbots;")
 
-        id = ctx.message.author.id
+        uid = ctx.message.author.id
 
-        if await get_perm(id) != 5:
+        if await get_perm(uid) != 5:
             return await ctx.send('You are not Authorized to manage the Whitelist'), \
                    await self.logger.send(f'{ctx.author} tried to use the `whitelist` command!')
 
@@ -115,15 +118,17 @@ class Admin(commands.Cog):
             return await ctx.send(embed=await whitelist('list', 'payload', cur_base))
         return await ctx.send('The argument is not valid!')
 
-    @nextcord.slash_command(name='help', description='Show the help site for the Bot', force_global=True, guild_ids=[])
-    async def help(self, interaction: nextcord.Interaction):
-        if interaction.user.id == self.bot.authorid:
-            await interaction.response.send_message(embed=await help_site('full'))
+    # @nextcord.slash_command(name='help', description='Show the help site for the Bot', force_global=True, guild_ids=[])
+    @commands.Command
+    async def help(self, ctx: commands.Context):
+        if ctx.author.id == self.bot.authorid:
+            await ctx.send(embed=await help_site('full'))
             return
-        await interaction.response.send_message(embed=await help_site())
+        await ctx.send(embed=await help_site())
 
-    @nextcord.slash_command(name='credits', description='Show the credits for the Bot', guild_ids=[], force_global=True)
-    async def credits(self, interaction: nextcord.Interaction):
+    # @nextcord.slash_command(name='credits', description='Show the credits for the Bot', guild_ids=[], force_global=True)
+    @commands.Command
+    async def credits(self, ctx: commands.Context):
         message = """
 Creater: exersalza#1337, ZerxDE#8183
 Maintained by: exersalza#1337
@@ -143,7 +148,7 @@ Maintained by: exersalza#1337
                                description=message,
                                color=self.bot.embed_st,
                                timestamp=self.bot.current_timestamp)
-        return await interaction.response.send_message(embed=embed)
+        return await ctx.send(embed=embed)
 
 
 def setup(bot):

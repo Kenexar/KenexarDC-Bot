@@ -1,11 +1,16 @@
-import socket
+# import socket
+#
+# HOST = '127.0.0.1'
+# PORT = 5555
+#
+# with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+#     sock.connect((HOST, PORT))
+#     sock.sendall(b'Hello, here am I')
+#     data = sock.recv(1024)
+#
+# print('Received: ', repr(data))
 
-HOST = '127.0.0.1'
-PORT = 5555
+from datetime import datetime
+import pytz
 
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-    sock.connect((HOST, PORT))
-    sock.sendall(b'Hello, here am I')
-    data = sock.recv(1024)
-
-print('Received: ', repr(data))
+print(datetime.now(pytz.timezone('Europe/')))
