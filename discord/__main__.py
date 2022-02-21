@@ -44,8 +44,10 @@ if __name__ == '__main__':
 
     if platform == 'Linux':
         command = 'clear'
-
-    subprocess.call(command, shell=False)
+    try:
+        subprocess.call([command], shell=False, timeout=1)
+    except FileNotFoundError:
+        pass
 
     print("""
 ┌────────────────────────────────────────────────────────────────────┐
