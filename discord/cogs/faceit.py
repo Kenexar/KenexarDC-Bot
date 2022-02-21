@@ -13,6 +13,7 @@ class ViewTimeOuter(View):
         self.embed = embed
 
     async def on_timeout(self): return
+
     async def on_error(self, error: Exception, item: Item, interaction: nextcord.Interaction): return
 
 
@@ -32,8 +33,6 @@ class Test(commands.Cog):
             9: 0xe30000,
             10: 0xe30000,
         }
-
-        self.logger = None
 
     @commands.group(no_pm=True)
     async def get(self, ctx):
@@ -98,6 +97,23 @@ class Test(commands.Cog):
 
             await interaction.edit_original_message(embed=embed)
 
+        if reaction_id == 'faceit-sync':
+            member = interaction.user
+            faceit_rank_id = await self.bot.faceit.get_players(member.display_name)
+
+            ch = self.bot.get_channel(interaction.channel_id)
+
+            if not isinstance(faceit_rank_id, dict):
+                m: nextcord.Message = await ch.send(
+                    f'{member.mention} dein name ist nicht bei Faceit eingetragen, bitte stelle sicher das dein Name richtig ist')
+                return await m.delete(delay=5)
+
+            role_name = f'SkillLevel{faceit_rank_id["games"]["csgo"]["skill_level"]}'
+            guild = self.bot.get_guild(interaction.guild.id)
+            role = nextcord.utils.get(guild.roles, name=role_name)
+
+            await member.add_roles(role)
+
 
 class FaceitRankVerification(commands.Cog):
     def __init__(self, bot):
@@ -108,16 +124,20 @@ class FaceitRankVerification(commands.Cog):
         cur = self.bot.dbBase.cursor()
         cur.execute("SELECT server_id, channel_id from dcbots.serverchannel where channel_type=7;")
         for channel in cur.fetchall():
-            ch = self.bot.get_channel(channel[1])
-            embed = nextcord.Embed(title='Faceit rang Vergabe',
-                                   description=f'Bitte achte darauf, dass wenn du unten auf den Knopf drückst, \ndass dein Dc Name mit deinen Faceit nick übereinstimmt!',
-                                   color=self.bot.embed_st,
-                                   timestamp=self.bot.current_timestamp)
-
-            view = View()
-            view.add_item(Button(style=ButtonStyle.blurple, label='Synchronize', custom_id='faceit-sync'))
+            ch, embed, view = await self.send_faceit_verify_message(channel)
             await ch.send(embed=embed, view=view)
         cur.close()
+
+    async def send_faceit_verify_message(self, channel):
+        ch: nextcord.TextChannel = self.bot.get_channel(channel[1])
+        await ch.purge()
+        embed = nextcord.Embed(title='Faceit rang Vergabe',
+                               description=f'Bitte achte darauf, dass wenn du unten auf den Knopf drückst, \ndass dein Dc Name mit deinen Faceit nick übereinstimmt!\n\nSollte sich dein Rang in laufe der Zeit ändern, drück einfach nochmal drauf',
+                               color=self.bot.embed_st,
+                               timestamp=self.bot.current_timestamp)
+        view = View()
+        view.add_item(Button(style=ButtonStyle.blurple, label='Synchronize', custom_id='faceit-sync'))
+        return ch, embed, view
 
     @commands.Command
     @has_permissions(administrator=True)
@@ -130,7 +150,7 @@ class FaceitRankVerification(commands.Cog):
 
         sql_string = 'INSERT INTO dcbots.serverchannel(server_id, channel_id, channel_type) VALUES (%s, %s, %s)'
         sql_params = (ctx.guild.id, channel, 7)
-        if fetcher:
+        if fetcher[0][0]:
             sql_string = 'UPDATE dcbots.serverchannel SET channel_id=%s WHERE server_id=%s'
             sql_params = (channel, ctx.guild.id)
 
@@ -138,9 +158,9 @@ class FaceitRankVerification(commands.Cog):
         self.bot.dbBase.commit()
         cur.close()
         await ctx.send(f'Channel <#{ctx.channel.id}> setted as faceit verify channel!')
+        ch, embed, view = await self.send_faceit_verify_message((0, ctx.channel.id))
+        await ctx.send(embed=embed, view=view)
 
-
-    #### on_interaction() -- for da home
 
 def setup(bot):
     bot.add_cog(Test(bot))
