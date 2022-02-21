@@ -14,8 +14,10 @@ from cogs.etc.config import (
     whitelist,
     current_timestamp,
     status_query,
-    fetch_whitelist
+    fetch_whitelist,
+    faceit_serverkey
 )
+from utils.faceit import FaceitAPI
 
 
 def define_global_vars(bot):
@@ -35,5 +37,8 @@ def define_global_vars(bot):
     bot.current_timestamp = current_timestamp
     bot.status_query = status_query
     bot.fetch_whitelist = fetch_whitelist
+    # Newly added
+    bot.faceit_serverkey = faceit_serverkey
+    bot.faceit = FaceitAPI(faceit_serverkey)
 
     return bot

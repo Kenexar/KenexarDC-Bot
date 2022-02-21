@@ -28,7 +28,7 @@ class Admin(commands.Cog):
                 self.guild = server
                 self.logger = server.get_channel(self.bot.log_channel)
 
-        print(logger('info', f'Current logger channel: {self.logger.name}'))
+        print(logger('info', f'Current logger channel: {self.logger.name!r}'))
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):  # Function doing intense computing!

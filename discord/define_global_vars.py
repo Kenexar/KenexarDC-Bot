@@ -39,5 +39,7 @@ def define_global_vars(bot):
     bot.current_timestamp = current_timestamp
     bot.status_query = status_query
     bot.fetch_whitelist = fetch_whitelist
+    bot.faceit_serverkey = faceit_serverkey
+    bot.faceit = FaceitAPI(faceit_serverkey)
 
     return bot

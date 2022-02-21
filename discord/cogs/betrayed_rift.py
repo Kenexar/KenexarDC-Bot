@@ -126,24 +126,9 @@ class Roles(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):  # Here is work, it should be able to create the view new without sending a new message
-        ch = self.bot.get_channel(939179519955320902)
-        view = View()
         ect = self.embed_content_type['2']
 
         await self.agent_selector_msg(ect)
-
-        # async for message in ch.history():
-        #     # if not message.components:
-        #     #     continue
-        #
-        #     new_view = view.from_message(message)
-        #     origin_view = view.from_message(message)
-        #     new_view.clear_items()
-        #
-        #     origin_view.timeout = None
-        #     await message.edit(view=new_view)
-        #
-        #     await message.edit(view=await self.create_view(ect))
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -221,8 +206,6 @@ class Roles(commands.Cog):
         :rtype: Object
         """
         view = View(timeout=None)
-        print(view.is_persistent())
-        print(view.__repr__())
         for key in ect['list']:
             view.add_item(Button(label=key, style=ButtonStyle.blurple, emoji=ect['list'][key], custom_id=key))
         return view
@@ -262,20 +245,24 @@ class Roles(commands.Cog):
             return
 
         reaction_id = interaction.data['custom_id']
+        if reaction_id in self.emotes.keys():
 
-        member = interaction.user
-        roles: list = member.roles
+            member = interaction.user
+            roles: list = member.roles
 
-        role_name: str = reaction_id
+            role_name: str = reaction_id
 
-        guild = self.bot.get_guild(interaction.guild.id)
-        role = nextcord.utils.get(guild.roles, name=role_name)
+            guild = self.bot.get_guild(interaction.guild.id)
+            role = nextcord.utils.get(guild.roles, name=role_name)
 
-        if role not in roles:
-            await send_interaction_msg(f'Der Agent `{reaction_id}` wurde dir hinzugefügt', interaction)
-            return await member.add_roles(role)
-        await send_interaction_msg(f'Der Agent `{reaction_id}` wurde dir entfernt', interaction)
-        await member.remove_roles(role)
+            if role not in roles:
+                await send_interaction_msg(f'Der Agent `{reaction_id}` wurde dir hinzugefügt', interaction)
+                return await member.add_roles(role)
+            await send_interaction_msg(f'Der Agent `{reaction_id}` wurde dir entfernt', interaction)
+            return await member.remove_roles(role)
+
+        if reaction_id == 'csgo':
+            print(interaction.message)
 
 
 def setup(bot):

@@ -35,13 +35,6 @@ class Test(commands.Cog):
 
         self.logger = None
 
-    @commands.Cog.listener()
-    async def on_ready(self):
-        print('ready')
-
-        self.logger = self.bot.get_channel(self.bot.log_channel)
-        print(f'Current logger channel: {self.logger.name!r}')
-
     @commands.group(no_pm=True)
     async def get(self, ctx):
         pass
@@ -146,6 +139,8 @@ class FaceitRankVerification(commands.Cog):
         cur.close()
         await ctx.send(f'Channel <#{ctx.channel.id}> setted as faceit verify channel!')
 
+
+    #### on_interaction() -- for da home
 
 def setup(bot):
     bot.add_cog(Test(bot))
