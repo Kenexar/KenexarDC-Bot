@@ -17,9 +17,11 @@ class ViewTimeOuter(View):
     async def on_error(self, error: Exception, item: Item, interaction: nextcord.Interaction): return
 
 
-class Test(commands.Cog):
+class Faceit(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
+        self.logger = None
 
         self.faceit_colors = {
             1: 0xffffff,
@@ -37,6 +39,10 @@ class Test(commands.Cog):
     @commands.group(no_pm=True)
     async def get(self, ctx):
         pass
+
+    @commands.Cog.listener()
+    async def on_ready(self):
+        self.logger = self.bot.get_channel(self.bot.log_channel)
 
     @get.command(no_pm=True)
     async def player(self, ctx, player: str):
@@ -163,5 +169,5 @@ class FaceitRankVerification(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Test(bot))
+    bot.add_cog(Faceit(bot))
     bot.add_cog(FaceitRankVerification(bot))
