@@ -10,7 +10,7 @@
   * [Administration](#administration)
   * [User](#user commands)
   * [Custom Server Commands](#custom server commands)
-* [API List](api-list)
+* [API List](#api-list)
 
 ### Commands
 Here are listed all the Commands that the Bot has.
