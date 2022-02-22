@@ -10,6 +10,7 @@
   * [Administration](#administration)
   * [User](#user commands)
   * [Custom Server Commands](#custom server commands)
+* [API List](api-list)
 
 ### Commands
 Here are listed all the Commands that the Bot has.
@@ -31,3 +32,10 @@ Here are listed all the Commands that the Bot has.
 ##### Betrayed community server:
 ###### Management
   * [x] `$selfrole (agent | ranks)` -> Send the Agent/Rank selector messages new
+
+### API-List
+* [x] `Faceit` -> Player stats tracking and Player finder
+* [ ] `Trackergg` -> Player stats tracking, Player finder, Clan creation
+* [ ] `SteamWebAPI` -> Information to find multiple user with the same interests
+
+note: I (exersalza) have no partnership with any of the Games or Api Provider, I just love to API's inside of the Bot to bring a little swing inside the Community
