@@ -44,7 +44,7 @@ class MemberCounter(commands.Cog):
                 }
 
                 for channel in fetcher:
-                    if channel[1] in [5, 6]:
+                    if channel[1] >= 5:
                         continue
 
                     channel_to_edit = server.get_channel(channel[0])
