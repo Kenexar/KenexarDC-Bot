@@ -37,14 +37,14 @@ class Faceit(commands.Cog):
         }
 
     @commands.group(no_pm=True)
-    async def get(self, ctx):
+    async def faceit(self, ctx):
         pass
 
     @commands.Cog.listener()
     async def on_ready(self):
         self.logger = self.bot.get_channel(self.bot.log_channel)
 
-    @get.command(no_pm=True)
+    @faceit.command(no_pm=True)
     async def player(self, ctx, player: str):
         fetched_player: dict = await self.bot.faceit.get_players(player_name=player)
 
