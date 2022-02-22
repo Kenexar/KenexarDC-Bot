@@ -1,13 +1,25 @@
-#! /home/MrPython/venv/bin/activate
+#! /bin/bash
+eval "source /home/MrPython/venv/bin/activate"
 
-screen -X -S MrPython kill
-screen -U -m -d -S MrPython python3.8 __main__.py
+if [[ "$VIRTUAL_ENV" == "/home/MrPython/venv"]]
+then
+  screen -X -S MrPython kill
+  screen -U -m -d -S MrPython python3.8 __main__.py
 
-echo "Bot is started"
+  echo "Bot is started"
 
-screen -X -S gitUpdaterMrPython kill
-screen -U -m -d -S gitUpdaterMrPython python3.8 git-updater.py
+  if [ "$1" == "-r" ] || [ "$2" == "-r" ]
+  then
+    screen -r MrPython
+  fi
+else
+  echo "Bot cannot start"
+fi
 
-echo "Git-Updater started"
+if [ "$1" == "--full" ] || [ "$2" == "--full" ]
+then
+  screen -X -S gitUpdaterMrPython kill
+  screen -U -m -d -S gitUpdaterMrPython python3.8 git-updater.py
 
-#eval "screen -r kenexardcbot"
+  echo "Git-Updater started"
+fi
