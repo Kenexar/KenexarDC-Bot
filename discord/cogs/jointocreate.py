@@ -57,14 +57,12 @@ class JoinToCreate(commands.Cog):
         pass
 
     @jtc.command()
-    async def set(self, ctx):
-        arg = ctx.message.content.split()
-        # print(arg)
-        if len(arg) != 2:
-            return await ctx.send('No valid argument range')
+    async def set(self, ctx, channel: str):
+        if not channel.isdigit():
+            return await ctx.send('No valid argument type giving')
 
         cur = self.bot.dbBase.cursor()
-        ch = self.bot.get_channel(int(arg[1]))
+        ch = self.bot.get_channel(int(channel))
         channel_ids = [(ch.id, 5), (ch.category.id, 6)]
 
         for i in channel_ids:
