@@ -8,8 +8,8 @@
 
 * [Commands](#commands)
   * [Administration](#administration)
-  * [User](#user commands)
-  * [Custom Server Commands](#custom server commands)
+  * [User](#user-commands)
+  * [Custom Server Commands](#custom-server-commands)
 * [API List](#api-list)
 
 ### Commands
@@ -21,14 +21,14 @@ Here are listed all the Commands that the Bot has.
 * [ ] `$levelsystem (true | false)` -> To activate or deactivate the Levelsystem for the server
 * [ ] `$twitchnotify set (streamer name)` ->  Set a streamer name or more for Twitchnotify (it needed a channel to activate it)
 * [ ] `$twitchnotify define (notify channel mention)`
-#### User Commands
+#### User-Commands
 * [ ] `$jtc channel (owner | set-owner [member mention] | name [new name] | info)` -> this command changes or show information about the current channel (you must be inside a custom voice channel for that action)
 * [x] `$credits` -> Show the Credits from the Bot
 * [x] `$lyrics (artist) (title)` -> Show the lyrics to the Song!
 * [x] `$faceit player (faceit nickname)` -> Find a Faceit player and show his Csgo Stats
 * [ ] `$faceit_verify` -> Sets the current channel (where the message was send) to the Verify channel. issue: (#20)
 
-#### Custom server commands
+#### Custom-server-commands
 ##### Betrayed community server:
 ###### Management
   * [x] `$selfrole (agent | ranks)` -> Send the Agent/Rank selector messages new
