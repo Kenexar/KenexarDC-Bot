@@ -73,6 +73,7 @@ class JoinToCreate(commands.Cog):
 
         self.jtc_channel: dict = fillup(5)
         self.jtc_category: dict = fillup(6)
+        await ctx.send(f'channel: <#{ch.id}> was setted as jtc channel.')
 
 
 def setup(bot):
