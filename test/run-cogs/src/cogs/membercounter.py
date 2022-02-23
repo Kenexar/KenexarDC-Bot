@@ -1,8 +1,9 @@
+from pprint import pprint
+
 import nextcord
 from nextcord.ext import commands, tasks
 from nextcord.ext.commands import has_permissions
 from utils.channel_listener import channel_listener
-
 
 # 942103044575871040 1, 942103044575871041 2, 942103044575871042 3, 942103044575871043 4 #
 
@@ -18,7 +19,7 @@ class MemberCounter(commands.Cog):
         self.channel = await channel_listener(self.bot)
         self.current_user.start()
 
-    @tasks.loop(minutes=5)
+    @tasks.loop(minutes=10)
     async def current_user(self):
         """ Server Stats are created here, its being triggerd every 10 minutes """
 
@@ -86,10 +87,10 @@ class MemberCounter(commands.Cog):
         :rtype:
         """
         if category and category.isdigit():
-            ch: nextcord.CategoryChannel = self.bot.get_channel(int(category))
+            cur = self.bot.dbBase.cursor(buffered=True)
 
-            if str(ch.type) == 'category':
-                cur = self.bot.dbBase.cursor(buffered=True)
+            ch: nextcord.CategoryChannel = self.bot.get_channel(int(category))
+            if ch.type == nextcord.ChannelType.category:
                 if len(ch.voice_channels) >= 4:
                     ch_list = ch.voice_channels[:4]
                     cur.execute(
@@ -106,10 +107,12 @@ class MemberCounter(commands.Cog):
                                     (ctx.guild.id, channel_id[1].id, int(channel_id[0] + 1)))
                     self.bot.dbBase.commit()
                     cur.close()
-                try:
-                    cur.close()
-                except Exception:
-                    pass
+                    return
+
+            try:
+                cur.close()
+            except Exception:
+                pass
 
 
 def setup(bot):

@@ -71,11 +71,12 @@ class Reload(commands.Cog):
         if cog_module in self.unloaded_modules:
             return await ctx.send('The giving module is not Loaded!')
 
-        self.bot.unload_extension(cog_module)
-        await asyncio.sleep(1)
+        try:
+            self.bot.reload_extension(cog_module)
+        except commands.ExtensionFailed:
+            return await ctx.send(f'{cog_module=} cannot be reloaded, rollback to state before')
 
-        self.bot.load_extension(cog_module)
-        await ctx.send(f'{cog_module} Reloaded!')
+        await ctx.send(f'{cog_module=} Reloaded!')
 
     @commands.Command
     async def listmodules(self, ctx):
@@ -138,8 +139,7 @@ class AutoModuleReloader(commands.Cog):
             raise CommandNotFound
 
         for module in self.changed_modules:
-            self.bot.unload_extension(module)
-            self.bot.load_extension(module)
+            self.bot.reload_extension(module)
             self.changed_modules.remove(module)
 
         await ctx.send('Reload was successfully')
