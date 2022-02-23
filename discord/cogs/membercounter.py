@@ -17,7 +17,7 @@ class MemberCounter(commands.Cog):
 
         cur = self.bot.dbBase.cursor()
         for server in self.bot.guilds:
-            cur.execute("SELECT channel_id, channel_type FROM serverchannel WHERE server_id=%s" % server.id)
+            cur.execute("SELECT channel_id, channel_type FROM dcbots.serverchannel WHERE server_id=%s AND NOT channel_type >= 5" % server.id)
             fetcher = cur.fetchall()
 
             if fetcher:
@@ -44,9 +44,6 @@ class MemberCounter(commands.Cog):
                 }
 
                 for channel in fetcher:
-                    if channel[1] >= 5:
-                        continue
-
                     channel_to_edit = server.get_channel(channel[0])
                     await channel_to_edit.edit(name=channel_names[channel[1]] + str(channel_types[channel[1]]))
 
