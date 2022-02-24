@@ -1,7 +1,7 @@
 #! /bin/bash
 eval "source /home/MrPython/venv/bin/activate"
 
-if [[ "$VIRTUAL_ENV" == "/home/MrPython/venv"]]
+if [ "$VIRTUAL_ENV" == "/home/MrPython/venv" ]
 then
   screen -X -S MrPython kill
   screen -U -m -d -S MrPython python3.8 __main__.py
