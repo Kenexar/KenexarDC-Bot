@@ -16,7 +16,7 @@
 Here are listed all the Commands that the Bot has.
 
 #### Administration
-* [ ] `$create` -> To create a Category with four channel inside it, the channels are: all Users on the Discord, User that are Online, User inside a voice channel and All Voicechannel. issue (#19)
+* [x] `$mccreate (category id)` -> To create up to 4 channel, when more than 4 channel already available, it takes the first four, when under four channel are available it will create create channel up to 4. The channel contents are are: all Users on the Discord, User that are Online, User inside a voice channel and All Voicechannel. issue (#19)
 * [ ] `$jtc set (voicechannel id)` -> Set a Join to Create(JTC) channel. issue: (#18)
 * [ ] `$levelsystem (true | false)` -> To activate or deactivate the Levelsystem for the server
 * [ ] `$twitchnotify set (streamer name)` ->  Set a streamer name or more for Twitchnotify (it needed a channel to activate it)
