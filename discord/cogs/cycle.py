@@ -3,7 +3,6 @@ from itertools import cycle
 
 import nextcord
 from cogs.etc.embeds import help_site
-from cogs.etc.presets import get_perm
 from nextcord.ext import commands, tasks
 
 

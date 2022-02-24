@@ -17,7 +17,7 @@ __all__ = [
 
 
 class FaceitAPI:
-    """ This is the Client API version for the MrPython """
+    """ This is the Client FaceitAPI version for the MrPython """
     __version__ = '1.0.0'
 
     def __init__(self, api_key):

@@ -16,7 +16,7 @@ intents = nextcord.Intents.all()
 bot = commands.Bot(command_prefix=PREFIX,
                    intents=intents,
                    help_command=None,
-                   description=f"Created by exersalza. Project: {PROJECT_NAME}")
+                   description=f"Created by exersalza. Project: {PROJECT_NAME}",)
 
 count = 0
 names = ['__init__.py', 'playground.py', 'gtarp_stuff.py']

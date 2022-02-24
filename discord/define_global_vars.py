@@ -22,7 +22,7 @@ from cogs.etc.config import (
     fetch_whitelist,
     faceit_serverkey
 )
-from utils.faceit import FaceitAPI
+from kenutils import FaceitAPI
 
 logging.config.fileConfig('logging.conf')
 
