@@ -20,7 +20,7 @@ class Admin(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        self.bot.logger.info(f'\nReady')  # {datetime.now().strftime("%H:%M:%S - %d.%m.%y")} for later usage
+        self.bot.logger.info(f'Ready')  # {datetime.now().strftime("%H:%M:%S - %d.%m.%y")} for later usage
 
         for server in self.bot.guilds:
             if server.id == self.bot.log_server:
