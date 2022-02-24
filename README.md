@@ -35,6 +35,7 @@ Here are listed all the Commands that the Bot has.
 
 ### API-List
 * [x] `Faceit` -> Player stats tracking and Player finder
+* [x] `Lyrics.ovh` -> Get Lyrics from songs
 * [ ] `Trackergg` -> Player stats tracking, Player finder, Clan creation
 * [ ] `SteamWebAPI` -> Information to find multiple user with the same interests
 

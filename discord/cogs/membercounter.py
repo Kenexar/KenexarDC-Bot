@@ -1,10 +1,9 @@
+import asyncio
+
 import nextcord
 from nextcord.ext import commands, tasks
 from nextcord.ext.commands import has_permissions
 from utils.channel_listener import channel_listener
-
-
-# 942103044575871040 1, 942103044575871041 2, 942103044575871042 3, 942103044575871043 4 #
 
 
 class MemberCounter(commands.Cog):
@@ -47,8 +46,13 @@ class MemberCounter(commands.Cog):
             }
 
             for channel_id in channel:
-                channel_to_edit = server.get_channel(channel_id[0])
-                await channel_to_edit.edit(name=channel_names[channel_id[1]] + str(channel_types[channel_id[1]]))
+                channel_to_edit = self.bot.get_channel(channel_id[0])
+                await asyncio.sleep(1)
+
+                try:
+                    await channel_to_edit.edit(name=channel_names[channel_id[1]] + str(channel_types[channel_id[1]]))
+                except Exception as e:
+                    print(e)
 
     async def check_for_state(self, server, user_online):
         for user in server.members:
@@ -75,7 +79,7 @@ class MemberCounter(commands.Cog):
 
     @commands.Command
     @has_permissions(administrator=True)
-    async def create(self, ctx: commands.Context, category: str = None):
+    async def mccreate(self, ctx: commands.Context, category: str = None):
         """
 
         :param ctx:
@@ -86,30 +90,37 @@ class MemberCounter(commands.Cog):
         :rtype:
         """
         if category and category.isdigit():
-            ch: nextcord.CategoryChannel = self.bot.get_channel(int(category))
+            cur = self.bot.dbBase.cursor(buffered=True)
 
-            if str(ch.type) == 'category':
-                cur = self.bot.dbBase.cursor(buffered=True)
+            ch: nextcord.CategoryChannel = self.bot.get_channel(int(category))
+            if ch.type == nextcord.ChannelType.category:
+                if len(ch.voice_channels) <= 4:
+                    for i in range(5):
+                        if not len(ch.voice_channels) >= 4:
+                            await ch.create_voice_channel(name='test ' + str(i))
+
                 if len(ch.voice_channels) >= 4:
                     ch_list = ch.voice_channels[:4]
                     cur.execute(
-                        "SELECT channel_id FROM dcbots.serverchannel WHERE server_id=%s and not channel_type >= 5",
+                        "DELETE FROM dcbots.serverchannel WHERE server_id=%s and not channel_type >= 5",
                         (ctx.guild.id,))
-
-                    fetcher = cur.fetchall()
+                    self.bot.dbBase.commit()
 
                     for channel_id in enumerate(ch_list):
                         sql_string = "INSERT INTO dcbots.serverchannel(server_id, channel_id, channel_type) VALUES (%s, %s, %s)"
-                        if fetcher:
-                            sql_string = "UPDATE dcbots.serverchannel SET channel_id=%s WHERE server_id=%s AND channel_type=%s"
+
                         cur.execute(sql_string,
                                     (ctx.guild.id, channel_id[1].id, int(channel_id[0] + 1)))
                     self.bot.dbBase.commit()
                     cur.close()
-                try:
-                    cur.close()
-                except Exception:
-                    pass
+                    self.channel = await channel_listener(self.bot)
+                    return
+
+            try:
+                cur.close()
+                self.channel = await channel_listener(self.bot)
+            except Exception:
+                pass
 
 
 def setup(bot):

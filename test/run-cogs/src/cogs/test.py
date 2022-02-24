@@ -70,42 +70,6 @@ class Test(commands.Cog):
     async def on_ready(self):
         print('ready, pls dont delete me :(')
 
-    @commands.Command
-    @has_permissions(administrator=True)
-    async def create(self, ctx: commands.Context, category: str = None):
-        """
-
-        :param ctx:
-        :type ctx:
-        :param category:
-        :type category:
-        :return:
-        :rtype:
-        """
-        if category and category.isdigit():
-            ch: nextcord.CategoryChannel = self.bot.get_channel(int(category))
-
-            if str(ch.type) == 'category':
-                cur = self.bot.dbBase.cursor(buffered=True)
-                if len(ch.voice_channels) >= 4:
-                    ch_list = ch.voice_channels[:4]
-                    cur.execute("SELECT channel_id FROM dcbots.serverchannel WHERE server_id=%s and not channel_type >= 5",
-                                          (ctx.guild.id,))
-
-                    fetcher = cur.fetchall()
-
-                    for channel_id in enumerate(ch_list):
-                        sql_string = "INSERT INTO dcbots.serverchannel(server_id, channel_id, channel_type) VALUES (%s, %s, %s)"
-                        if fetcher:
-                            sql_string = "UPDATE dcbots.serverchannel SET channel_id=%s WHERE server_id=%s AND channel_type=%s"
-                        cur.execute(sql_string,
-                                    (ctx.guild.id, channel_id[1].id, int(channel_id[0] + 1)))
-                    self.bot.dbBase.commit()
-                    cur.close()
-                try:
-                    cur.close()
-                except Exception:
-                    pass
 
     @commands.Command
     async def list_all_commands(self, ctx):
