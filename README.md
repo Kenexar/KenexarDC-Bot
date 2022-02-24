@@ -17,7 +17,7 @@ Here are listed all the Commands that the Bot has.
 
 #### Administration
 * [x] `$mccreate (category id)` -> To create up to 4 channel, when more than 4 channel already available, it takes the first four, when under four channel are available it will create create channel up to 4. The channel contents are are: all Users on the Discord, User that are Online, User inside a voice channel and All Voicechannel.
-* [ ] `$jtc set (voicechannel id)` -> Set a Join to Create(JTC) channel. issue: <a href="github.com/kenexar/discord-mr-python/issues/18">#18</a>
+* [ ] `$jtc set (voicechannel id)` -> Set a Join to Create(JTC) channel. issue: ([#18](i18))
 * [ ] `$levelsystem (true | false)` -> To activate or deactivate the Levelsystem for the server
 * [ ] `$twitchnotify set (streamer name)` ->  Set a streamer name or more for Twitchnotify (it needed a channel to activate it)
 * [ ] `$twitchnotify define (notify channel mention)`
@@ -26,7 +26,7 @@ Here are listed all the Commands that the Bot has.
 * [x] `$credits` -> Show the Credits from the Bot
 * [x] `$lyrics (artist) (title)` -> Show the lyrics to the Song!
 * [x] `$faceit player (faceit nickname)` -> Find a Faceit player and show his Csgo Stats
-* [ ] `$faceit_verify` -> Sets the current channel (where the message was send) to the Verify channel. issue: <a href="github.com/kenexar/discord-mr-python/issues/20">#20</a>
+* [ ] `$faceit_verify` -> Sets the current channel (where the message was send) to the Verify channel. issue: ([#20](i20))
 
 #### Custom-server-commands
 ##### Betrayed community server:
@@ -40,3 +40,6 @@ Here are listed all the Commands that the Bot has.
 * [ ] `SteamWebAPI` -> Information to find multiple user with the same interests
 
 note: I (exersalza) have no partnership with any of the Games or Api Provider, I just love to have API's inside of the Bot to bring a little swing inside the Community
+
+[i20]: https://github.com/kenexar/discord-mr-python/issues/20
+[i18]: https://github.com/kenexar/discord-mr-python/issues/18
