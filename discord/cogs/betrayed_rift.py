@@ -14,7 +14,7 @@ async def send_interaction_msg(message: str, interaction: nextcord.Interaction, 
     try:
         await interaction.followup.send(message, ephemeral=tmp)
     except Exception as e:
-        print('interaction failed', e)
+        print(e)
 
 
 class Roles(commands.Cog):
@@ -127,7 +127,7 @@ class Roles(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):  # Here is work, it should be able to create the view new without sending a new message
         ect = self.embed_content_type['2']
-
+        self.ch = self.bot.get_channel(801843320543641652)
         await self.agent_selector_msg(ect)
 
     @commands.Cog.listener()
@@ -260,9 +260,6 @@ class Roles(commands.Cog):
                 return await member.add_roles(role)
             await send_interaction_msg(f'Der Agent `{reaction_id}` wurde dir entfernt', interaction)
             return await member.remove_roles(role)
-
-        if reaction_id == 'csgo':
-            print(interaction.message)
 
 
 def setup(bot):

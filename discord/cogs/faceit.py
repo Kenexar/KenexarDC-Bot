@@ -49,6 +49,7 @@ class Faceit(commands.Cog):
         fetched_player: dict = await self.bot.faceit.get_players(player_name=player)
 
         if not isinstance(fetched_player, dict):
+            self.bot.logger.error(f'FaceitAPI: ret code: {fetched_player}')
             await self.logger.send(f'<@{self.bot.authorid}> Faceit API return code {fetched_player}')
             return await ctx.send('Spieler nicht gefunden, oder der Service ist momentan nicht Verfügbar')
 

@@ -18,6 +18,10 @@ from cogs.etc.config import (
     faceit_serverkey
 )
 
+import logging
+import logging.config
+logging.config.fileConfig('../../../discord/logging.conf')
+
 
 def define_global_vars(bot):
     bot.authorid = AUTHORID
@@ -36,6 +40,7 @@ def define_global_vars(bot):
     bot.current_timestamp = current_timestamp
     bot.status_query = status_query
     bot.fetch_whitelist = fetch_whitelist
+    bot.logger = logging.getLogger('MrPython')
     # Newly added
 
 

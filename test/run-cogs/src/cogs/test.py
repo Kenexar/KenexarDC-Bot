@@ -1,10 +1,5 @@
-import mysql.connector.connection
-import nextcord
-from nextcord import ButtonStyle
 from nextcord.ext import commands
-from nextcord.ext.commands import has_permissions
-from nextcord.ui import Button, Item
-from nextcord.ui import View
+from nextcord.ext.commands import CommandNotFound
 
 
 class Test(commands.Cog):
@@ -68,12 +63,9 @@ class Test(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print('ready, pls dont delete me :(')
+        self.bot.logger.info('Ready, pls don\'t delete me :(')
 
-
-    @commands.Command
-    async def list_all_commands(self, ctx):
-        pass
+        raise CommandNotFound()
 
 
 def setup(bot):

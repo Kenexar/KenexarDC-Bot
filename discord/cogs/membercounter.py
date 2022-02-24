@@ -52,7 +52,7 @@ class MemberCounter(commands.Cog):
                 try:
                     await channel_to_edit.edit(name=channel_names[channel_id[1]] + str(channel_types[channel_id[1]]))
                 except Exception as e:
-                    print(e)
+                    self.bot.logger.error(e)
 
     async def check_for_state(self, server, user_online):
         for user in server.members:

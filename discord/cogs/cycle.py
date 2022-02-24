@@ -9,6 +9,7 @@ from nextcord.ext import commands, tasks
 
 # todo:
 #  remove
+from nextcord.ext.commands import CommandNotFound
 
 
 class Cycle(commands.Cog):
@@ -32,11 +33,11 @@ class Cycle(commands.Cog):
 
     @commands.command()
     async def cadd(self, ctx):
+        if ctx.message.author.id != self.bot.authorid:
+            raise CommandNotFound
+
         cur = self.bot.dbBase.cursor(buffered=True)
         cur.execute('USE dcbots;')
-
-        if await get_perm(ctx.message.author.id) < 5:
-            return await ctx.send('You are not authorized to add something to the Presence Query')
 
         to_check = ctx.message.content[5:].strip()
 

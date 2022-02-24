@@ -3,7 +3,6 @@ from datetime import datetime
 import nextcord
 from cogs.etc.embeds import help_site
 from cogs.etc.presets import whitelist, get_perm
-from cogs.logger.logger import logger
 from nextcord.ext import commands
 from nextcord.ext.commands import CommandNotFound
 from nextcord.ext.commands.errors import MissingPermissions
@@ -21,14 +20,14 @@ class Admin(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print(f'\nReady at {datetime.now().strftime("%H:%M:%S - %d.%m.%y")}')
+        self.bot.logger.info(f'\nReady')  # {datetime.now().strftime("%H:%M:%S - %d.%m.%y")} for later usage
 
         for server in self.bot.guilds:
             if server.id == self.bot.log_server:
                 self.guild = server
                 self.logger = server.get_channel(self.bot.log_channel)
 
-        print(logger('info', f'Current logger channel: {self.logger.name!r}'))
+        self.bot.logger.info(f'Current logger channel: {self.logger.name!r}')
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):  # Function doing intense computing!
@@ -41,8 +40,11 @@ class Admin(commands.Cog):
         if isinstance(error, nextcord.errors.NotFound):
             return
 
+        # Err logging section
         ch = self.bot.get_channel(self.bot.log_channel)
         err_message = f"""{error}\n<@{self.bot.authorid}>"""
+        self.bot.logger.error(error)
+
         return await ch.send(err_message)
 
     @commands.command(name='whitelist')
@@ -57,6 +59,7 @@ class Admin(commands.Cog):
         :rtype:
         """
         if ctx.message.author.id not in self.whitelist:
+            self.bot.logger.warning(f'{ctx.message.author} tried to use the whitelist command')
             return await ctx.send('You are not Authorized to manage the Whitelist'), \
                    await self.logger.send(f'{ctx.message.author} tried to use the `whitelist` command!')
 
@@ -66,6 +69,7 @@ class Admin(commands.Cog):
         uid = ctx.message.author.id
 
         if await get_perm(uid) != 5:
+            self.bot.logger.warning(f'{ctx.message.author} tried to use the whitelist command')
             return await ctx.send('You are not Authorized to manage the Whitelist'), \
                    await self.logger.send(f'{ctx.author} tried to use the `whitelist` command!')
 
@@ -96,6 +100,7 @@ class Admin(commands.Cog):
     # @nextcord.slash_command(name='credits', description='Show the credits for the Bot', guild_ids=[], force_global=True)
     @commands.Command
     async def credits(self, ctx: commands.Context):
+        self.bot.info('Someone cares about me :)')
         message = """
 Creater: exersalza#1337, ZerxDE#8183
 Maintained by: exersalza#1337

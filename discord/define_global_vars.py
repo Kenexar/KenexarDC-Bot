@@ -1,3 +1,6 @@
+import logging
+import logging.config
+
 from cogs.etc.config import (
     AUTHORID,
     DBESSENT,
@@ -21,6 +24,8 @@ from cogs.etc.config import (
 )
 from utils.faceit import FaceitAPI
 
+logging.config.fileConfig('logging.conf')
+
 
 def define_global_vars(bot):
     bot.authorid = AUTHORID
@@ -43,5 +48,6 @@ def define_global_vars(bot):
     bot.fetch_whitelist = fetch_whitelist
     bot.faceit_serverkey = faceit_serverkey
     bot.faceit = FaceitAPI(faceit_serverkey)
+    bot.logger = logging.getLogger('MrPython')
 
     return bot
