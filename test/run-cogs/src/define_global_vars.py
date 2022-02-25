@@ -41,6 +41,7 @@ def define_global_vars(bot):
     bot.status_query = status_query
     bot.fetch_whitelist = fetch_whitelist
     bot.logger = logging.getLogger('MrPython')
+    bot.server_settings = None
     # Newly added
 
 

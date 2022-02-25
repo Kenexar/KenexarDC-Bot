@@ -5,6 +5,8 @@ from nextcord.ext import commands
 
 # Todo:
 # server deactivate/activate
+from nextcord.ext.commands import CommandNotFound
+
 
 class Points(commands.Cog):
     def __init__(self, bot):
@@ -15,14 +17,20 @@ class Points(commands.Cog):
         if message.author.bot:
             return
 
+        if message.guild.id not in self.bot.server_settings:
+            return
+
+        if not self.bot.server_settings[message.guild.id].get('enable_points'):
+            return
+
         cur = self.bot.dbBase.cursor(buffered=True)
 
-        cur.execute("SELECT Level, Experience, Multiplier, Coins FROM points WHERE User=%s;", (message.author.id,))
+        cur.execute("SELECT Level, Experience, Multiplier, Coins FROM dcbots.points WHERE User=%s;", (message.author.id,))
         fetcher = cur.fetchone()
 
         if not fetcher:
             cur.execute(
-                "INSERT INTO points(User, Coins, Experience, Level, Multiplier, Name) VALUES (%s, %s, %s, %s, %s, %s);",
+                "INSERT INTO dcbots.points(User, Coins, Experience, Level, Multiplier, Name) VALUES (%s, %s, %s, %s, %s, %s);",
                 (message.author.id, 100, 0, 1, 1, self.bot.project_name))
             self.bot.dbBase.commit()
             cur.close()
@@ -37,24 +45,14 @@ class Points(commands.Cog):
     @commands.command()
     async def top(self, ctx):
         # Top placed on the Server
-        cursor = self.bot.dbBase.cursor(buffered=True)
-
-        cursor.execute("SELECT User, Points FROM points WHERE Name=%s", (self.bot.project_name,))
-
-        fetcher = cursor.fetchall()
-
-        for i in fetcher:
-            print(i)
-
-        cursor.close()
-        pass
+        raise CommandNotFound
 
     @commands.command()
     async def level(self, ctx, user=None):
         # Show the Player information for the Game lulw, it returns an embed i think
         cur = self.bot.dbBase.cursor()
 
-        cur.execute("SELECT Level, Experience, Multiplier, Coins FROM points WHERE User=%s and Name=%s;",
+        cur.execute("SELECT Level, Experience, Multiplier, Coins FROM dcbots.points WHERE User=%s and Name=%s;",
                     (user.strip("<@!>") if user else ctx.message.author.id, self.bot.project_name))
 
         fetcher = cur.fetchone()

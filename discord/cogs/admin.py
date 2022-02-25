@@ -18,9 +18,33 @@ class Admin(commands.Cog):
         self.guild = None
         self.logger = None
 
+    async def filler(self) -> dict:
+        cur = self.bot.dbBase.cursor(buffered=True)
+
+        cur.execute("SHOW columns FROM dcbots.server_settings")
+        columns_fetcher = cur.fetchall()
+
+        columns = []
+        ret = {}
+
+        for column in columns_fetcher:
+            if not column[0] == 'id':
+                columns.append(column[0])
+
+        cur.execute("SELECT %s FROM dcbots.server_settings" % (', '.join(columns),))
+        fetcher = cur.fetchall()
+        cur.close()
+
+        for k, *v in fetcher:
+            ret[k] = dict(zip(columns[1:], v))
+
+        return ret
+
     @commands.Cog.listener()
     async def on_ready(self):
         self.bot.logger.info(f'Ready')  # {datetime.now().strftime("%H:%M:%S - %d.%m.%y")} for later usage
+
+        self.bot.server_settings = await self.filler()
 
         for server in self.bot.guilds:
             if server.id == self.bot.log_server:

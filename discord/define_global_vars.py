@@ -22,7 +22,7 @@ from cogs.etc.config import (
     fetch_whitelist,
     faceit_serverkey
 )
-from kenutils import FaceitAPI
+from kenutils.src.core import FaceitAPI
 
 logging.config.fileConfig('logging.conf')
 
@@ -49,5 +49,6 @@ def define_global_vars(bot):
     bot.faceit_serverkey = faceit_serverkey
     bot.faceit = FaceitAPI(faceit_serverkey)
     bot.logger = logging.getLogger('MrPython')
+    bot.server_settings = None
 
     return bot
