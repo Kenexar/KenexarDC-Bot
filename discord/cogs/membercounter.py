@@ -3,7 +3,7 @@ import asyncio
 import nextcord
 from nextcord.ext import commands, tasks
 from nextcord.ext.commands import has_permissions
-from kenutils import channel_listener
+from kenutils.src.core import channel_listener
 
 
 class MemberCounter(commands.Cog):

@@ -10,13 +10,6 @@ from nextcord.ui import View, Button
 # on restart the thing
 
 
-async def send_interaction_msg(message: str, interaction: nextcord.Interaction, tmp=True):
-    try:
-        await interaction.followup.send(message, ephemeral=tmp)
-    except Exception as e:
-        print(e)
-
-
 class Roles(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -61,7 +54,7 @@ class Roles(commands.Cog):
             'radiant': {'radiant': '<:Radiant:940594882387517491>', }
         }
 
-        self.emotes = {
+        self.bot.emotes = {
             'Astra': '<:Astra:940535357768863784>',
             'Killjoy': '<:Killjoy:940535529773080627>',
             'Brimstone': '<:Brimstone:940535426727428126>',
@@ -118,7 +111,7 @@ class Roles(commands.Cog):
                 }
             },
             '2': {
-                'list': self.emotes,
+                'list': self.bot.emotes,
                 'title': 'Wähle dein Agent',
                 'description': 'Per Rechtsklick auf die gewünschte Reaktionen werden dir deine Agenten hinzugefügt. Solltest du deine Agenten wechseln wollen, dann drück erneut auf sie, damit diese dann wieder entfernt werden!'
             }
@@ -137,7 +130,7 @@ class Roles(commands.Cog):
                 await self.ch.send(f'{message.author.name} hat den Server geboosted, Danke :)')
 
     @commands.Cog.listener()
-    async def on_member_join(self, member: nextcord.abc.Member):
+    async def on_member_join(self, member: nextcord.Member):
         if member.guild.id == 797891536746315808:
             await self.ch.send(
                 f'{member.name} ist dem Server beigetreten. Willkommen im Rift')  # Maybe insert here Mention without ping
@@ -239,28 +232,6 @@ class Roles(commands.Cog):
         if role not in roles:
             return await member.add_roles(role)
         await member.remove_roles(role)
-
-    @commands.Cog.listener()
-    async def on_interaction(self, interaction: nextcord.Interaction):  # Todo Notice
-        if str(interaction.type) == 'InteractionType.application_command':
-            return
-
-        reaction_id = interaction.data['custom_id']
-        if reaction_id in self.emotes.keys():
-
-            member = interaction.user
-            roles: list = member.roles
-
-            role_name: str = reaction_id
-
-            guild = self.bot.get_guild(interaction.guild.id)
-            role = nextcord.utils.get(guild.roles, name=role_name)
-
-            if role not in roles:
-                await send_interaction_msg(f'Der Agent `{reaction_id}` wurde dir hinzugefügt', interaction)
-                return await member.add_roles(role)
-            await send_interaction_msg(f'Der Agent `{reaction_id}` wurde dir entfernt', interaction)
-            return await member.remove_roles(role)
 
 
 def setup(bot):

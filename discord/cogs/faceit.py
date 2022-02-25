@@ -23,7 +23,7 @@ class Faceit(commands.Cog):
 
         self.logger = None
 
-        self.faceit_colors = {
+        self.bot.faceit_colors = {
             1: 0xffffff,
             2: 0x77ff00,
             3: 0x77ff00,
@@ -54,7 +54,7 @@ class Faceit(commands.Cog):
             return await ctx.send('Spieler nicht gefunden, oder der Service ist momentan nicht Verfügbar')
 
         player_csgo: dict = fetched_player['games'].get('csgo', 'No information Provided...')
-        embed = nextcord.Embed(color=self.faceit_colors.get(fetched_player['games']['csgo']['skill_level']),
+        embed = nextcord.Embed(color=self.bot.faceit_colors.get(fetched_player['games']['csgo']['skill_level']),
                                timestamp=self.bot.current_timestamp)
 
         embed.set_author(name=fetched_player['nickname'],
@@ -73,53 +73,6 @@ class Faceit(commands.Cog):
         view.add_item(Button(label='CS:GO Stats', style=ButtonStyle.blurple, custom_id=f'csgo'))
 
         return await ctx.send(embed=embed, view=view)
-
-    @commands.Cog.listener()
-    async def on_interaction(self, interaction: nextcord.Interaction):
-        reaction_id = interaction.data['custom_id']
-        if reaction_id == 'csgo':
-            username = interaction.message.embeds[0].to_dict()['author']['name']
-            user = await self.bot.faceit.get_players(player_name=username)
-            stats = await self.bot.faceit.get_player_stats(player_id=user['player_id'])
-
-            embed = nextcord.Embed(timestamp=self.bot.current_timestamp,
-                                   color=self.faceit_colors[user['games']['csgo']['skill_level']])
-
-            embed.set_author(name=user['nickname'],
-                             icon_url=user['avatar'],
-                             url=user['faceit_url'].format(lang=user['country']))
-
-            value_string = ''
-
-            for k, v in stats.items():
-                value_string += f'{k}: `{v}`\n'
-
-            embed.add_field(name='Player Info',
-                            value=f'Rank: `{user["games"]["csgo"]["skill_level"]}`\n'
-                                  f'IG Name: `{user["games"]["csgo"]["game_player_name"]}`')
-
-            embed.add_field(name='Player Stats',
-                            value=value_string,
-                            inline=False)
-
-            await interaction.edit_original_message(embed=embed)
-
-        if reaction_id == 'faceit-sync':
-            member = interaction.user
-            faceit_rank_id = await self.bot.faceit.get_players(member.display_name)
-
-            ch = self.bot.get_channel(interaction.channel_id)
-
-            if not isinstance(faceit_rank_id, dict):
-                m: nextcord.Message = await ch.send(
-                    f'{member.mention} dein name ist nicht bei Faceit eingetragen, bitte stelle sicher das dein Name richtig ist')
-                return await m.delete(delay=5)
-
-            role_name = f'SkillLevel{faceit_rank_id["games"]["csgo"]["skill_level"]}'
-            guild = self.bot.get_guild(interaction.guild.id)
-            role = nextcord.utils.get(guild.roles, name=role_name)
-
-            await member.add_roles(role)
 
 
 class FaceitRankVerification(commands.Cog):
