@@ -61,11 +61,32 @@ class Test(commands.Cog):
             },
         }
 
+    async def filler(self) -> dict:
+        cur = self.bot.dbBase.cursor(buffered=True)
+
+        cur.execute("SHOW columns FROM dcbots.server_settings")
+        columns_fetcher = cur.fetchall()
+
+        columns = []
+        ret = {}
+
+        for column in columns_fetcher:
+            if not column[0] == 'id':
+                columns.append(column[0])
+
+        cur.execute("SELECT %s FROM dcbots.server_settings" % (', '.join(columns),))
+        fetcher = cur.fetchall()
+        cur.close()
+
+        for k, *v in fetcher:
+            ret[k] = dict(zip(columns[1:], v))
+
+        return ret
+
     @commands.Cog.listener()
     async def on_ready(self):
         self.bot.logger.info('Ready, pls don\'t delete me :(')
-
-        raise CommandNotFound()
+        self.bot.server_settings = await self.filler()
 
 
 def setup(bot):
