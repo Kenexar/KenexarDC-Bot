@@ -137,9 +137,10 @@ class Roles(commands.Cog):
                 await self.ch.send(f'{message.author.name} hat den Server geboosted, Danke :)')
 
     @commands.Cog.listener()
-    async def on_member_join(self, member):
-        await self.ch.send(
-            f'{member.name} ist dem Server beigetreten. Willkommen im Rift')  # Maybe insert here Mention without ping
+    async def on_member_join(self, member: nextcord.abc.Member):
+        if member.guild.id == 797891536746315808:
+            await self.ch.send(
+                f'{member.name} ist dem Server beigetreten. Willkommen im Rift')  # Maybe insert here Mention without ping
 
     @commands.group(no_pm=True)
     @has_permissions(administrator=True)
