@@ -20,6 +20,7 @@ from cogs.etc.config import (
 
 import logging
 import logging.config
+from utils.checker import filler
 logging.config.fileConfig('../../../discord/logging.conf')
 
 
@@ -42,6 +43,7 @@ def define_global_vars(bot):
     bot.fetch_whitelist = fetch_whitelist
     bot.logger = logging.getLogger('MrPython')
     bot.server_settings = None
+    bot.set_filler = filler
     # Newly added
 
 
