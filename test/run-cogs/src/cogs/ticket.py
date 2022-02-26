@@ -21,12 +21,37 @@ class Ticket(commands.Cog):
     async def define(self, ctx, channel_id):  # db channeltype 8
         cur = self.bot.dbBase.cursor(buffered=True)
 
+        if not channel_id.isdigit():
+            return await ctx.send('Channel id is not valid!')
+
         if ctx.guild.id not in self.bot.server_settings:
             cur.execute("INSERT INTO dcbots.server_settings(server_id, enable_ticket) VALUES (%s, %s)",
                         (ctx.guild.id, 1))
 
             self.bot.dbBase.commit()
             self.bot.server_settings = await filler(self.bot)
+
+        cur.execute("SELECT channel_id FROM dcbots.serverchannel WHERE server_id=%s AND channel_type=8",
+                    (ctx.guild.id,))
+
+        fetcher = cur.fetchone()
+        await self.__create_db_entry(channel_id, ctx, cur, fetcher)
+        cur.close()
+
+        embed, view = await self.__send_ticket_message()
+        ch = self.bot.get_channel(int(channel_id))
+
+        await ch.send(embed=embed, view=view)
+        return
+
+    async def __create_db_entry(self, channel_id, ctx, cur, fetcher):
+        sql_string = "INSERT INTO dcbots.serverchannel(channel_id, server_id, channel_type) VALUES (%s, %s, %s)"
+
+        if fetcher:
+            sql_string = "UPDATE dcbots.serverchannel SET channel_id=%s WHERE server_id=%s and channel_type=%s"
+
+        cur.execute(sql_string, (int(channel_id), ctx.guild.id, 8))
+        self.bot.dbBase.commit()
 
     @ticket.command(no_pm=True)
     async def send(self, ctx: commands.Context):
@@ -44,10 +69,8 @@ class Ticket(commands.Cog):
         ch = self.bot.get_channel(fetcher[0][0])
 
         embed, view = await self.__send_ticket_message()
-        try:
-            await ch.send(embed=embed, view=view)
-        except Exception:
-            pass
+
+        await ch.send(embed=embed, view=view)
 
     async def __get_server_channel(self, ctx):
         cur = self.bot.dbBase.cursor(buffered=True)
@@ -62,13 +85,29 @@ class Ticket(commands.Cog):
     async def __send_ticket_message(self) -> Tuple[nextcord.Embed, View]:
         embed = nextcord.Embed(title='Ticket System',
                                description="Um ein Ticket zu erstellen, drücke bitte auf den Knopf.\n\nDein anliegen kannt du im Ticket auswählen.",
+                               color=self.bot.embed_st,
                                timestamp=self.bot.current_timestamp)
+
         embed.set_footer(text="MrPython - TicketTool")
-        view = View()
-        view.add_item(Button(style=ButtonStyle.blurple, label='Create Ticket', custom_id='ticket-creation', emoji=':heavy_plus_sign:'))
+        view = View(timeout=None)
+        view.add_item(Button(style=ButtonStyle.blurple, label='Create Ticket', custom_id='ticket-creation', emoji='➕'))
 
         return embed, view
 
 
+class TicketBackend(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.Cog.listener()
+    async def on_interaction(self, interaction: nextcord.Interaction):
+        i_id = interaction.data.get('custom_id', 'custom_id')
+
+        if i_id == 'ticket-creation':
+            pass
+
+
+
 def setup(bot):
     bot.add_cog(Ticket(bot))
+    bot.add_cog(TicketBackend(bot))
