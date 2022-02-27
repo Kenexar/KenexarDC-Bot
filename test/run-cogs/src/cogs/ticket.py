@@ -102,10 +102,12 @@ class TicketBackend(commands.Cog):
     @commands.Cog.listener()
     async def on_interaction(self, interaction: nextcord.Interaction):
         i_id = interaction.data.get('custom_id', 'custom_id')
+        cur = self.bot.dbBase.cursor()
 
         if i_id == 'ticket-creation':
-            pass
-
+            cur.execute("SELECT category_id FROM dcbots.tickets_serverchannel WHERE server_id=%s AND category_bind=%s",
+                        (interaction.guild.id, 0))
+            fetcher = cur.fetchall()
 
 
 def setup(bot):
