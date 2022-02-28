@@ -30,7 +30,7 @@ Here are listed all the Commands that the Bot has.
 * [x] `$lyrics (artist) (title)` -> Show the lyrics to the Song!
 * [x] `$faceit player (faceit nickname)` -> Find a Faceit player and show his Csgo Stats
 * [ ] `$faceit_verify` -> Sets the current channel (where the message was send) to the Verify channel. issue: ([#20][i20])
-#### Custom-server-commands
+#### Custom-server-command
 ##### Betrayed community server:
 ###### Management
   * [x] `$selfrole (agent | ranks)` -> Send the Agent/Rank selector messages new
