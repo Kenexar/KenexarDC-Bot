@@ -7,6 +7,8 @@ from nextcord.ext import commands
 from nextcord.ext.commands import CommandNotFound
 from nextcord.ext.commands.errors import MissingPermissions
 
+from kenutils.src.core import filler
+
 
 class Admin(commands.Cog):
     """ Admin class for Moderation actions """
@@ -23,7 +25,7 @@ class Admin(commands.Cog):
     async def on_ready(self):
         self.bot.logger.info(f'Ready')  # {datetime.now().strftime("%H:%M:%S - %d.%m.%y")} for later usage
 
-        self.bot.server_settings = await self.filler()
+        self.bot.server_settings = await filler(self.bot)
 
         for server in self.bot.guilds:
             if server.id == self.bot.log_server:
