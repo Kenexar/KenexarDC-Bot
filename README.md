@@ -23,8 +23,11 @@ Here are listed all the Commands that the Bot has.
 * [ ] `$twitchnotify define (notify channel mention)`
 * [ ] `$settickets (channelid or channel mention)` -> Set the channel for the Ticket system
 * [ ] `$enable (tickets, level, newmember)` -> Activate bot features
-* [ ] `$ticket (define | send)` -> Define: set a ticket message channel or set the standard category to send the tickets to, Send: sends the ticket creation message
-* [ ] `$serverconfig` -> Show the full server configuration
+* [x] `$ticket define (Channel/Category id)` -> Define set a ticket message channel or set the standard category to send the tickets to.
+* [x] `$ticket send` -> Sends the ticket creation message.
+* [ ] `$ticket add (option, up to 50 char)` -> Add something to the Ticket options.
+* [ ] `$ticket bind (Number 1-23)` -> Bind an Extra category for the Options.
+* [ ] `$serverconfig` -> Show the full server configuration.
 #### User-Commands
 * [ ] `$jtc channel (owner | set-owner [member mention] | name [new name] | info)` -> this command changes or show information about the current channel (you must be inside a custom voice channel for that action)
 * [x] `$credits` -> Show the Credits from the Bot
