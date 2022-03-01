@@ -146,3 +146,4 @@ API/config.py
 /test/run-cogs/src/twitchconfig.json
 /discord/twitchconfig.json
 !/discord/kenutils/pyproject.toml
+!/test/run-cogs/src/lib/badwords.json

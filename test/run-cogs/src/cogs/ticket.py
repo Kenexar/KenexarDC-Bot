@@ -1,18 +1,22 @@
+import asyncio
+import json
 import os
 import random
 from datetime import datetime
-from typing import Tuple
+from typing import Tuple, Union
 
 import nextcord
-from nextcord import TextChannel, CategoryChannel, ChannelType
+from nextcord import TextChannel, CategoryChannel, ChannelType, NotFound
 from nextcord import ButtonStyle
 from nextcord.ext import commands
-from nextcord.ext.commands import has_permissions
+from nextcord.ext.commands import has_permissions, EmojiNotFound
 from nextcord.ui import View, Button
 from utils.checker import filler
 
 from cogs.etc.config import dbBase
 
+# Todo:
+#  Channel movemint notify, button timeout on embed change, idk why, but send it new pls,
 
 class Ticket(commands.Cog):
     def __init__(self, bot):
@@ -23,9 +27,45 @@ class Ticket(commands.Cog):
     async def ticket(self, ctx):
         pass
 
+    @commands.Cog.listener()
+    async def on_command_error(self, ctx, error):  # Function doing intense computing!
+        if isinstance(error, EmojiNotFound):  # error handler
+            return await ctx.send("Emoji not found. Make sure the Custom emoji is on the this Server, or on another server where the Bot is Present")
+
+        if isinstance(error, NotFound):
+            print(error)
+            return
+
+        raise error
+
     @ticket.command(no_pm=True)
-    async def add(self, ctx: commands.Context, *option: Tuple[str]):
-        pass
+    async def add(self, ctx: commands.Context, emote: nextcord.Emoji, *option):
+        emoji = '📑'
+
+        if 'Nul' not in emote:
+            emoji = emote
+
+        if 51 <= len(' '.join(option)) >= 0:  # I know the limit is on 80 but for safety and design I put it on 50 chars
+            return await ctx.send('Your content is too big for the Buttons. Please enter a text between 1-50 Chars',
+                                  delete_after=20)
+
+        cur = self.bot.dbBase.cursor(buffered=True)
+
+        cur.execute("SELECT count(*) FROM dcbots.tickets_columns WHERE server_id=%s", (ctx.guild.id,))
+        counter = cur.fetchone()
+        category_auto_id_bind = counter[0] + 1
+
+        cur.execute("INSERT INTO dcbots.tickets_columns (column_ctx, category_bind, server_id) VALUES (%s, %s, %s)",
+                    (' '.join(option), category_auto_id_bind, ctx.guild.id))
+
+        cur.execute(
+            "INSERT INTO dcbots.ticket_button_options (server_id, category_bind, button_emoji, button_label) VALUES (%s, %s, %s, %s)",
+            (ctx.guild.id, category_auto_id_bind, str(emoji), ' '.join(option)))
+
+        self.bot.dbBase.commit()
+        cur.close()
+
+        return await ctx.send(f'{" ".join(option)!r} was setted as Ticket option and Button')
 
     @ticket.command(no_pm=True)
     async def bind(self, ctx: commands.Context, category: int, bind: int):
@@ -82,6 +122,10 @@ class Ticket(commands.Cog):
                                       delete_after=10)
 
         else:
+            try:
+                cur.close()
+            except Exception:
+                pass
             return await ctx.send('Given id is not an Category/Text channel!', delete_after=5)
 
     async def __define_init_category(self, channel_id, ctx, cur):
@@ -107,7 +151,7 @@ class Ticket(commands.Cog):
 
         await self.__create_db_entry(channel_id, ctx, cur, fetcher)
 
-        embed, view = await self.__send_ticket_message()
+        embed, view = await self.__create_ticket_message()
         ch = self.bot.get_channel(int(channel_id))
         return ch, embed, view
 
@@ -180,6 +224,20 @@ class TicketBackend(commands.Cog):
         self.bot = bot
 
         self.bot.current_ticket_list = {}
+        with open('lib/badwords.json', 'r') as bw_list:
+            self.badwords_list = json.loads(bw_list.read())
+
+    async def __is_blacklisted(self, sentence):
+        sentence_conv = []
+        if isinstance(sentence, str):
+            sentence_conv = sentence.split('-')
+
+        for word in sentence_conv:
+            for badword in self.badwords_list:
+                if word.lower() == badword:
+                    return True
+
+        return False
 
     async def __define_init_category(self, channel_id, ctx, cur):
         cur.execute("SELECT category_id FROM dcbots.tickets_serverchannel WHERE server_id=%s AND category_bind=0",
@@ -194,7 +252,7 @@ class TicketBackend(commands.Cog):
 
     @commands.Cog.listener()
     async def on_interaction(self, interaction: nextcord.Interaction):
-        i_id = interaction.data.get('custom_id', 'custom_id')
+        i_id: str = interaction.data.get('custom_id', 'custom_id')
         cur = self.bot.dbBase.cursor()
 
         if i_id == 'ticket-creation':
@@ -212,18 +270,97 @@ class TicketBackend(commands.Cog):
 
             await ch.set_permissions(interaction.user, view_channel=True, send_messages=True, read_messages=True)
 
-            cur.execute("SELECT category_bind, button_emoji, button_label FROM dcbots.ticket_button_options WHERE server_id=%s", (guild.id,))
+            cur.execute(
+                "SELECT category_bind, button_emoji, button_label FROM dcbots.ticket_button_options WHERE server_id=%s",
+                (guild.id,))
             fetcher = cur.fetchall()
+            embed = await self.__embed_generator(cur, interaction.guild.id)
+            cur.close()
 
-            view = TicketBaseView()
+            view = TicketBaseView(timeout=None)
             for btn in fetcher:
-                view.add_item(Button(label=f'{btn[0]}: {btn[2]}', emoji=str(btn[1]), style=ButtonStyle.blurple))
+                view.add_item(Button(label=f'{btn[0]}: {btn[2]}', emoji=str(btn[1]), style=ButtonStyle.blurple,
+                                     custom_id=f'custom-ticket-{btn[0]}'))
 
-            await ch.send(f'{interaction.user.mention}', view=view)
+            await ch.send(f'{interaction.user.mention}', embed=embed, view=view)
+            return
+
+        if 'custom-ticket-' in i_id:
+            cb = int(i_id.replace('custom-ticket-', ''))
+            cur.execute("SELECT category_id FROM dcbots.tickets_serverchannel WHERE category_bind=%s AND server_id=%s",
+                        (cb, interaction.guild.id))
+
+            fetcher = cur.fetchone()
+            if not fetcher:
+                await self.__edit_embed_message(interaction)
+                return
+
+            category = self.bot.get_channel(int(fetcher[0]))
+            ch: nextcord.TextChannel = interaction.channel
+
+            await ch.move(beginning=False, category=category)
+            await self.__edit_embed_message(interaction)
+
+        cur.close()
+        if 'ticket-rename' == i_id:
+            ch = interaction.channel
+            msg = '\u200b'
+
+            def check(message: nextcord.Message):
+                if message.author == interaction.user and message.channel == interaction.channel:
+                    return message
+
+            await ch.send(f"""{interaction.user.mention} Du hast nun 5 Minuten zeit den Channel namen zu ändern!
+Die Regelung dabei ist:
+Channel können nur bis zu 100 Zeichen haben, dazu zählen die '-' bei leerzeichen, die - zeichen werden automatisch eingefügt, also keine sorge.
+Sollte ein Wort in der Blacklist sein, wird dir das recht entnommen den Channel namen zu ändern!
+**Du hast nur einen Versuch, den namen zu ändern! Bitte schreibe den neuen Namen nach dieser Nachricht.**
+            """)
+
+            try:
+                msg = await self.bot.wait_for('message', check=check, timeout=5*60)
+            except asyncio.TimeoutError:
+                await ch.send('Du hast es leider nicht in der vorgegebenen Zeit geschafft')
+                return
+
+            new_msg = msg.content.replace(' ', '-')
+            is_blacklisted = await self.__is_blacklisted(new_msg)
+            if (100 < len(new_msg) > 0) or is_blacklisted:
+                await ch.send(f'{interaction.user.mention} Du hast leider die Kriterien nicht erfüllt, der Channel name kann aber immer noch durch ein Teammitglied geändert werden!', delete_after=10)
+                return
+
+            await ch.edit(name=new_msg, reason='User renamed channel')
+
+            await ch.send(f'Der Channel name wurde erfolgreich zu: \n {new_msg!r}\n geändert!', delete_after=20)
+
+    async def __edit_embed_message(self, inter: nextcord.Interaction):
+        message = inter.message
+
+        new = View(timeout=None)
+        origin = new.from_message(message)
+        for sys_btn in origin.children[-2:]:
+            new.add_item(sys_btn)
+
+        await message.edit(view=new)
+
+    async def __embed_generator(self, cur, guild_id) -> nextcord.Embed:
+        cur.execute("SELECT column_ctx, category_bind FROM dcbots.tickets_columns WHERE server_id=%s", (guild_id,))
+        fetcher = cur.fetchall()
+        desc = ''
+
+        for btn in fetcher:
+            desc = desc + f'{btn[1]}: {btn[0]}\n'
+
+        embed = nextcord.Embed(title='Ticket Creator',
+                               description=desc,
+                               color=self.bot.embed_st,
+                               timestamp=self.bot.current_timestamp)
+
+        return embed
 
 
 class TicketBaseView(View):
-    @nextcord.ui.button(label='Rename', emoji='📝', style=ButtonStyle.blurple, row=4)
+    @nextcord.ui.button(label='Rename', emoji='📝', style=ButtonStyle.blurple, row=4, custom_id='ticket-rename')
     async def rename(self, button: Button, interaction: nextcord.Interaction):
         button.disabled = True
         button.style = ButtonStyle.gray
@@ -231,7 +368,7 @@ class TicketBaseView(View):
 
     @nextcord.ui.button(label='Close', emoji='🔒', custom_id='close-ticket', style=ButtonStyle.danger, row=4)
     async def close(self, button: Button, interaction: nextcord.Interaction):
-        await interaction.response.send_message(view=TicketDeleteView())
+        await interaction.response.send_message(view=TicketDeleteView(timeout=None))
 
 
 class TicketDeleteView(View):
@@ -244,7 +381,7 @@ class TicketDeleteView(View):
 
         await ch.edit(sync_permissions=True)
         await ch.send(f'{interaction.user.mention} closed the ticket')
-        await ch.send(embed=nextcord.Embed(title='`Team Controls`'), view=TicketEndView())
+        await ch.send(embed=nextcord.Embed(title='`Team Controls`'), view=TicketEndView(timeout=None))
         await interaction.message.delete()
 
     @nextcord.ui.button(label='Cancel', style=ButtonStyle.blurple)
@@ -264,12 +401,14 @@ class TicketEndView(View):
     async def reopen(self, button: Button, interaction: nextcord.Interaction):
         await interaction.message.delete()
         ticket_owner = 0
+
         async for message in interaction.channel.history(oldest_first=True):
             ticket_owner = message.raw_mentions
             break
 
         ch: nextcord.TextChannel = interaction.channel
         member = interaction.guild.get_member(ticket_owner[0])
+
         await ch.set_permissions(member, view_channel=True, send_messages=True, read_messages=True)
         await ch.send(f'{member.mention} dein Ticket wurde wieder geöffnet')
 
@@ -294,7 +433,8 @@ class TicketEndView(View):
 
         cur = dbBase.cursor()
         # I will use 9 here for the ticket archive channel id
-        cur.execute("SELECT channel_id FROM dcbots.serverchannel WHERE server_id=%s AND channel_type=9", (interaction.guild.id,))
+        cur.execute("SELECT channel_id FROM dcbots.serverchannel WHERE server_id=%s AND channel_type=9",
+                    (interaction.guild.id,))
         fetcher = cur.fetchone()
         cur.close()
 
