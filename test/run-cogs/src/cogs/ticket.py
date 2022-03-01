@@ -1,4 +1,6 @@
+import os
 import random
+from datetime import datetime
 from typing import Tuple
 
 import nextcord
@@ -9,6 +11,8 @@ from nextcord.ext.commands import has_permissions
 from nextcord.ui import View, Button
 from utils.checker import filler
 
+from cogs.etc.config import dbBase
+
 
 class Ticket(commands.Cog):
     def __init__(self, bot):
@@ -17,6 +21,14 @@ class Ticket(commands.Cog):
     @commands.group(no_pm=True)
     @has_permissions(administrator=True)
     async def ticket(self, ctx):
+        pass
+
+    @ticket.command(no_pm=True)
+    async def add(self, ctx: commands.Context, *option: Tuple[str]):
+        pass
+
+    @ticket.command(no_pm=True)
+    async def bind(self, ctx: commands.Context, category: int, bind: int):
         pass
 
     @ticket.command(no_pm=True)
@@ -207,7 +219,7 @@ class TicketBackend(commands.Cog):
             for btn in fetcher:
                 view.add_item(Button(label=f'{btn[0]}: {btn[2]}', emoji=str(btn[1]), style=ButtonStyle.blurple))
 
-            await ch.send("Message", view=view)
+            await ch.send(f'{interaction.user.mention}', view=view)
 
 
 class TicketBaseView(View):
@@ -223,7 +235,7 @@ class TicketBaseView(View):
 
 
 class TicketDeleteView(View):
-    @nextcord.ui.button(label='Delete it', style=ButtonStyle.danger)
+    @nextcord.ui.button(label='Close it', style=ButtonStyle.danger)
     async def delete_it(self, button: Button, interaction: nextcord.Interaction):
         ch: nextcord.TextChannel = interaction.channel
 
@@ -233,10 +245,11 @@ class TicketDeleteView(View):
         await ch.edit(sync_permissions=True)
         await ch.send(f'{interaction.user.mention} closed the ticket')
         await ch.send(embed=nextcord.Embed(title='`Team Controls`'), view=TicketEndView())
+        await interaction.message.delete()
 
     @nextcord.ui.button(label='Cancel', style=ButtonStyle.blurple)
     async def cancel(self, button: Button, interaction: nextcord.Interaction):
-        await interaction.response.delete_original_message()
+        await interaction.message.delete()
 
 
 class TicketEndView(View):
@@ -245,17 +258,56 @@ class TicketEndView(View):
         ch: nextcord.TextChannel = interaction.channel
 
         m = await ch.send('Ticket will be deleted...')
-        await m.add_reaction('<:monaloadingdark:915863386196181014>')
-
         await ch.delete()
 
     @nextcord.ui.button(label='Re-Open', emoji='🔓', style=ButtonStyle.blurple)
-    async def cancel(self, button: Button, interaction: nextcord.Interaction):
-        await interaction.response.delete_original_message()
+    async def reopen(self, button: Button, interaction: nextcord.Interaction):
+        await interaction.message.delete()
+        ticket_owner = 0
+        async for message in interaction.channel.history(oldest_first=True):
+            ticket_owner = message.raw_mentions
+            break
+
+        ch: nextcord.TextChannel = interaction.channel
+        member = interaction.guild.get_member(ticket_owner[0])
+        await ch.set_permissions(member, view_channel=True, send_messages=True, read_messages=True)
+        await ch.send(f'{member.mention} dein Ticket wurde wieder geöffnet')
 
     @nextcord.ui.button(label='Archive and Delete', emoji='🗒️', style=ButtonStyle.blurple)
-    async def cancel(self, button: Button, interaction: nextcord.Interaction):
+    async def archive_and_delete(self, button: Button, interaction: nextcord.Interaction):
+        await self.__archive_ticket(interaction)
         await interaction.channel.delete()
+
+    async def __archive_ticket(self, interaction: nextcord.Interaction):
+        ch: nextcord.TextChannel = interaction.channel
+        filename = f'{ch.name}-{datetime.now().strftime("%d-%m-%y")}'
+        path = f'ticketArchive/{filename}.txt'
+
+        with open(path, 'w+', encoding='UTF-8') as file:
+            async for message in ch.history(oldest_first=True):
+                if message.author.bot:
+                    continue
+
+                message_timestamp = message.created_at.strftime("%Y-%m-%d %H:%M:%S")
+                message_content = f'{message_timestamp} | {message.author.name}#{message.author.discriminator}: {message.content}'
+                file.write(message_content + '\n')
+
+        cur = dbBase.cursor()
+        # I will use 9 here for the ticket archive channel id
+        cur.execute("SELECT channel_id FROM dcbots.serverchannel WHERE server_id=%s AND channel_type=9", (interaction.guild.id,))
+        fetcher = cur.fetchone()
+        cur.close()
+
+        guild = interaction.guild
+
+        if not fetcher:
+            archive_channel = await guild.create_text_channel('ticket-archive', category=ch.category)
+            await archive_channel.edit(sync_permissions=True)
+        else:
+            archive_channel = guild.get_channel(fetcher[0])
+
+        await archive_channel.send(filename, file=nextcord.File(path))
+        os.remove(path)
 
 
 def setup(bot):
