@@ -6,6 +6,7 @@ from datetime import datetime
 from typing import Tuple, Union
 
 import nextcord
+from mysql.connector import OperationalError
 from nextcord import TextChannel, CategoryChannel, ChannelType, NotFound
 from nextcord import ButtonStyle
 from nextcord.ext import commands
@@ -17,7 +18,8 @@ from cogs.etc.config import dbBase
 
 # Todo:
 #  Channel movemint notify,
-#  button timeout on embed change, idk why, but send it new pls
+#  Category bind
+#  Silent Ping
 
 
 class Ticket(commands.Cog):
@@ -73,8 +75,30 @@ class Ticket(commands.Cog):
 
         return await ctx.send(f'{" ".join(option)!r} was setted as Ticket option and Button')
 
+    @ticket.command(no_pm=True)
+    async def bind(self, ctx: commands.Context, category: Union[int, str], bind: int = 0):
+        if isinstance(category, str):
+            if category.lower() == 'current' and not bind:
+                category_binds = ''
+                cur = self.bot.dbBase.cursor(buffered=True)
+                cur.execute("SELECT category_id, moderation_role_id FROM dcbots.tickets_serverchannel WHERE server_id=%s",
+                            (ctx.guild.id,))
 
+                fetcher = cur.fetchall()
+                cur.close()
 
+                for category_id, role in fetcher:
+                    category_binds = f'{category_binds}\nCategory: {self.bot.get_channel(category_id).mention}'
+
+                embed = nextcord.Embed(title='Category Binds:',
+                                       description=category_binds,
+                                       color=self.bot.embed_st,
+                                       timestamp=self.bot.current_timestamp)
+                return await ctx.send(embed=embed)
+            return await ctx.send('CategoryID Cannot be a String')
+
+        if category:
+            pass
 
     @ticket.command(no_pm=True)
     async def define(self, ctx: commands.Context, channel_id: str):  # db channel type 8
@@ -95,12 +119,12 @@ class Ticket(commands.Cog):
         :return:
         :rtype:
         """
-        cur = self.bot.dbBase.cursor(buffered=True)
 
         if not channel_id.isdigit():
             return await ctx.send('Channel/Category id is not valid!')
 
         ch: TextChannel or CategoryChannel = self.bot.get_channel(int(channel_id))
+        cur = self.bot.dbBase.cursor(buffered=True)
 
         if ch.type == ChannelType.category:
             try:
@@ -130,7 +154,7 @@ class Ticket(commands.Cog):
             try:
                 cur.close()
             except Exception:
-                pass
+                print('raising')
             return await ctx.send('Given id is not an Category/Text channel!', delete_after=5)
 
     async def __define_init_category(self, channel_id, ctx, cur):
@@ -142,6 +166,7 @@ class Ticket(commands.Cog):
             sql_string = "UPDATE dcbots.tickets_serverchannel SET category_id=%s WHERE server_id=%s"
         cur.execute(sql_string, (int(channel_id), ctx.guild.id))
         self.bot.dbBase.commit()
+        cur.close()
 
     async def __create_tickets_option(self, channel_id, ctx, cur):
         if ctx.guild.id not in self.bot.server_settings:
@@ -158,6 +183,7 @@ class Ticket(commands.Cog):
 
         embed, view = await self.__create_ticket_message()
         ch = self.bot.get_channel(int(channel_id))
+        cur.close()
         return ch, embed, view
 
     async def __create_db_entry(self, channel_id, ctx, cur, fetcher):
@@ -168,10 +194,11 @@ class Ticket(commands.Cog):
 
         cur.execute(sql_string, (int(channel_id), ctx.guild.id, 8))
         self.bot.dbBase.commit()
+        cur.close()
 
     @commands.Cog.listener()
     async def on_ready(self):
-        cur = self.bot.dbBase.cursor(buffered=True)
+        cur = self.bot.dbBase.cursor()
         cur.execute("SELECT channel_id FROM dcbots.serverchannel WHERE channel_type=8")
 
         fetcher = cur.fetchall()
@@ -254,13 +281,19 @@ class TicketBackend(commands.Cog):
 
         cur.execute(sql_string, (int(channel_id), ctx.guild.id))
         self.bot.dbBase.commit()
+        cur.close()
 
     @commands.Cog.listener()
     async def on_interaction(self, interaction: nextcord.Interaction):
         i_id: str = interaction.data.get('custom_id', 'custom_id')
-        cur = self.bot.dbBase.cursor()
 
         if i_id == 'ticket-creation':
+            try:
+                cur = self.bot.dbBase.cursor()
+            except OperationalError:
+                self.bot.dbBase.reconnect()
+                cur = self.bot.dbBase.cursor()
+
             cur.execute("SELECT category_id FROM dcbots.tickets_serverchannel WHERE server_id=%s AND category_bind=%s",
                         (interaction.guild.id, 0))
 
@@ -296,21 +329,27 @@ class TicketBackend(commands.Cog):
 
         if 'custom-ticket-' in i_id:
             cb = int(i_id.replace('custom-ticket-', ''))
+            cur = self.bot.dbBase.cursor(buffered=True)
+
             cur.execute("SELECT category_id FROM dcbots.tickets_serverchannel WHERE category_bind=%s AND server_id=%s",
                         (cb, interaction.guild.id))
 
             fetcher = cur.fetchone()
+
             if not fetcher:
                 await self.__edit_embed_message(interaction)
+                cur.close()
                 return
+            cur.close()
 
             category = self.bot.get_channel(int(fetcher[0]))
             ch: nextcord.TextChannel = interaction.channel
 
-            await ch.move(beginning=False, category=category)
+            await ch.move(end=True, category=category, sync_permissions=False)
             await self.__edit_embed_message(interaction)
 
-        cur.close()
+            return
+
         if 'ticket-rename' == i_id:
             ch = interaction.channel
             msg = '\u200b'
@@ -365,6 +404,7 @@ Sollte ein Wort in der Blacklist sein, wird dir das recht entnommen den Channel 
                                color=self.bot.embed_st,
                                timestamp=self.bot.current_timestamp)
 
+        cur.close()
         return embed
 
 
