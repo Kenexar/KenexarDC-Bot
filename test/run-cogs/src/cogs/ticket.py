@@ -7,11 +7,12 @@ from typing import Tuple, Union
 
 import nextcord
 from mysql.connector import OperationalError
-from nextcord import TextChannel, CategoryChannel, ChannelType, NotFound
+from nextcord import TextChannel, CategoryChannel, ChannelType
 from nextcord import ButtonStyle
 from nextcord.ext import commands
 from nextcord.ext.commands import has_permissions, EmojiNotFound
 from nextcord.ui import View, Button
+from nextcord.errors import NotFound
 from utils.checker import filler
 
 from cogs.etc.config import dbBase
@@ -46,7 +47,7 @@ class Ticket(commands.Cog):
             return await ctx.send("Emoji not found. Make sure the Custom emoji is on the this Server, or on another server where the Bot is Present")
 
         if isinstance(error, NotFound):
-            print(error)
+            self.bot.logger.error(error)
             return
 
         raise error
@@ -106,8 +107,26 @@ class Ticket(commands.Cog):
                 return await ctx.send(embed=embed)
             return await ctx.send('CategoryID Cannot be a String')
 
-        if category:
-            pass
+        if isinstance(category and bind, int):
+            cur = await new_cur(self.bot.dbBase)
+            cur.execute("SELECT category_id FROM dcbots.tickets_serverchannel WHERE category_bind=%s and server_id=%s",
+                        (int(bind), ctx.guild.id))
+
+            fetcher = cur.fetchone()
+            sql_string = "INSERT INTO dcbots.tickets_serverchannel (category_id, category_bind, server_id) VALUES (%s, %s, %s)"
+            sql_values = (int(category), int(bind), ctx.guild.id)
+
+            if fetcher:
+                sql_string = "UPDATE dcbots.tickets_serverchannel SET category_id=%s WHERE server_id=%s and category_bind=%s"
+                sql_values = (int(category), ctx.guild.id, int(bind))
+
+            cur.execute(sql_string, sql_values)
+            self.bot.dbBase.commit()
+
+            cur.close()
+            return await ctx.send(f'<#{category}> with {bind=} was setted successfully', delete_after=10)
+
+        return await ctx.send(f'{category!r} or {bind!r} is not Numeric', delete_after=10)
 
     @ticket.command(no_pm=True)
     async def define(self, ctx: commands.Context, channel_id: str):  # db channel type 8
@@ -426,6 +445,12 @@ class TicketBaseView(View):
     async def close(self, button: Button, interaction: nextcord.Interaction):
         await interaction.response.send_message(view=TicketDeleteView(timeout=None))
 
+    async def on_error(self, err, message, interation: nextcord.Interaction):
+        if isinstance(err, NotFound):
+            return
+
+        print(err)
+
 
 class TicketSecondBaseView(View):
     @nextcord.ui.button(label='Rename', emoji='📝',
@@ -457,6 +482,12 @@ class TicketDeleteView(View):
     @nextcord.ui.button(label='Cancel', style=ButtonStyle.blurple)
     async def cancel(self, button: Button, interaction: nextcord.Interaction):
         await interaction.message.delete()
+
+    async def on_error(self, err, message, interation: nextcord.Interaction):
+        if isinstance(err, NotFound):
+            return
+
+        print(err)
 
 
 class TicketEndView(View):
@@ -511,13 +542,38 @@ class TicketEndView(View):
         guild = interaction.guild
 
         if not fetcher:
-            archive_channel = await guild.create_text_channel('ticket-archive', category=ch.category)
-            await archive_channel.edit(sync_permissions=True)
+            archive_channel = await self.__create_archive_channel(ch, guild)
+            cur = await new_cur(dbBase)
+
+            cur.execute("INSERT INTO dcbots.serverchannel (server_id, channel_id, channel_type) VALUES (%s, %s, %s)",
+                        (interaction.guild.id, archive_channel.id, 9))
+            dbBase.commit()
+            cur.close()
         else:
             archive_channel = guild.get_channel(fetcher[0])
+            if archive_channel is None:
+                archive_channel = await self.__create_archive_channel(ch, guild)
+                cur = await new_cur(dbBase)
+
+                cur.execute("UPDATE dcbots.serverchannel SET channel_id=%s WHERE channel_type=9 AND server_id=%s",
+                            (archive_channel.id, guild.id))
+
+                dbBase.commit()
+                cur.close()
 
         await archive_channel.send(filename, file=nextcord.File(path))
         os.remove(path)
+
+    async def __create_archive_channel(self, ch, guild):
+        archive_channel = await guild.create_text_channel('ticket-archive', category=ch.category)
+        await archive_channel.edit(sync_permissions=True)
+        return archive_channel
+
+    async def on_error(self, err, message, interation: nextcord.Interaction):
+        if isinstance(err, NotFound):
+            return
+
+        print(err)
 
 
 def setup(bot):
