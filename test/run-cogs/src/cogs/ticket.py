@@ -22,6 +22,15 @@ from cogs.etc.config import dbBase
 #  Silent Ping
 
 
+async def new_cur(db):
+    try:
+        cur = db.cursor(buffered=True)
+    except OperationalError:
+        db.reconnect()
+        cur = db.cursor(buffered=True)
+    return cur
+
+
 class Ticket(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -57,7 +66,7 @@ class Ticket(commands.Cog):
             return await ctx.send('Your content is too big for the Buttons. Please enter a text between 1-50 Chars',
                                   delete_after=20)
         # self.bot.dbBase.set_charset_collation('utf8mb4')
-        cur = self.bot.dbBase.cursor(buffered=True)
+        cur = await new_cur(self.bot.dbBase)
 
         cur.execute("SELECT count(*) FROM dcbots.tickets_columns WHERE server_id=%s", (ctx.guild.id,))
         counter = cur.fetchone()
@@ -80,7 +89,7 @@ class Ticket(commands.Cog):
         if isinstance(category, str):
             if category.lower() == 'current' and not bind:
                 category_binds = ''
-                cur = self.bot.dbBase.cursor(buffered=True)
+                cur = await new_cur(self.bot.dbBase)
                 cur.execute("SELECT category_id, moderation_role_id FROM dcbots.tickets_serverchannel WHERE server_id=%s",
                             (ctx.guild.id,))
 
@@ -124,7 +133,7 @@ class Ticket(commands.Cog):
             return await ctx.send('Channel/Category id is not valid!')
 
         ch: TextChannel or CategoryChannel = self.bot.get_channel(int(channel_id))
-        cur = self.bot.dbBase.cursor(buffered=True)
+        cur = await new_cur(self.bot.dbBase)
 
         if ch.type == ChannelType.category:
             try:
@@ -141,6 +150,7 @@ class Ticket(commands.Cog):
             try:
                 ch, embed, view = await self.__create_tickets_option(channel_id, ctx, cur)
                 cur.close()
+                await ch.purge()
                 await ch.send(embed=embed, view=view)
                 return await ctx.send(f'Setted <#{channel_id}> as Ticket creation channel', delete_after=10)
 
@@ -154,7 +164,7 @@ class Ticket(commands.Cog):
             try:
                 cur.close()
             except Exception:
-                print('raising')
+                pass
             return await ctx.send('Given id is not an Category/Text channel!', delete_after=5)
 
     async def __define_init_category(self, channel_id, ctx, cur):
@@ -198,7 +208,7 @@ class Ticket(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        cur = self.bot.dbBase.cursor()
+        cur = await new_cur(self.bot.dbBase)
         cur.execute("SELECT channel_id FROM dcbots.serverchannel WHERE channel_type=8")
 
         fetcher = cur.fetchall()
@@ -207,6 +217,7 @@ class Ticket(commands.Cog):
 
         for entry in fetcher:
             ch = self.bot.get_channel(entry[0])
+            await ch.purge()
             await ch.send(embed=embed, view=view)
 
     @ticket.command(no_pm=True)
@@ -229,7 +240,7 @@ class Ticket(commands.Cog):
         await ch.send(embed=embed, view=view)
 
     async def __get_server_channel(self, ctx):
-        cur = self.bot.dbBase.cursor(buffered=True)
+        cur = await new_cur(self.bot.dbBase)
 
         cur.execute("SELECT channel_id FROM dcbots.serverchannel WHERE server_id=%s AND channel_type=8",
                     (ctx.guild.id,))
@@ -288,11 +299,7 @@ class TicketBackend(commands.Cog):
         i_id: str = interaction.data.get('custom_id', 'custom_id')
 
         if i_id == 'ticket-creation':
-            try:
-                cur = self.bot.dbBase.cursor()
-            except OperationalError:
-                self.bot.dbBase.reconnect()
-                cur = self.bot.dbBase.cursor()
+            cur = await new_cur(self.bot.dbBase)
 
             cur.execute("SELECT category_id FROM dcbots.tickets_serverchannel WHERE server_id=%s AND category_bind=%s",
                         (interaction.guild.id, 0))
@@ -329,7 +336,7 @@ class TicketBackend(commands.Cog):
 
         if 'custom-ticket-' in i_id:
             cb = int(i_id.replace('custom-ticket-', ''))
-            cur = self.bot.dbBase.cursor(buffered=True)
+            cur = await new_cur(self.bot.dbBase)
 
             cur.execute("SELECT category_id FROM dcbots.tickets_serverchannel WHERE category_bind=%s AND server_id=%s",
                         (cb, interaction.guild.id))
@@ -494,7 +501,7 @@ class TicketEndView(View):
                 message_content = f'{message_timestamp} | {message.author.name}#{message.author.discriminator}: {message.content}'
                 file.write(message_content + '\n')
 
-        cur = dbBase.cursor()
+        cur = await new_cur(dbBase)
         # I will use 9 here for the ticket archive channel id
         cur.execute("SELECT channel_id FROM dcbots.serverchannel WHERE server_id=%s AND channel_type=9",
                     (interaction.guild.id,))
