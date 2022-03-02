@@ -21,12 +21,11 @@ Here are listed all the Commands that the Bot has.
 * [ ] `$levelsystem (true | false)` -> To activate or deactivate the Levelsystem for the server
 * [ ] `$twitchnotify set (streamer name)` ->  Set a streamer name or more for Twitchnotify (it needed a channel to activate it)
 * [ ] `$twitchnotify define (notify channel mention)`
-* [ ] `$settickets (channelid or channel mention)` -> Set the channel for the Ticket system
 * [ ] `$enable (tickets, level, newmember)` -> Activate bot features
 * [x] `$ticket define (Channel/Category id)` -> Define set a ticket message channel or set the standard category to send the tickets to.
 * [x] `$ticket send` -> Sends the ticket creation message.
-* [x] `$ticket add (Emoji) (option, up to 50 char)` -> Add something to the Ticket options., Emoji: Set a Custom Emoji from this server or set an Global Discord Emote, Nul for no emoji
-* [ ] `$ticket bind (Number 1-23)` -> Bind an Extra category for the Options.
+* [x] `$ticket add (Emoji) (option, up to 50 char)` -> Add something to the Ticket options., Emoji: Set a Custom Emoji from this server or type Nul (Not Casesensitive) to set the standart emoji.
+* [x] `$ticket bind (category id) (Number 1-23)` -> Bind an Extra category for the Options.
 * [ ] `$serverconfig` -> Show the full server configuration.
 #### User-Commands
 * [ ] `$jtc channel (owner | set-owner [member mention] | name [new name] | info)` -> this command changes or show information about the current channel (you must be inside a custom voice channel for that action)
