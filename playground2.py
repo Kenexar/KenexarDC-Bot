@@ -1,1 +1,3 @@
-print('coggers', lambda m: print(m))
+lst = [1, 2, 3, 4]
+
+print(lst[-2:][0])

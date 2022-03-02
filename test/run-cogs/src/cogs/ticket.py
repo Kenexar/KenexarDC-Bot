@@ -16,7 +16,9 @@ from utils.checker import filler
 from cogs.etc.config import dbBase
 
 # Todo:
-#  Channel movemint notify, button timeout on embed change, idk why, but send it new pls,
+#  Channel movemint notify,
+#  button timeout on embed change, idk why, but send it new pls
+
 
 class Ticket(commands.Cog):
     def __init__(self, bot):
@@ -39,16 +41,20 @@ class Ticket(commands.Cog):
         raise error
 
     @ticket.command(no_pm=True)
-    async def add(self, ctx: commands.Context, emote: nextcord.Emoji, *option):
-        emoji = '📑'
+    async def add(self, ctx: commands.Context, emote: Union[nextcord.Emoji, str], *option):
+        emoji = 'nul'
 
-        if 'Nul' not in emote:
+        if isinstance(emote, str):
+            if emote.lower() != 'nul':
+                emoji = emote
+
+        if isinstance(emote, nextcord.Emoji):
             emoji = emote
 
         if 51 <= len(' '.join(option)) >= 0:  # I know the limit is on 80 but for safety and design I put it on 50 chars
             return await ctx.send('Your content is too big for the Buttons. Please enter a text between 1-50 Chars',
                                   delete_after=20)
-
+        # self.bot.dbBase.set_charset_collation('utf8mb4')
         cur = self.bot.dbBase.cursor(buffered=True)
 
         cur.execute("SELECT count(*) FROM dcbots.tickets_columns WHERE server_id=%s", (ctx.guild.id,))
@@ -67,9 +73,8 @@ class Ticket(commands.Cog):
 
         return await ctx.send(f'{" ".join(option)!r} was setted as Ticket option and Button')
 
-    @ticket.command(no_pm=True)
-    async def bind(self, ctx: commands.Context, category: int, bind: int):
-        pass
+
+
 
     @ticket.command(no_pm=True)
     async def define(self, ctx: commands.Context, channel_id: str):  # db channel type 8
@@ -279,7 +284,11 @@ class TicketBackend(commands.Cog):
 
             view = TicketBaseView(timeout=None)
             for btn in fetcher:
-                view.add_item(Button(label=f'{btn[0]}: {btn[2]}', emoji=str(btn[1]), style=ButtonStyle.blurple,
+                btn1 = bytes(btn[1]).decode('utf-8')
+                btn2 = bytes(btn[2]).decode('utf-8')
+
+                view.add_item(Button(label=f'{btn[0]}: {btn2}', emoji=str(btn1 if not btn1 == "nul" else "📑"),
+                                     style=ButtonStyle.blurple,
                                      custom_id=f'custom-ticket-{btn[0]}'))
 
             await ch.send(f'{interaction.user.mention}', embed=embed, view=view)
@@ -335,13 +344,13 @@ Sollte ein Wort in der Blacklist sein, wird dir das recht entnommen den Channel 
 
     async def __edit_embed_message(self, inter: nextcord.Interaction):
         message = inter.message
+        origin_view = View().from_message(message)
+        rename_btn: Button = origin_view.children[-2:][0]
 
-        new = View(timeout=None)
-        origin = new.from_message(message)
-        for sys_btn in origin.children[-2:]:
-            new.add_item(sys_btn)
-
-        await message.edit(view=new)
+        if rename_btn.disabled:
+            await message.edit(view=TicketSecondBaseView(timeout=None))
+            return
+        await message.edit(view=TicketBaseView(timeout=None))
 
     async def __embed_generator(self, cur, guild_id) -> nextcord.Embed:
         cur.execute("SELECT column_ctx, category_bind FROM dcbots.tickets_columns WHERE server_id=%s", (guild_id,))
@@ -365,6 +374,20 @@ class TicketBaseView(View):
         button.disabled = True
         button.style = ButtonStyle.gray
         await interaction.response.edit_message(view=self)
+
+    @nextcord.ui.button(label='Close', emoji='🔒', custom_id='close-ticket', style=ButtonStyle.danger, row=4)
+    async def close(self, button: Button, interaction: nextcord.Interaction):
+        await interaction.response.send_message(view=TicketDeleteView(timeout=None))
+
+
+class TicketSecondBaseView(View):
+    @nextcord.ui.button(label='Rename', emoji='📝',
+                        style=ButtonStyle.gray,
+                        row=4,
+                        custom_id='ticket-rename1',
+                        disabled=True)
+    async def rename(self, button: Button, interaction: nextcord.Interaction):
+        return
 
     @nextcord.ui.button(label='Close', emoji='🔒', custom_id='close-ticket', style=ButtonStyle.danger, row=4)
     async def close(self, button: Button, interaction: nextcord.Interaction):
