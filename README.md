@@ -25,7 +25,7 @@ Here are listed all the Commands that the Bot has.
 * [ ] `$enable (tickets, level, newmember)` -> Activate bot features
 * [x] `$ticket define (Channel/Category id)` -> Define set a ticket message channel or set the standard category to send the tickets to.
 * [x] `$ticket send` -> Sends the ticket creation message.
-* [ ] `$ticket add (option, up to 50 char)` -> Add something to the Ticket options.
+* [x] `$ticket add (Emoji) (option, up to 50 char)` -> Add something to the Ticket options., Emoji: Set a Custom Emoji from this server or set an Global Discord Emote, None for no emoji
 * [ ] `$ticket bind (Number 1-23)` -> Bind an Extra category for the Options.
 * [ ] `$serverconfig` -> Show the full server configuration.
 #### User-Commands
