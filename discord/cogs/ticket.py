@@ -102,7 +102,7 @@ class Ticket(commands.Cog):
                 embed = nextcord.Embed(title='Category Binds:',
                                        description=category_binds,
                                        color=self.bot.embed_st,
-                                       timestamp=self.bot.current_timestamp)
+                                       timestamp=self.bot.current_timestamp())
                 return await ctx.send(embed=embed)
             return await ctx.send('CategoryID Cannot be a String')
 
@@ -271,7 +271,7 @@ class Ticket(commands.Cog):
         embed = nextcord.Embed(title='Ticket System',
                                description="Um ein Ticket zu erstellen, drücke bitte auf den Knopf.\n\nDein anliegen kannt du im Ticket auswählen.",
                                color=self.bot.embed_st,
-                               timestamp=self.bot.current_timestamp)
+                               timestamp=self.bot.current_timestamp())
 
         embed.set_footer(text="MrPython - TicketTool")
         view = View(timeout=None)
@@ -427,7 +427,7 @@ Sollte ein Wort in der Blacklist sein, wird dir das recht entnommen den Channel 
         embed = nextcord.Embed(title='Ticket Creator',
                                description=desc,
                                color=self.bot.embed_st,
-                               timestamp=self.bot.current_timestamp)
+                               timestamp=self.bot.current_timestamp())
 
         cur.close()
         return embed

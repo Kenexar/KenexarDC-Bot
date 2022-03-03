@@ -46,7 +46,7 @@ class twitchNotfiy(commands.Cog):
                 embed = nextcord.Embed(title=f'{streamer.get("user_name")} jetzt Live!',
                                        description=f'**[{streamer.get("title")}](https://twitch.tv/{streamer.get("user_name")})**',
                                        color=0x9146FF,
-                                       timestamp=self.bot.current_timestamp)
+                                       timestamp=self.bot.current_timestamp())
 
                 embed.add_field(
                     name=f'Spiel: {streamer.get("game_name")} <--> Follower: {await self.__get_follower(streamer.get("user_id"))}',

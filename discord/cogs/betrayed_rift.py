@@ -154,7 +154,7 @@ class Roles(commands.Cog):
         for rank in ect:
             e = nextcord.Embed(title=ect[rank]['title'],
                                color=self.bot.embed_st,
-                               timestamp=self.bot.current_timestamp)
+                               timestamp=self.bot.current_timestamp())
 
             m = await ctx.send(embed=e)
 
@@ -183,7 +183,7 @@ class Roles(commands.Cog):
         e = nextcord.Embed(title=ect['title'],
                            description=ect['description'],
                            color=self.bot.embed_st,
-                           timestamp=self.bot.current_timestamp)
+                           timestamp=self.bot.current_timestamp())
 
         view = await self.create_view(ect)
         ch = self.bot.get_channel(self.AGENT_CH)

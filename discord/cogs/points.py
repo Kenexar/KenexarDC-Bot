@@ -74,7 +74,7 @@ class Points(commands.Cog):
                                            f'Current Multiplier: {multi}x\n'
                                            f'Current Coins: {coins}',
                                color=self.bot.embed_st,
-                               timestamp=self.bot.current_timestamp)
+                               timestamp=self.bot.current_timestamp())
 
         await ctx.send(embed=embed)
         cur.close()

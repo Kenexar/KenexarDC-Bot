@@ -66,6 +66,11 @@ class Test(commands.Cog):
     async def on_ready(self):
         self.bot.logger.info('Ready, pls don\'t delete me :(')
         self.bot.server_settings = await filler(self.bot)
+        print(self.bot.current_timestamp())
+
+    @commands.Command
+    async def view_timestamp(self, ctx):
+        return await ctx.send(self.bot.current_timestamp())
 
 
 def setup(bot):

@@ -85,7 +85,7 @@ class Reload(commands.Cog):
 
         embed = nextcord.Embed(title='All Cogs that are loaded are listed here!',
                                color=self.bot.embed_st,
-                               timestamp=self.bot.current_timestamp)
+                               timestamp=self.bot.current_timestamp())
 
         unloaded = '\n'.join(
             self.unloaded_modules) if self.unloaded_modules else 'All modules running down da street, i here AH AH AH AH '
@@ -153,7 +153,7 @@ class AutoModuleReloader(commands.Cog):
             title='List of all Modules that received a change since the last Reload',
             description='\n'.join(self.changed_modules) if self.changed_modules else 'Its empty, no reload needed!',
             color=self.bot.embed_st,
-            timestamp=self.bot.current_timestamp))
+            timestamp=self.bot.current_timestamp()))
 
 
 def setup(bot):

@@ -55,7 +55,7 @@ class Faceit(commands.Cog):
 
         player_csgo: dict = fetched_player['games'].get('csgo', 'No information Provided...')
         embed = nextcord.Embed(color=self.bot.faceit_colors.get(fetched_player['games']['csgo']['skill_level']),
-                               timestamp=self.bot.current_timestamp)
+                               timestamp=self.bot.current_timestamp())
 
         embed.set_author(name=fetched_player['nickname'],
                          url=fetched_player['faceit_url'].format(lang=fetched_player['country']),
@@ -94,7 +94,7 @@ class FaceitRankVerification(commands.Cog):
         embed = nextcord.Embed(title='Faceit rang Vergabe',
                                description=f'Bitte achte darauf, dass wenn du unten auf den Knopf drückst, \ndass dein Dc Name mit deinen Faceit nick übereinstimmt!\n\nSollte sich dein Rang in laufe der Zeit ändern, drück einfach nochmal drauf',
                                color=self.bot.embed_st,
-                               timestamp=self.bot.current_timestamp)
+                               timestamp=self.bot.current_timestamp())
         view = View()
         view.add_item(Button(style=ButtonStyle.blurple, label='Synchronize', custom_id='faceit-sync'))
         return ch, embed, view

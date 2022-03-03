@@ -24,7 +24,7 @@ class Listener(commands.Cog):
             user = await self.bot.faceit.get_players(player_name=username)
             stats = await self.bot.faceit.get_player_stats(player_id=user['player_id'])
 
-            embed = nextcord.Embed(timestamp=self.bot.current_timestamp,
+            embed = nextcord.Embed(timestamp=self.bot.current_timestamp(),
                                    color=self.bot.faceit_colors[user['games']['csgo']['skill_level']])
 
             embed.set_author(name=user['nickname'],

@@ -27,7 +27,7 @@ class Lyrics(commands.Cog):
         embed = nextcord.Embed(title=f'{artist} - {" ".join(title)}',
                                description=res.json().get('lyrics'),
                                color=self.bot.embed_st,
-                               timestamp=self.bot.current_timestamp)
+                               timestamp=self.bot.current_timestamp())
         await ctx.send(embed=embed)
 
 

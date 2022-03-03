@@ -124,7 +124,7 @@ Maintained by: exersalza#1337
         embed = nextcord.Embed(title='Credits',
                                description=message,
                                color=self.bot.embed_st,
-                               timestamp=self.bot.current_timestamp)
+                               timestamp=self.bot.current_timestamp())
         return await ctx.send(embed=embed)
 
 
