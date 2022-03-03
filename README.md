@@ -39,10 +39,10 @@ Here are listed all the Commands that the Bot has.
   * [x] `$selfrole (agent | ranks)` -> Send the Agent/Rank selector messages new
 
 ### API-List
-* [x] `Faceit` -> Player stats tracking and Player finder
-* [x] `Lyrics.ovh` -> Get Lyrics from songs
-* [ ] `Trackergg` -> Player stats tracking, Player finder, Clan creation
-* [ ] `SteamWebAPI` -> Information to find multiple user with the same interests
+* [x] `Faceit` -> Player stats tracking and Player finder.
+* [x] `Lyrics.ovh` -> Get Lyrics from songs.
+* [ ] `Trackergg` -> Player stats tracking, Player finder, Clan creation.
+* [ ] `SteamWebAPI` -> Information to find multiple user with the same interests.
 
 note: I (exersalza) have no partnership with any of the Games or Api Provider, I just love to have API's inside of the Bot to bring a little swing inside the Community.
 
