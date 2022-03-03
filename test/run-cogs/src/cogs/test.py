@@ -2,6 +2,8 @@ from nextcord.ext import commands
 from nextcord.ext.commands import CommandNotFound
 from utils.checker import filler
 
+from PIL import Image, ImageDraw, ImageFont
+
 
 class Test(commands.Cog):
     def __init__(self, bot):
@@ -66,11 +68,15 @@ class Test(commands.Cog):
     async def on_ready(self):
         self.bot.logger.info('Ready, pls don\'t delete me :(')
         self.bot.server_settings = await filler(self.bot)
-        print(self.bot.current_timestamp())
+
+    @commands.Cog.listener()
+    async def on_member_join(self, member):
+        pass
 
     @commands.Command
-    async def view_timestamp(self, ctx):
-        return await ctx.send(self.bot.current_timestamp())
+    async def get_avat(self, ctx: commands.Context, member: str = None):
+        if member is not None:
+            user = ctx.guild.get_member(int(member.strip('<@&!>')))
 
 
 def setup(bot):
