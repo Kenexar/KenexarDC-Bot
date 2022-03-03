@@ -48,19 +48,13 @@ class NewMember(commands.Cog):
     async def on_member_join(self, member: nextcord.Member):
         img = Image.open('img/welcome-card.png')
 
-        url = member.avatar.url
-        member_count = member.guild.member_count
-        res = requests.get(url.replace('.gif', '.png'), stream=True)
-        path = f'img/{member.name}#{member.discriminator}.png'
+        member_count, path, res = await self.__get_member_avatar_url(member)
 
-        with open(path, 'wb') as out_file:
-            shutil.copyfileobj(res.raw, out_file)
-        del res
+        await self.__save_avatar(path, res)
 
         img_sec = Image.open(path)
 
-        im_square = await self.crop_max_square(img_sec)
-        img_cutted = await self.mask_circle_trans(im_square.resize((186, 186), Image.LANCZOS), 0.1, 2)
+        img_cutted = await self.__make_avatar_circle(img_sec)
 
         w, h = img.size
         W, H = img_cutted.size
@@ -73,6 +67,23 @@ class NewMember(commands.Cog):
         ch = self.bot.get_channel(936548705786548244)
         await ch.send(file=nextcord.File(path))
         os.remove(path)
+
+    async def __save_avatar(self, path, res):
+        with open(path, 'wb') as out_file:
+            shutil.copyfileobj(res.raw, out_file)
+        del res
+
+    async def __get_member_avatar_url(self, member):
+        url = member.avatar.url
+        member_count = member.guild.member_count
+        res = requests.get(url.replace('.gif', '.png'), stream=True)
+        path = f'img/{member.name}#{member.discriminator}.png'
+        return member_count, path, res
+
+    async def __make_avatar_circle(self, img_sec):
+        im_square = await self.crop_max_square(img_sec)
+        img_cutted = await self.mask_circle_trans(im_square.resize((186, 186), Image.LANCZOS), 0.1, 2)
+        return img_cutted
 
 
 def setup(bot):
