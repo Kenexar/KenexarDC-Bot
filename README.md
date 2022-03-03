@@ -44,7 +44,7 @@ Here are listed all the Commands that the Bot has.
 * [ ] `Trackergg` -> Player stats tracking, Player finder, Clan creation
 * [ ] `SteamWebAPI` -> Information to find multiple user with the same interests
 
-note: I (exersalza) have no partnership with any of the Games or Api Provider, I just love to have API's inside of the Bot to bring a little swing inside the Community
+note: I (exersalza) have no partnership with any of the Games or Api Provider, I just love to have API's inside of the Bot to bring a little swing inside the Community.
 
 [i20]: https://github.com/kenexar/discord-mr-python/issues/20
 [i18]: https://github.com/kenexar/discord-mr-python/issues/18
