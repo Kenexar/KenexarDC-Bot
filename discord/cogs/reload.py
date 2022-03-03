@@ -50,7 +50,7 @@ class Reload(commands.Cog):
             return CommandNotFound()
 
         if not cog_module:
-            return await ctx.send(embed=help_site('admin-load'))
+            return await ctx.send(embed=await help_site('admin-load'))
 
         if cog_module not in await current_cog_modules(self.unloaded_modules):
             return await ctx.send('The giving module is already loaded!')
@@ -66,7 +66,7 @@ class Reload(commands.Cog):
             return CommandNotFound()
 
         if not cog_module:
-            return await ctx.send(embed=help_site('admin-reload'))
+            return await ctx.send(embed=await help_site('admin-reload'))
 
         if cog_module in self.unloaded_modules:
             return await ctx.send('The giving module is not Loaded!')
