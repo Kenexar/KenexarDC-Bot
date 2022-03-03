@@ -21,7 +21,7 @@ Here are listed all the Commands that the Bot has.
 * [ ] `$levelsystem (true | false)` -> To activate or deactivate the Levelsystem for the server
 * [ ] `$twitchnotify set (streamer name)` ->  Set a streamer name or more for Twitchnotify (it needed a channel to activate it)
 * [ ] `$twitchnotify define (notify channel mention)`
-* [ ] `$enable (tickets, level, newmember)` -> Activate bot features
+* [ ] `$enable (tickets, level, newmember)` -> Activate bot features.
 * [x] `$ticket define (Channel/Category id)` -> Define set a ticket message channel or set the standard category to send the tickets to.
 * [x] `$ticket send` -> Sends the ticket creation message.
 * [x] `$ticket add (Emoji) (option, up to 50 char)` -> Add something to the Ticket options., Emoji: Set a Custom Emoji from this server or type Nul (Not Casesensitive) to set the standart emoji.
