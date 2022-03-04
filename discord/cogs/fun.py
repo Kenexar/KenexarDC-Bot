@@ -1,3 +1,5 @@
+import asyncio
+
 import nextcord
 from nextcord.ext import commands
 import json
@@ -15,6 +17,16 @@ class Fun(commands.Cog):
     @commands.Command  # testing some stuff
     async def bug(self, ctx):
         return await ctx.send(f'There are no Bugs! only features!')
+
+    @commands.Command  # testing more STUFF
+    async def remindmein(self, ctx: commands.Context, counter):
+        if not counter.isdigit():
+            return await ctx.send('Der angegebene Wert ist keine zahl.')
+
+        if 600 < int(counter) > 0:
+            await asyncio.sleep(int(counter))
+            return await ctx.send(f'{ctx.message.author.mention} Die Zeit ist abgelaufen!')
+        await ctx.send('Die zeit sollte zwischen 1-600 Sec liegen')
 
 
 class Lyrics(commands.Cog):
