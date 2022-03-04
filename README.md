@@ -29,6 +29,7 @@ Here are listed all the Commands that the Bot has.
 * [ ] `$serverconfig` -> Show the full server configuration.
 #### User-Commands
 * [ ] `$jtc channel (owner | set-owner [member mention] | name [new name] | info)` -> this command changes or show information about the current channel (you must be inside a custom voice channel for that action)
+* [ ] `remindmein (time, up to 600 sec)` -> Reminds you when you food is finished cooking.
 * [x] `$credits` -> Show the Credits from the Bot
 * [x] `$lyrics (artist) (title)` -> Show the lyrics to the Song!
 * [x] `$faceit player (faceit nickname)` -> Find a Faceit player and show his Csgo Stats
