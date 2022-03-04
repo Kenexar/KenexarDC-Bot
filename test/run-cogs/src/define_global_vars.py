@@ -15,7 +15,7 @@ from cogs.etc.config import (
     current_timestamp,
     status_query,
     fetch_whitelist,
-    faceit_serverkey
+    SHARDS
 )
 
 import logging
@@ -45,6 +45,6 @@ def define_global_vars(bot):
     bot.server_settings = None
     bot.set_filler = filler
     # Newly added
-
+    bot.cur_shards = SHARDS
 
     return bot

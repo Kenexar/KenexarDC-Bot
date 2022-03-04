@@ -8,15 +8,16 @@ import nextcord
 from alive_progress import alive_bar
 from nextcord.ext import commands
 
-from cogs.etc.config import PREFIX, PROJECT_NAME
+from cogs.etc.config import PREFIX, PROJECT_NAME, SHARDS
 from cogs.etc.flask_server import start_server
 from define_global_vars import define_global_vars
 
 intents = nextcord.Intents.all()
-bot = commands.Bot(command_prefix=PREFIX,
-                   intents=intents,
-                   help_command=None,
-                   description=f"Created by exersalza. Project: {PROJECT_NAME}",)
+bot = commands.AutoShardedBot(command_prefix=PREFIX,
+                              shards=SHARDS,
+                              intents=intents,
+                              help_command=None,
+                              description=f"Created by exersalza. Project: {PROJECT_NAME}",)
 
 count = 0
 names = ['__init__.py', 'playground.py', 'gtarp_stuff.py']

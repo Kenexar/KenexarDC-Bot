@@ -1,14 +1,13 @@
-import asyncio
 import os
-from nextcord.ext import tasks
 from datetime import datetime, timedelta
 
 import nextcord
 from cogs.etc.embeds import help_site
 from nextcord.ext import commands
+from nextcord.ext import tasks
 from nextcord.ext.commands import CommandNotFound
 
-names = ['__init__.py', 'playground.py', 'gtarp_stuff.py']
+names = ['__init__.py', 'playground.py', 'gtarp_stuff.py']  # Modules that shouldn't be loaded
 
 
 async def current_cog_modules(unloaded: list) -> list:

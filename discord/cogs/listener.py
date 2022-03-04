@@ -36,11 +36,11 @@ class Listener(commands.Cog):
             for k, v in stats.items():
                 value_string += f'{k}: `{v}`\n'
 
-            embed.add_field(name='Player Info',
+            embed.add_field(name='Spieler Info',
                             value=f'Rank: `{user["games"]["csgo"]["skill_level"]}`\n'
                                   f'IG Name: `{user["games"]["csgo"]["game_player_name"]}`')
 
-            embed.add_field(name='Player Stats',
+            embed.add_field(name='Spieler Stats',
                             value=value_string,
                             inline=False)
 

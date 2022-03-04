@@ -59,7 +59,7 @@ class JoinToCreate(commands.Cog):
     @jtc.command()
     async def set(self, ctx, channel: str):
         if not channel.isdigit():
-            return await ctx.send('No valid argument type giving')
+            return await ctx.send('Um einen Channel zu setzten, gebe bitte eine ChannelId an')
 
         cur = self.bot.dbBase.cursor()
         ch = self.bot.get_channel(int(channel))
@@ -73,7 +73,7 @@ class JoinToCreate(commands.Cog):
 
         self.jtc_channel: dict = fillup(5)
         self.jtc_category: dict = fillup(6)
-        await ctx.send(f'channel: <#{ch.id}> was setted as jtc channel.')
+        await ctx.send(f'Channel: <#{ch.id}> wurde als JTC gesetzt!')
 
 
 def setup(bot):

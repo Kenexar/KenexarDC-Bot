@@ -2,7 +2,6 @@ import nextcord
 from cogs.etc.presets import lvl_up, add_points
 from nextcord.ext import commands
 
-
 # Todo:
 # server deactivate/activate
 from nextcord.ext.commands import CommandNotFound
@@ -25,7 +24,8 @@ class Points(commands.Cog):
 
         cur = self.bot.dbBase.cursor(buffered=True)
 
-        cur.execute("SELECT Level, Experience, Multiplier, Coins FROM dcbots.points WHERE User=%s;", (message.author.id,))
+        cur.execute("SELECT Level, Experience, Multiplier, Coins FROM dcbots.points WHERE User=%s;",
+                    (message.author.id,))
         fetcher = cur.fetchone()
 
         if not fetcher:
@@ -39,7 +39,7 @@ class Points(commands.Cog):
         await add_points(message.author.id, cur, fetcher)
 
         if await lvl_up(message.author.id, cur, fetcher):
-            await message.channel.send(f'{message.author.mention} Just leveld up to {int(fetcher[0]) + 1}, yippie')
+            await message.channel.send(f'{message.author.mention} ist ein Level aufgestiegen : {int(fetcher[0]) + 1}')
         cur.close()
 
     @commands.command()
@@ -59,7 +59,7 @@ class Points(commands.Cog):
 
         if not fetcher:
             return await ctx.send(
-                f'{ctx.message.author.mention if not user else user} has not send an Message to the Server!')
+                f'{ctx.message.author.mention if not user else user} hat bisher noch keine Nachrichten auf diesen Server geschickt')
 
         level = fetcher[0]
         exp = fetcher[1]
@@ -68,7 +68,7 @@ class Points(commands.Cog):
 
         username = await self.bot.fetch_user(user.strip("<@!>")) if user else ctx.message.author.name
 
-        embed = nextcord.Embed(title=f'Level info for {username}',
+        embed = nextcord.Embed(title=f'Level info für {username}',
                                description=f'Current Level: {level}\n'
                                            f'Current Experience: {exp}\n'
                                            f'Current Multiplier: {multi}x\n'

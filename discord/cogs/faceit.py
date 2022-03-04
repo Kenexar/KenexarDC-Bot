@@ -117,7 +117,7 @@ class FaceitRankVerification(commands.Cog):
         cur.execute(sql_string, sql_params)
         self.bot.dbBase.commit()
         cur.close()
-        await ctx.send(f'Channel <#{ctx.channel.id}> setted as faceit verify channel!')
+        await ctx.send(f'Channel <#{ctx.channel.id}> wurde als FaceIt verify channel gesetzt!')
         ch, embed, view = await self.send_faceit_verify_message((0, ctx.channel.id))
         await ctx.send(embed=embed, view=view)
 

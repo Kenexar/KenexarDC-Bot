@@ -4,8 +4,6 @@ from itertools import cycle
 import nextcord
 from cogs.etc.embeds import help_site
 from nextcord.ext import commands, tasks
-
-
 # todo:
 #  remove
 from nextcord.ext.commands import CommandNotFound
@@ -41,7 +39,7 @@ class Cycle(commands.Cog):
         to_check = ctx.message.content[5:].strip()
 
         if not len(to_check) > 50 and not len(to_check) <= 0:
-            cur.execute("insert into roll_text (Name, Text) values (%s, %s);",
+            cur.execute("INSERT INTO dcbots.roll_text (Name, Text) VALUES (%s, %s);",
                         (self.bot.project_name, to_check))
             self.bot.dbBase.commit()
             cur.close()

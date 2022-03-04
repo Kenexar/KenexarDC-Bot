@@ -1,22 +1,23 @@
 import os
 import platform
-import subprocess
 from multiprocessing import Process
 
 import nextcord
 from alive_progress import alive_bar
 from nextcord.ext import commands
 
-from cogs.etc.config import PREFIX, PROJECT_NAME
+from cogs.etc.config import PREFIX, PROJECT_NAME, SHARDS
 from define_global_vars import define_global_vars
 
 # from cogs.etc.config import OAUTH, BOT_USERNAME, tPREFIX, CHANNEL_NAME
 
 intents = nextcord.Intents.all()
-bot = commands.Bot(command_prefix=PREFIX,
-                   intents=intents,
-                   help_command=None,
-                   description=f"Created by exersalza. Project: {PROJECT_NAME}")
+bot = commands.AutoShardedBot(command_prefix=PREFIX,
+                              shard_count=SHARDS,
+                              intents=intents,
+                              help_command=None,
+                              description=f"Created by exersalza. Project: {PROJECT_NAME}")
+
 
 # tbot = tcommands.Bot(
 #     token=OAUTH,

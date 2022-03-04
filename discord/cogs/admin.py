@@ -1,13 +1,10 @@
-from datetime import datetime
-
 import nextcord
 from cogs.etc.embeds import help_site
 from cogs.etc.presets import whitelist, get_perm
+from kenutils.src.core import filler
 from nextcord.ext import commands
 from nextcord.ext.commands import CommandNotFound
 from nextcord.ext.commands.errors import MissingPermissions
-
-from kenutils.src.core import filler
 
 
 class Admin(commands.Cog):
@@ -19,7 +16,6 @@ class Admin(commands.Cog):
 
         self.guild = None
         self.logger = None
-
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -33,14 +29,15 @@ class Admin(commands.Cog):
                 self.logger = server.get_channel(self.bot.log_channel)
 
         self.bot.logger.info(f'Current logger channel: {self.logger.name!r}')
+        self.bot.logger.info(f'Current Shards: {self.bot.cur_shards!r}')
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):  # Function doing intense computing!
         if isinstance(error, CommandNotFound):  # error handler
-            return await ctx.send("Command not found.")
+            return await ctx.send("Command nicht gefunden.")
 
         if isinstance(error, MissingPermissions):
-            return await ctx.send('Insufficient permission')
+            return await ctx.send('Du hast keine rechte diese Aktion auszuführen!')
 
         if isinstance(error, nextcord.errors.NotFound):
             return
@@ -64,9 +61,9 @@ class Admin(commands.Cog):
         :rtype:
         """
         if ctx.message.author.id not in self.whitelist:
-            self.bot.logger.warning(f'{ctx.message.author} tried to use the whitelist command')
-            return await ctx.send('You are not Authorized to manage the Whitelist'), \
-                   await self.logger.send(f'{ctx.message.author} tried to use the `whitelist` command!')
+            self.bot.logger.warning(f'{ctx.message.author} hat versucht den Whitelist Command zu benutzen')
+            return await ctx.send('Du bist nicht autorisiert um die Whitelist zu verwalten'), \
+                   await self.logger.send(f'{ctx.message.author} Hat versucht den Whitelist Command zu benutzen')
 
         cur_base = self.bot.dbBase.cursor()
         cur_base.execute("use dcbots;")
@@ -74,9 +71,9 @@ class Admin(commands.Cog):
         uid = ctx.message.author.id
 
         if await get_perm(uid) != 5:
-            self.bot.logger.warning(f'{ctx.message.author} tried to use the whitelist command')
-            return await ctx.send('You are not Authorized to manage the Whitelist'), \
-                   await self.logger.send(f'{ctx.author} tried to use the `whitelist` command!')
+            self.bot.logger.warning(f'{ctx.message.author} hat versucht den Whitelist Command zu benutzen')
+            return await ctx.send('Du bist nicht autorisiert um die Whitelist zu verwalten'), \
+                   await self.logger.send(f'{ctx.author} Hat versucht den Whitelist Command zu benutzen')
 
         if not args:
             return await ctx.send(embed=help_site('whitelist'))

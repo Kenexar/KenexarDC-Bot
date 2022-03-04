@@ -1,3 +1,4 @@
+import nextcord
 from nextcord.ext import commands
 from nextcord.ext.commands import CommandNotFound
 from utils.checker import filler
@@ -67,6 +68,7 @@ class Test(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         self.bot.logger.info('Ready, pls don\'t delete me :(')
+        self.bot.logger.info(f'Current Shards: {self.bot.cur_shards}')
         self.bot.server_settings = await filler(self.bot)
 
     @commands.Cog.listener()

@@ -20,7 +20,8 @@ from cogs.etc.config import (
     current_timestamp,
     status_query,
     fetch_whitelist,
-    faceit_serverkey
+    faceit_serverkey,
+    SHARDS
 )
 from kenutils.src.core import FaceitAPI
 
@@ -50,5 +51,6 @@ def define_global_vars(bot):
     bot.faceit = FaceitAPI(faceit_serverkey)
     bot.logger = logging.getLogger('MrPython')
     bot.server_settings = None
+    bot.cur_shards = SHARDS
 
     return bot

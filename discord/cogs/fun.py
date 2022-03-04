@@ -1,9 +1,8 @@
 import asyncio
 
 import nextcord
-from nextcord.ext import commands
-import json
 import requests
+from nextcord.ext import commands
 
 
 class Fun(commands.Cog):
@@ -16,7 +15,7 @@ class Fun(commands.Cog):
 
     @commands.Command  # testing some stuff
     async def bug(self, ctx):
-        return await ctx.send(f'There are no Bugs! only features!')
+        return await ctx.send(f'Es gibt keine Bugs, nur Features')
 
     @commands.Command  # testing more STUFF
     async def remindmein(self, ctx: commands.Context, counter):

@@ -1,10 +1,10 @@
-import nextcord
-import requests
 import json
 from datetime import datetime
 
-from nextcord.ext import tasks
+import nextcord
+import requests
 from nextcord.ext import commands
+from nextcord.ext import tasks
 
 
 class twitchNotfiy(commands.Cog):
@@ -19,8 +19,6 @@ class twitchNotfiy(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print('ready g')
-
         with open('twitchconfig.json', 'r') as c:
             self.config = json.load(c)
 
@@ -123,7 +121,6 @@ class twitchNotfiy(commands.Cog):
         }
         res = requests.get('https://api.twitch.tv/helix/users/follows', params=params, headers=self.helix_header)
         return res.json()['total']
-
 
 
 def setup(bot):
