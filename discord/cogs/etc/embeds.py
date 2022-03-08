@@ -33,7 +33,7 @@ def user_info(user=dict) -> Embed:
     embed = Embed(title=username,
                   description=license_,
                   color=EMBED_ST,
-                  timestamp=datetime.utcnow())  # embed creation
+                  timestamp=current_timestamp())  # embed creation
 
     embed.add_field(name='Information',
                     value=f'Group: {group}\n\nVoller Name: {firstname}, {lastname}\nJob: {job}. Grade: {job_grade}\n'
@@ -70,7 +70,7 @@ async def help_site(mode='user') -> Embed:
     :return: nextcord.Embed object
     """
     embed = Embed(title='Help Site - MrPython',
-                  timestamp=current_timestamp,
+                  timestamp=current_timestamp(),
                   color=EMBED_ST)
 
     if mode in ('user', 'casino'):
