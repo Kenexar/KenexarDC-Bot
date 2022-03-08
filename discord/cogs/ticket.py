@@ -237,6 +237,8 @@ class Ticket(commands.Cog):
 
         for entry in fetcher:
             ch = self.bot.get_channel(entry[0])
+            if ch is None:
+                continue
             await ch.purge()
             await ch.send(embed=embed, view=view)
 
