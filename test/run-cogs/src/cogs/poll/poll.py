@@ -1,4 +1,5 @@
 import datetime
+from typing import Dict, List
 
 import nextcord
 from nextcord import ButtonStyle
@@ -98,7 +99,13 @@ class PollBackend(commands.Cog):
         if (message.embeds[0].timestamp - message.created_at).total_seconds() < 0:
             return await send_interaction_msg('This poll has reached it\'s Deadline', interaction)
 
+        if interaction.channel_id not in self.current_polls:
+            self.current_polls[interaction.channel_id] = []
 
+        if interaction.user.id in self.current_polls[interaction.channel_id]:
+            return await send_interaction_msg('You have already voted.', interaction)
+
+        self.current_polls[interaction.channel_id].append(interaction.user.id)
 
 
 def setup(bot):
