@@ -21,6 +21,9 @@ async def send_interaction_msg(message: str, interaction: nextcord.Interaction, 
         print(e)
 
 
+numbers = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣']
+
+
 class Poll(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -53,11 +56,12 @@ class Poll(commands.Cog):
             await ctx.send(embed=embed)
             return
 
-        numbers = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣']
-
         message_content = ctx.message.content[6:].split('~')
         title = message_content[0]
         options = message_content[1:]
+
+        if not options:
+            options += ['yes', 'no']
 
         if len(options) > 9:
             return await ctx.send('You passed to many Options, Please be in a range from 2-9')
@@ -66,16 +70,16 @@ class Poll(commands.Cog):
             return await ctx.send('You\'ve submitted fewer Options as you should, the Poll can\'t be startet. The range is 2-9')
 
         des = ''
-        view = View(timeout=None)
+        view = View(timeout=None)  # (24*60*60)*2
 
         for i in enumerate(options):
-            des += f'{numbers[i[0]]} : {i[1].lstrip()}\n'
+            des += f'{numbers[i[0]]} : {i[1].strip()} - Votes: 0\n'
             view.add_item(Button(emoji=numbers[i[0]], style=ButtonStyle.blurple, custom_id=f'poll-btn-{i[0]}'))
 
         embed = nextcord.Embed(title=title,
                                description=des,
                                color=self.bot.embed_st,
-                               timestamp=datetime.datetime.now() + datetime.timedelta(days=-2))
+                               timestamp=datetime.datetime.now() + datetime.timedelta(days=2))
         embed.set_footer(text='Deadline ')
 
         await ctx.send(embed=embed, view=view)
@@ -85,7 +89,7 @@ class PollBackend(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-        self.current_polls = {}  # {'channel_id': [user_id]}
+        self.current_polls = {}  # {message_id: {'user': [user_id], 'votes': {'1': 1, '2': 2}}}
 
     @commands.Cog.listener()
     async def on_interaction(self, interaction: nextcord.Interaction):
@@ -99,13 +103,30 @@ class PollBackend(commands.Cog):
         if (message.embeds[0].timestamp - message.created_at).total_seconds() < 0:
             return await send_interaction_msg('This poll has reached it\'s Deadline', interaction)
 
-        if interaction.channel_id not in self.current_polls:
-            self.current_polls[interaction.channel_id] = []
+        content = message.embeds[0].description.split('\n')
 
-        if interaction.user.id in self.current_polls[interaction.channel_id]:
+        if message.id not in self.current_polls:
+            self.current_polls[message.id] = {'user': [], 'votes': {str(i): 0 for i in range(len(content))}}
+
+        if interaction.user.id in self.current_polls[message.id]['user']:
             return await send_interaction_msg('You have already voted.', interaction)
 
-        self.current_polls[interaction.channel_id].append(interaction.user.id)
+        self.current_polls[message.id]['user'].append(interaction.user.id)
+        content_reassemble = []
+        self.current_polls[message.id]['votes'][c_id[-1:]] += 1
+
+        for cc in enumerate(content):
+            cd = cc[1][6:cc[1].rfind('Votes:')]
+            # Re-Assemble the broken up string, it could be done better but at my position, I dont wanna do that now, mabye I do it, when I clean up the code :)
+            content_reassemble.append(f'{numbers[cc[0]]} : {cd}Votes: {self.current_polls[message.id]["votes"][str(cc[0])]}\n')
+
+        embed = nextcord.Embed(title=message.embeds[0].title,
+                               description=''.join(content_reassemble),
+                               color=self.bot.embed_st,
+                               timestamp=message.embeds[0].timestamp)
+
+        embed.set_footer(text='Deadline ')
+        await interaction.message.edit(embed=embed)
 
 
 def setup(bot):
