@@ -6,5 +6,11 @@ class Giveaway(commands.Cog):
         self.bot = bot
 
 
+class GiveawayBackend(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+
 def setup(bot):
     bot.add_cog(Giveaway(bot))
+    bot.add_cog(GiveawayBackend(bot))
