@@ -27,6 +27,8 @@ Here are listed all the Commands that the Bot has.
 * [x] `$ticket add (Emoji) (option, up to 50 char)` -> Add something to the Ticket options., Emoji: Set a Custom Emoji from this server or type Nul (Not Casesensitive) to set the standart emoji.
 * [x] `$ticket bind (category id) (Number 1-23)` -> Bind an Extra category for the Options.
 * [ ] `$serverconfig` -> Show the full server configuration.
+* [x] `$poll (Title) ~Option 1 ~Option 2 ...` -> When you only deliver a Title, the poll will convert to a Yes/No poll
+* [ ] `$giveaway (Title) (Days)` -> Create a Giveaway, Days: Set the days until the giveaway will be show its Results, when nothing is given it will count 2 Days
 #### User-Commands
 * [ ] `$jtc channel (owner | set-owner [member mention] | name [new name] | info)` -> this command changes or show information about the current channel (you must be inside a custom voice channel for that action)
 * [ ] `remindmein (time, up to 600 sec)` -> Reminds you when you food is finished cooking.
