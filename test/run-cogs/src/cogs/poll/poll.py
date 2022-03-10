@@ -2,6 +2,7 @@ import datetime
 from typing import Dict, List
 
 import nextcord
+from nextcord.ext import tasks
 from nextcord import ButtonStyle
 from nextcord.ext import commands
 from nextcord.ext.commands import has_permissions, CommandNotFound
@@ -73,13 +74,13 @@ class Poll(commands.Cog):
         view = View(timeout=None)  # (24*60*60)*2
 
         for i in enumerate(options):
-            des += f'{numbers[i[0]]} : {i[1].strip()} - Votes: 0\n'
+            des += f'{numbers[i[0]]} : {i[1].strip()} - `Votes: 0`\n'
             view.add_item(Button(emoji=numbers[i[0]], style=ButtonStyle.blurple, custom_id=f'poll-btn-{i[0]}'))
 
         embed = nextcord.Embed(title=title,
                                description=des,
                                color=self.bot.embed_st,
-                               timestamp=datetime.datetime.now() + datetime.timedelta(days=2))
+                               timestamp=datetime.datetime.now() + datetime.timedelta(minutes=1))
         embed.set_footer(text='Deadline ')
 
         await ctx.send(embed=embed, view=view)
@@ -89,7 +90,30 @@ class PollBackend(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-        self.current_polls = {}  # {message_id: {'user': [user_id], 'votes': {'1': 1, '2': 2}}}
+        self.current_polls = {}  # {message_id: {'message_id', message_id, 'user': [user_id], 'votes': {'1': 1, '2': 2}}}
+
+        self.poll_cleaner.start()
+
+    @tasks.loop(seconds=90)
+    async def poll_cleaner(self):
+        tmp = []
+        for i, v in self.current_polls.items():
+            ch: nextcord.TextChannel = self.bot.get_channel(v['channel_id'])
+            msg: nextcord.Message = await ch.fetch_message(i)
+            if msg:
+                embed = msg.embeds[0]
+                embed_timestamp = datetime.datetime.timestamp(embed.timestamp)
+                current = datetime.datetime.timestamp(datetime.datetime.now())
+
+                if embed_timestamp > current:
+                    continue
+
+                embed.title = f'{embed.title} - Ended'
+                await msg.edit(embed=embed, view=View().clear_items())
+            tmp.append(i)
+
+        for i in tmp:
+            self.current_polls.pop(i)
 
     @commands.Cog.listener()
     async def on_interaction(self, interaction: nextcord.Interaction):
@@ -100,13 +124,16 @@ class PollBackend(commands.Cog):
 
         message: nextcord.Message = interaction.message
 
-        if (message.embeds[0].timestamp - message.created_at).total_seconds() < 0:
+        embed_timestamp = datetime.datetime.timestamp(message.embeds[0].timestamp)
+        current = datetime.datetime.timestamp(datetime.datetime.now())
+
+        if embed_timestamp < current:
             return await send_interaction_msg('This poll has reached it\'s Deadline', interaction)
 
         content = message.embeds[0].description.split('\n')
 
         if message.id not in self.current_polls:
-            self.current_polls[message.id] = {'user': [], 'votes': {str(i): 0 for i in range(len(content))}}
+            self.current_polls[message.id] = {'channel_id': message.channel.id, 'user': [], 'votes': {str(i): 0 for i in range(len(content))}}
 
         if interaction.user.id in self.current_polls[message.id]['user']:
             return await send_interaction_msg('You have already voted.', interaction)
@@ -116,9 +143,9 @@ class PollBackend(commands.Cog):
         self.current_polls[message.id]['votes'][c_id[-1:]] += 1
 
         for cc in enumerate(content):
-            cd = cc[1][6:cc[1].rfind('Votes:')]
+            cd = cc[1][6:cc[1].rfind('`Votes:')]
             # Re-Assemble the broken up string, it could be done better but at my position, I dont wanna do that now, mabye I do it, when I clean up the code :)
-            content_reassemble.append(f'{numbers[cc[0]]} : {cd}Votes: {self.current_polls[message.id]["votes"][str(cc[0])]}\n')
+            content_reassemble.append(f'{numbers[cc[0]]} : {cd}`Votes: {self.current_polls[message.id]["votes"][str(cc[0])]}`\n')
 
         embed = nextcord.Embed(title=message.embeds[0].title,
                                description=''.join(content_reassemble),
