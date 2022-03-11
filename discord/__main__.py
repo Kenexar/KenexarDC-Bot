@@ -20,7 +20,8 @@ bot = commands.AutoShardedBot(command_prefix=PREFIX,
                               description=f"Created by exersalza. Project: {PROJECT_NAME}",)
 
 count = 0
-names = ['__init__.py', 'playground.py', 'gtarp_stuff.py']
+names = ['__init__.py', '__pycache__', 'playground.py', 'gtarp_stuff.py']
+excluded_dirs = ['__pycache__', 'etc', 'logs', 'logger']
 
 for f in os.listdir('cogs'):
     if f.endswith(".py") and f not in names:
@@ -29,13 +30,14 @@ for f in os.listdir('cogs'):
 
 def load():
     with alive_bar(count) as bar:
-        for filename in os.listdir("cogs"):
-            if filename.endswith(
-                    ".py"
-            ) and filename not in names:
-                loader = f"cogs.{filename[:-3]}"
-                bot.load_extension(loader)
-                bar()
+        for dirname in os.listdir("cogs"):
+            if dirname not in excluded_dirs + names:
+                for filename in os.listdir(f'cogs/{dirname}'):
+                    if filename not in names:
+                        loader = f"cogs.{dirname}.{filename[:-3]}"
+                        print(loader)
+                        bot.load_extension(loader)
+                        bar()
 
 
 if __name__ == '__main__':

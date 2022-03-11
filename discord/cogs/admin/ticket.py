@@ -299,8 +299,7 @@ class TicketBackend(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-
-        self.bot.current_ticket_list = {}
+        # self.bot.current_ticket_list = {}
         with open('lib/badwords.json', 'r') as bw_list:
             self.badwords_list = json.loads(bw_list.read())
 
@@ -334,7 +333,6 @@ class TicketBackend(commands.Cog):
 
         if i_id == 'ticket-creation':
             user = interaction.user
-            print(current_tickets)
 
             if user.id in current_tickets:
                 if current_tickets[user.id] >= 2:
