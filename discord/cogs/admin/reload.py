@@ -14,11 +14,12 @@ excluded_dirs = ['__pycache__', 'etc', 'logs', 'logger']
 async def current_cog_modules(unloaded: list) -> list:
     current_modules = []
     for dirname in os.listdir("cogs"):
-        if dirname not in excluded_dirs + names:
+        if dirname not in excluded_dirs + names + unloaded:
             for filename in os.listdir(f'cogs/{dirname}'):
-                if filename not in names:
+                if filename not in names + excluded_dirs:
                     loader = f"cogs.{dirname}.{filename[:-3]}"
                     current_modules.append(loader)
+
     return current_modules
 
 
