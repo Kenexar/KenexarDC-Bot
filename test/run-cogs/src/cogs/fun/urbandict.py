@@ -1,3 +1,5 @@
+import datetime
+
 import requests
 import nextcord
 
@@ -21,8 +23,7 @@ class UrbanDict(commands.Cog):
 
         response: requests.Response = requests.request("GET", url, headers=headers, params=querystring)
         embed = nextcord.Embed(title=term,
-                               color=self.bot.embed_st,
-                               timestamp=self.bot.current_timestamp())
+                               color=self.bot.embed_st)
         lst = response.json()['list']
         if response.status_code != 200 or not lst:  # clean all types of error codes to not crash the bot
             if response.status_code != 200:
@@ -32,13 +33,11 @@ class UrbanDict(commands.Cog):
             return await ctx.send(embed=embed)
 
         data = response.json()['list'][0]
-        whitespace = '\u200b'
-        embed.title = f'[{data.get("word")}]({data.get("permalink")})'
-        print(f'https://www.urbandictionary.com/author.php?author={data.get("author")}')
+        embed.title = f'Author: {data.get("author")}'
         embed.set_author(name=f'Author: {data.get("author")}')
-        embed.description = f'**Definition:** {data.get("definition")}\n\n**Example:** {data.get("example")}'
+        embed.description = f'[{data.get("word")}]({data.get("permalink")})\n\n**Definition:** \n{data.get("definition")}\n\n**Example:** \n{data.get("example")}'
         embed.set_footer(text=f'Upvotes: {data.get("thumbs_up")} - Downvotes: {data.get("thumbs_down")}')
-
+        embed.timestamp = datetime.datetime.fromtimestamp(data.get('written_on'))
         return await ctx.send(embed=embed)
 
 
