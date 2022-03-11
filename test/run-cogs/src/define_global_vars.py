@@ -15,7 +15,8 @@ from cogs.etc.config import (
     current_timestamp,
     status_query,
     fetch_whitelist,
-    SHARDS
+    SHARDS,
+    URBAN_KEY
 )
 
 import logging
@@ -46,5 +47,6 @@ def define_global_vars(bot):
     bot.set_filler = filler
     # Newly added
     bot.cur_shards = SHARDS
+    bot.urban_key = URBAN_KEY
 
     return bot

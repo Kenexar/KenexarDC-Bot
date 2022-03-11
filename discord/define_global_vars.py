@@ -21,7 +21,8 @@ from cogs.etc.config import (
     status_query,
     fetch_whitelist,
     faceit_serverkey,
-    SHARDS
+    SHARDS,
+    URBAN_KEY
 )
 from kenutils.src.core import FaceitAPI
 
@@ -52,5 +53,6 @@ def define_global_vars(bot):
     bot.logger = logging.getLogger('MrPython')
     bot.server_settings = None
     bot.cur_shards = SHARDS
+    bot.urban_key = URBAN_KEY
 
     return bot

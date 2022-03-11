@@ -46,7 +46,7 @@ class Poll(commands.Cog):
             embed = nextcord.Embed(title='Create a Poll help',
                                    color=self.bot.embed_st,
                                    timestamp=self.bot.current_timestamp())
-            embed.add_field(name='Create a normal poll, this poll can take up to 7 options',
+            embed.add_field(name='Create a normal poll, this poll can take up to 9 options',
                             value='`$poll (title) ~Option 1 ~Option 2 ...` -> The `~` is used to Space the options, so please use it carefully',
                             inline=False)
 
@@ -76,6 +76,7 @@ class Poll(commands.Cog):
         for i in enumerate(options):
             des += f'{numbers[i[0]]} : {i[1].strip()} - `Votes: 0`\n'
             view.add_item(Button(emoji=numbers[i[0]], style=ButtonStyle.blurple, custom_id=f'poll-btn-{i[0]}'))
+        view.add_item(Button(emoji='🔒', style=ButtonStyle.danger, custom_id=f'exit-poll-btn', row=4))
 
         embed = nextcord.Embed(title=title,
                                description=des,
@@ -108,16 +109,30 @@ class PollBackend(commands.Cog):
                 if embed_timestamp > current:
                     continue
 
-                embed.title = f'{embed.title} - Ended'
-                await msg.edit(embed=embed, view=View().clear_items())
+                await self.__poll_closer(embed, msg)
             tmp.append(i)
 
         for i in tmp:
             self.current_polls.pop(i)
 
+    async def __poll_closer(self, embed, msg):
+        embed.title = f'{embed.title} - Ended'
+        await msg.edit(embed=embed, view=View().clear_items())
+
     @commands.Cog.listener()
     async def on_interaction(self, interaction: nextcord.Interaction):
         c_id = interaction.data.get('custom_id', 'custom_id')
+
+        if c_id == 'exit-poll-btn':
+            user = interaction.user
+
+            if user.guild_permissions.administrator:
+                message = interaction.message
+                embed = message.embeds[0]
+                embed.set_footer(text='The deadline was ')
+                await self.__poll_closer(embed, message)
+
+            return
 
         if 'poll-btn-' not in c_id:
             return

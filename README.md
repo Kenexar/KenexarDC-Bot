@@ -33,9 +33,9 @@ Here are listed all the Commands that the Bot has.
 * [ ] `$jtc channel (owner | set-owner [member mention] | name [new name] | info)` -> this command changes or show information about the current channel (you must be inside a custom voice channel for that action)
 * [ ] `remindmein (time, up to 600 sec)` -> Reminds you when you food is finished cooking.
 * [x] `$credits` -> Show the Credits from the Bot
-* [x] `$lyrics (artist) (title)` -> Show the lyrics to the Song!
+* [ ] `$lyrics (artist) (title)` -> Show the lyrics to the Song!
 * [x] `$faceit player (faceit nickname)` -> Find a Faceit player and show his Csgo Stats
-* [ ] `$faceit_verify` -> Sets the current channel (where the message was send) to the Verify channel. issue: ([#20][i20])
+* [ ] `$faceit_verify` -> Sets the current channel (where the message was sent) to Verify channel. issue: ([#20][i20])
 #### Custom-server-commands
 ##### Betrayed community server:
 ###### Management
@@ -46,8 +46,9 @@ Here are listed all the Commands that the Bot has.
 * [x] `Lyrics.ovh` -> Get Lyrics from songs.
 * [ ] `Trackergg` -> Player stats tracking, Player finder, Clan creation.
 * [ ] `SteamWebAPI` -> Information to find multiple user with the same interests.
+* [ ] `Urban Dictionary` -> Find any declaration to a Word
 
-note: I (exersalza) have no partnership with any of the Games or Api Provider, I just love to have API's inside of the Bot to bring a little swing inside the Community.
+note: I (exersalza) have no partnership with any of the Games or Api Provider, I just love to have API's inside the Bot to bring a little swing inside the Community.
 
 [i20]: https://github.com/kenexar/discord-mr-python/issues/20
 [i18]: https://github.com/kenexar/discord-mr-python/issues/18
