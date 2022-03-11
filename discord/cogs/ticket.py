@@ -30,6 +30,13 @@ async def new_cur(db):
     return cur
 
 
+async def send_interaction_msg(message: str, interaction: nextcord.Interaction, tmp=True):
+    try:
+        await interaction.followup.send(message, ephemeral=tmp)
+    except Exception as e:
+        print(e)
+
+
 class Ticket(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -285,9 +292,13 @@ class Ticket(commands.Cog):
         return embed, view
 
 
+current_tickets = {}  # {user_id: int}
+
+
 class TicketBackend(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
 
         self.bot.current_ticket_list = {}
         with open('lib/badwords.json', 'r') as bw_list:
@@ -322,6 +333,16 @@ class TicketBackend(commands.Cog):
         i_id: str = interaction.data.get('custom_id', 'custom_id')
 
         if i_id == 'ticket-creation':
+            user = interaction.user
+            print(current_tickets)
+
+            if user.id in current_tickets:
+                if current_tickets[user.id] >= 2:
+                    return await send_interaction_msg('Du hast bereits zwei Tickets offen, bitte schliesse vorher eines von denen, bevor du ein neues öffnest!', interaction)
+                current_tickets[user.id] += 1
+            else:
+                current_tickets[user.id] = 1
+
             cur = await new_cur(self.bot.dbBase)
 
             cur.execute("SELECT category_id FROM dcbots.tickets_serverchannel WHERE server_id=%s AND category_bind=%s",
@@ -335,6 +356,8 @@ class TicketBackend(commands.Cog):
                 ch = await guild.create_text_channel(name=f"Ticket-{random.randint(0, 65535)}", category=category)
             else:
                 ch = await guild.create_text_channel(name=f"Ticket-{random.randint(0, 65535)}")
+
+            await send_interaction_msg(f'{ch.mention} Dein Ticket', interaction)
 
             await ch.set_permissions(interaction.user, view_channel=True, send_messages=True, read_messages=True)
 
@@ -393,7 +416,7 @@ Die Regelung dabei ist:
 Channel können nur bis zu 100 Zeichen haben, dazu zählen die '-' bei leerzeichen, die - zeichen werden automatisch eingefügt, also keine sorge.
 Sollte ein Wort in der Blacklist sein, wird dir das recht entnommen den Channel namen zu ändern!
 **Du hast nur einen Versuch, den namen zu ändern! Bitte schreibe den neuen Namen nach dieser Nachricht.**
-            """)
+            """, delete_after=3*60)
 
             try:
                 msg = await self.bot.wait_for('message', check=check, timeout=5 * 60)
@@ -475,7 +498,16 @@ class TicketSecondBaseView(View):
 class TicketDeleteView(View):
     @nextcord.ui.button(label='Close it', style=ButtonStyle.danger)
     async def delete_it(self, button: Button, interaction: nextcord.Interaction):
+        ticket_owner = 0
+
+        async for message in interaction.channel.history(oldest_first=True):
+            ticket_owner = message.raw_mentions
+            break
+
         ch: nextcord.TextChannel = interaction.channel
+        member = interaction.guild.get_member(ticket_owner[0])
+
+        current_tickets[member.id] -= 1
 
         m = await ch.send('Ticket will be closed...')
         await m.add_reaction('<:monaloadingdark:915863386196181014>')
