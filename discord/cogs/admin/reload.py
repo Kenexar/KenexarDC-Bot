@@ -8,14 +8,17 @@ from nextcord.ext import tasks
 from nextcord.ext.commands import CommandNotFound
 
 names = ['__init__.py', 'playground.py', 'gtarp_stuff.py']  # Modules that shouldn't be loaded
+excluded_dirs = ['__pycache__', 'etc', 'logs', 'logger']
 
 
 async def current_cog_modules(unloaded: list) -> list:
     current_modules = []
-    for f in os.listdir('cogs'):
-        if f.endswith(".py") and f not in names:
-            if f not in unloaded:
-                current_modules.append('cogs.' + f[:-3])
+    for dirname in os.listdir("cogs"):
+        if dirname not in excluded_dirs + names:
+            for filename in os.listdir(f'cogs/{dirname}'):
+                if filename not in names:
+                    loader = f"cogs.{dirname}.{filename[:-3]}"
+                    current_modules.append(loader)
     return current_modules
 
 
