@@ -22,6 +22,7 @@ from nextcord.ui import View, Button
 
 
 async def new_cur(db):
+    """ Create a new cursor and when it throws a connection error, it will create a new connection """
     try:
         cur = db.cursor(buffered=True)
     except OperationalError:
@@ -31,6 +32,7 @@ async def new_cur(db):
 
 
 async def send_interaction_msg(message: str, interaction: nextcord.Interaction, tmp=True):
+    """ Sends this pop-up message for special users only """
     try:
         await interaction.followup.send(message, ephemeral=tmp)
     except Exception as e:
@@ -47,7 +49,7 @@ class Ticket(commands.Cog):
         pass
 
     @commands.Cog.listener()
-    async def on_command_error(self, ctx, error):  # Function doing intense computing!
+    async def on_command_error(self, ctx, error):  # Function doing intense computing!, it's copied from the admin
         if isinstance(error, EmojiNotFound):  # error handler
             return await ctx.send(
                 "Der Bot kann den Emote nicht finden, stelle sicher das dieser Emote auf diesen Server ist, oder der Bot auf den anderen Server present ist!")
@@ -56,10 +58,9 @@ class Ticket(commands.Cog):
             self.bot.logger.error(error)
             return
 
-        raise error
-
     @ticket.command(no_pm=True)
     async def add(self, ctx: commands.Context, emote: Union[nextcord.Emoji, str], *option):
+        """ Adds an server side option to the Ticket message """
         emoji = 'nul'
 
         if isinstance(emote, str):
@@ -73,7 +74,7 @@ class Ticket(commands.Cog):
             return await ctx.send(
                 'Dein Text ist zu lang damit er Angezeigt werden kann, bedenke das der Text nur 1-50 Char. haben darf!',
                 delete_after=20)
-        # self.bot.dbBase.set_charset_collation('utf8mb4')
+
         cur = await new_cur(self.bot.dbBase)
 
         cur.execute("SELECT count(*) FROM dcbots.tickets_columns WHERE server_id=%s", (ctx.guild.id,))
@@ -94,8 +95,10 @@ class Ticket(commands.Cog):
 
     @ticket.command(no_pm=True)
     async def bind(self, ctx: commands.Context, category: Union[int, str], bind: int = 0):
+        """ Binds a Category to a Button id, it's for sorting channel after themes """
+
         if isinstance(category, str):
-            if category.lower() == 'current' and not bind:
+            if category.lower() == 'current' and not bind:  # check if the user wants the current Category's
                 category_binds = ''
                 cur = await new_cur(self.bot.dbBase)
                 cur.execute(
@@ -108,12 +111,13 @@ class Ticket(commands.Cog):
                 for category_id, role in fetcher:
                     category_binds = f'{category_binds}\nCategory: {self.bot.get_channel(category_id).mention}'
 
+                # Create an Embed for momentary category binds on the server where the Command is invoked
                 embed = nextcord.Embed(title='Category Binds:',
                                        description=category_binds,
                                        color=self.bot.embed_st,
                                        timestamp=self.bot.current_timestamp())
                 return await ctx.send(embed=embed)
-            return await ctx.send('Die Category Id darf keine Zeichenkette sein')
+            return await ctx.send('Die Category Id darf kein Buchstabe sein')
 
         if isinstance(category and bind, int):
             cur = await new_cur(self.bot.dbBase)
@@ -134,7 +138,7 @@ class Ticket(commands.Cog):
             cur.close()
             return await ctx.send(f'<#{category}> mit dem {bind=} wurde erfolgreich gesetzt', delete_after=10)
 
-        return await ctx.send(f'{category!r} oder {bind!r} is not Numeric', delete_after=10)
+        return await ctx.send(f'{category!r} oder {bind!r} ist keine Zahl', delete_after=10)
 
     @ticket.command(no_pm=True)
     async def define(self, ctx: commands.Context, channel_id: str):  # db channel type 8
@@ -166,7 +170,8 @@ class Ticket(commands.Cog):
             try:
                 await self.__define_init_category(channel_id, ctx, cur)
                 cur.close()
-                return await ctx.send(f'Setted <#{channel_id}> as Initial Category', delete_after=10)
+                return await ctx.send(f'<#{channel_id}> wurde als Start Category gesetzt', delete_after=10)
+
             except Exception as e:
                 self.bot.logger.error(e)
                 cur.close()
@@ -315,18 +320,6 @@ class TicketBackend(commands.Cog):
 
         return False
 
-    async def __define_init_category(self, channel_id, ctx, cur):
-        cur.execute("SELECT category_id FROM dcbots.tickets_serverchannel WHERE server_id=%s AND category_bind=0",
-                    (ctx.guild.id,))
-        fetcher = cur.fetchall()
-        sql_string = "INSERT INTO dcbots.tickets_serverchannel (category_id, server_id, category_bind) VALUES (%s, %s, 0)"
-        if fetcher:
-            sql_string = "UPDATE dcbots.tickets_serverchannel SET category_id=%s WHERE server_id=%s"
-
-        cur.execute(sql_string, (int(channel_id), ctx.guild.id))
-        self.bot.dbBase.commit()
-        cur.close()
-
     @commands.Cog.listener()
     async def on_interaction(self, interaction: nextcord.Interaction):
         i_id: str = interaction.data.get('custom_id', 'custom_id')
@@ -336,7 +329,9 @@ class TicketBackend(commands.Cog):
 
             if user.id in current_tickets:
                 if current_tickets[user.id] >= 2:
-                    return await send_interaction_msg('Du hast bereits zwei Tickets offen, bitte schliesse vorher eines von denen, bevor du ein neues öffnest!', interaction)
+                    return await send_interaction_msg(
+                        'Du hast bereits zwei Tickets offen, bitte schliesse vorher eines von denen, bevor du ein neues öffnest!',
+                        interaction)
                 current_tickets[user.id] += 1
             else:
                 current_tickets[user.id] = 1
@@ -414,7 +409,7 @@ Die Regelung dabei ist:
 Channel können nur bis zu 100 Zeichen haben, dazu zählen die '-' bei leerzeichen, die - zeichen werden automatisch eingefügt, also keine sorge.
 Sollte ein Wort in der Blacklist sein, wird dir das recht entnommen den Channel namen zu ändern!
 **Du hast nur einen Versuch, den namen zu ändern! Bitte schreibe den neuen Namen nach dieser Nachricht.**
-            """, delete_after=3*60)
+            """, delete_after=3 * 60)
 
             try:
                 msg = await self.bot.wait_for('message', check=check, timeout=5 * 60)
@@ -437,6 +432,7 @@ Sollte ein Wort in der Blacklist sein, wird dir das recht entnommen den Channel 
     async def __edit_embed_message(self, inter: nextcord.Interaction):
         message = inter.message
         origin_view = View().from_message(message)
+        #  Here it says it is an item, but I take only one button out of it, so it's ok
         rename_btn: Button = origin_view.children[-2:][0]
 
         if rename_btn.disabled:

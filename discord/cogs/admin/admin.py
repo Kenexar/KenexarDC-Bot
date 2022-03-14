@@ -42,7 +42,7 @@ class Admin(commands.Cog):
         if isinstance(error, nextcord.errors.NotFound):
             return
 
-        # Err logging section
+        # Error logging section
         ch = self.bot.get_channel(self.bot.log_channel)
         err_message = f"""{error}\n<@{self.bot.authorid}>"""
         self.bot.logger.error(error)
@@ -99,7 +99,8 @@ class Admin(commands.Cog):
             return
         await ctx.send(embed=await help_site())
 
-    # @nextcord.slash_command(name='credits', description='Show the credits for the Bot', guild_ids=[], force_global=True)
+    # @nextcord.slash_command(name='credits',
+    #                         description='Show the credits for the Bot', guild_ids=[], force_global=True)
     @commands.Command
     async def credits(self, ctx: commands.Context):
         self.bot.info('Someone cares about me :)')

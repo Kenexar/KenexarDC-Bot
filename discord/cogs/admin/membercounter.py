@@ -6,6 +6,24 @@ from nextcord.ext import commands, tasks
 from nextcord.ext.commands import has_permissions
 
 
+async def check_for_state(server, user_online):
+    for user in server.members:
+        if str(user.status) != "offline" and not user.bot:
+            user_online.append(user.id)
+
+
+async def server_channel_list_creator(fetcher):
+    tmp_list = []
+    for entry in fetcher:
+        tmp_list.append(entry[0])
+    return tmp_list
+
+
+async def count_member_in_voice(channel, user_in_voice):
+    for member in channel.members:
+        user_in_voice.append(member.id)
+
+
 class MemberCounter(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -29,7 +47,7 @@ class MemberCounter(commands.Cog):
             server = self.bot.get_guild(server_id)
             await self.user_appender(channel_count, channel, user_in_voice, server)
 
-            await self.check_for_state(server, user_online)
+            await check_for_state(server, user_online)
 
             channel_types = {
                 1: server.member_count,
@@ -54,33 +72,18 @@ class MemberCounter(commands.Cog):
                 except Exception as e:
                     self.bot.logger.error(e)
 
-    async def check_for_state(self, server, user_online):
-        for user in server.members:
-            if str(user.status) != "offline" and not user.bot:
-                user_online.append(user.id)
-
     async def user_appender(self, channel_count, fetcher, user_in_voice, server):
-        tmp_list = await self.server_channel_list_creator(fetcher)
+        tmp_list = await server_channel_list_creator(fetcher)
 
         for channel in server.channels:
             if 'voice' in str(channel.type) and channel.id not in tmp_list:
-                await self.count_member_in_voice(channel, user_in_voice)
+                await count_member_in_voice(channel, user_in_voice)
                 channel_count.append(channel)
-
-    async def server_channel_list_creator(self, fetcher):
-        tmp_list = []
-        for entry in fetcher:
-            tmp_list.append(entry[0])
-        return tmp_list
-
-    async def count_member_in_voice(self, channel, user_in_voice):
-        for member in channel.members:
-            user_in_voice.append(member.id)
 
     @commands.Command
     @has_permissions(administrator=True)
     async def mccreate(self, ctx: commands.Context, category: str = None):
-        """
+        """ Member Counter creator
 
         :param ctx:
         :type ctx:

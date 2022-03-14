@@ -8,7 +8,7 @@ from nextcord.ext import tasks
 from nextcord.ext.commands import CommandNotFound
 
 names = ['__init__.py', 'playground.py', 'gtarp_stuff.py']  # Modules that shouldn't be loaded
-excluded_dirs = ['__pycache__', 'etc', 'logs', 'logger']
+excluded_dirs = ['__pycache__', 'etc', 'logs', 'logger']  # dirs that should not be searched in
 
 
 async def current_cog_modules(unloaded: list) -> list:
@@ -31,10 +31,9 @@ class Reload(commands.Cog):
 
     @commands.Command
     async def stop(self, ctx, cog_module=None):
+        """ Stop a given module. Syntax: $stop cogs.[FOLDER NAME].[MODULE NAME] """
         if not ctx.author.id == self.bot.authorid:
             return CommandNotFound()
-
-        print(self.unloaded_modules)
 
         if not cog_module:
             return await ctx.send(embed=await help_site('admin-unload'))
@@ -49,6 +48,8 @@ class Reload(commands.Cog):
 
     @commands.Command
     async def start(self, ctx, cog_module=None):
+        """ Starts a given module. Syntax: start cogs.[FOLDER NAME].[MODULE NAME] """
+
         if not ctx.author.id == self.bot.authorid:
             return CommandNotFound()
 
@@ -65,6 +66,8 @@ class Reload(commands.Cog):
 
     @commands.Command
     async def reload(self, ctx, cog_module=None):
+        """ Reload a given module. Syntax: reload cogs.[FOLDER NAME].[MODULE NAME] """
+
         if not ctx.author.id == self.bot.authorid:
             return CommandNotFound()
 
@@ -72,7 +75,7 @@ class Reload(commands.Cog):
             return await ctx.send(embed=await help_site('admin-reload'))
 
         if cog_module in self.unloaded_modules:
-            return await ctx.send('The giving module is not Loaded!')
+            return await ctx.send('The giving module is not Loaded!', delete_after=20)
 
         try:
             self.bot.reload_extension(cog_module)
@@ -86,25 +89,28 @@ class Reload(commands.Cog):
         if not ctx.author.id == self.bot.authorid:
             return CommandNotFound()
 
-        embed = nextcord.Embed(title='All Cogs that are loaded are listed here!',
+        embed = nextcord.Embed(title='All Cog wheels that are loaded are listed here!',
                                color=self.bot.embed_st,
                                timestamp=self.bot.current_timestamp())
 
         unloaded = '\n'.join(
-            self.unloaded_modules) if self.unloaded_modules else 'All modules running down da street, i here AH AH AH AH '
+            self.unloaded_modules) if self.unloaded_modules \
+            else 'All modules running down da street, i here AH AH AH AH '
 
         embed.add_field(name='Loaded Modules', value='\n'.join(await current_cog_modules(self.unloaded_modules)),
                         inline=False)
         embed.add_field(name='Unloaded Modules', value=unloaded, inline=False)
 
         embed.add_field(name=f'To reload cog modules, write `{self.bot.prefix}reload (cog_module)`',
-                        value=f'Example: `{self.bot.prefix}reload cogs.casino`',
+                        value=f'Example: `{self.bot.prefix}reload cogs.fun.casino`',
                         inline=False)
 
-        await ctx.send(embed=embed)
+        await ctx.send(embed=embed, delete_after=15)
 
 
 class AutoModuleReloader(commands.Cog):
+    """ Reload modules to not restart the entire bot when something gets updated """
+
     def __init__(self, bot):
         self.bot = bot
         self.changed_modules = []
@@ -122,7 +128,8 @@ class AutoModuleReloader(commands.Cog):
 
     async def module_reload_list_updater(self):
         now = datetime.now()
-        ago = now - timedelta(minutes=4)
+        ago = now - timedelta(minutes=4)  # get recent updated files
+
         for root, dirs, files in os.walk('cogs/'):
             for fname in files:
                 path = os.path.join(root, fname)

@@ -9,7 +9,16 @@ async def send_interaction_msg(message: str, interaction: nextcord.Interaction, 
         print(e)
 
 
+async def __create_values(stats):
+    value_string = ''
+    for k, v in stats.items():
+        value_string += f'{k}: `{v}`\n'
+    return value_string
+
+
 class Listener(commands.Cog):
+    """ This is the Backend class for the Commands, I will expand this section by time """
+
     def __init__(self, bot):
         self.bot = bot
 
@@ -24,21 +33,19 @@ class Listener(commands.Cog):
             user = await self.bot.faceit.get_players(player_name=username)
             stats = await self.bot.faceit.get_player_stats(player_id=user['player_id'])
 
+            csgo_player_data = user['games']['csgo']
             embed = nextcord.Embed(timestamp=self.bot.current_timestamp(),
-                                   color=self.bot.faceit_colors[user['games']['csgo']['skill_level']])
+                                   color=self.bot.faceit_colors[csgo_player_data['skill_level']])
 
             embed.set_author(name=user['nickname'],
                              icon_url=user['avatar'],
                              url=user['faceit_url'].format(lang=user['country']))
 
-            value_string = ''
-
-            for k, v in stats.items():
-                value_string += f'{k}: `{v}`\n'
+            value_string = await __create_values(stats)
 
             embed.add_field(name='Spieler Info',
-                            value=f'Rank: `{user["games"]["csgo"]["skill_level"]}`\n'
-                                  f'IG Name: `{user["games"]["csgo"]["game_player_name"]}`')
+                            value=f'Rank: `{csgo_player_data["skill_level"]}`\n'
+                                  f'IG Name: `{csgo_player_data["game_player_name"]}`')
 
             embed.add_field(name='Spieler Stats',
                             value=value_string,

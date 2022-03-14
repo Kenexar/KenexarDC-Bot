@@ -37,7 +37,6 @@ class Giveaway(commands.Cog):
 
         embed.set_footer(text='Deadline ')
         m = await ctx.send(embed=embed)
-        await m.add_reaction('✅')
 
 
 class GiveawayBackend(commands.Cog):

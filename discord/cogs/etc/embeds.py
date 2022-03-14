@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from cogs.etc.config import EMBED_ST, PREFIX, current_timestamp
 from nextcord import Embed
 

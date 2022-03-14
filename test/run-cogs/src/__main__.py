@@ -19,7 +19,6 @@ bot = commands.AutoShardedBot(command_prefix=PREFIX,
                               help_command=None,
                               description=f"Created by exersalza. Project: {PROJECT_NAME}")
 
-
 # tbot = tcommands.Bot(
 #     token=OAUTH,
 #     nick=BOT_USERNAME,

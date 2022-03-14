@@ -1,8 +1,5 @@
-import datetime
-
-import requests
 import nextcord
-
+import requests
 from nextcord.ext import commands
 
 
@@ -36,7 +33,8 @@ class UrbanDict(commands.Cog):
             return await ctx.send(embed=embed)
 
         data = response.json()['list'][0]
-        embed.set_author(name=f'Author: {data.get("author")}', url=f'https://www.urbandictionary.com/author.php?author={data.get("author").replace(" ", "+")}')
+        embed.set_author(name=f'Author: {data.get("author")}',
+                         url=f'https://www.urbandictionary.com/author.php?author={data.get("author").replace(" ", "+")}')
         embed.description = f'**Perm link: [{data.get("word")}]({data.get("permalink")})**\n\n**Definition:** \n{data.get("definition")}\n\n**Example:** \n{data.get("example")}'
         embed.set_footer(text=f'Upvotes: {data.get("thumbs_up")} - Downvotes: {data.get("thumbs_down")}')
         return await ctx.send(embed=embed)
