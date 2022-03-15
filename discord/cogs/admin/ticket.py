@@ -8,7 +8,7 @@ from typing import Tuple, Union
 import nextcord
 from cogs.etc.config import dbBase
 from kenutils.src.core import filler
-from mysql.connector import OperationalError
+from mysql.connector import OperationalError, InternalError
 from nextcord import ButtonStyle
 from nextcord import TextChannel, CategoryChannel, ChannelType
 from nextcord.errors import NotFound
@@ -195,8 +195,10 @@ class Ticket(commands.Cog):
         else:
             try:
                 cur.close()
-            except Exception:
+            except InternalError:
                 pass
+            except Exception as e:
+                self.bot.logger.error(f'error at ticket:201 \n{e}')
             return await ctx.send('Given id is not an Category/Text channel!', delete_after=5)
 
     async def __define_init_category(self, channel_id, ctx, cur):
@@ -366,7 +368,7 @@ class TicketBackend(commands.Cog):
                 btn1 = bytes(btn[1]).decode('utf-8')
                 btn2 = bytes(btn[2]).decode('utf-8')
 
-                view.add_item(Button(label=f'{btn[0]}: {btn2}', emoji=str(btn1 if not btn1 == "nul" else "📑"),
+                view.add_item(Button(label=f'{btn[0]}: {btn2}', emoji=str(btn1 if btn1 != "nul" else "📑"),
                                      style=ButtonStyle.blurple,
                                      custom_id=f'custom-ticket-{btn[0]}'))
 
