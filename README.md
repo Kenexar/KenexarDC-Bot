@@ -46,7 +46,7 @@ Here are listed all the Commands that the Bot has.
 * [x] `Lyrics.ovh` -> Get Lyrics from songs.
 * [ ] `Trackergg` -> Player stats tracking, Player finder, Clan creation.
 * [ ] `SteamWebAPI` -> Information to find multiple user with the same interests.
-* [ ] `Urban Dictionary` -> Find any declaration to a Word
+* [x] `Urban Dictionary` -> Find the definition to an word
 
 note: I (exersalza) have no partnership with any of the Games or Api Provider, I just love to have API's inside the Bot to bring a little swing inside the Community.
 
