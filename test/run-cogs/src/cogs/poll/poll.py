@@ -14,7 +14,8 @@ from cogs.etc.config import AUTHORID
 
 
 def is_owner():
-    def predicate(ctx): return ctx.message.author.id == AUTHORID
+    def predicate(ctx):
+        return ctx.message.author.id == AUTHORID
     return commands.check(predicate)
 
 

@@ -38,8 +38,8 @@ class Troll(commands.Cog):
             await asyncio.sleep(time_)
             try:
                 await ctx.voice_client.disconnect()
-            except Exception:
-                pass
+            except Exception as e:
+                self.bot.logger.error(f'Error at troll:42\n{e}')
 
     @commands.Command
     async def leave(self, ctx):

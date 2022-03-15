@@ -2,6 +2,7 @@ import asyncio
 
 import nextcord
 from kenutils.src.core import channel_listener
+from mysql.connector import InternalError
 from nextcord.ext import commands, tasks
 from nextcord.ext.commands import has_permissions
 
@@ -122,8 +123,10 @@ class MemberCounter(commands.Cog):
             try:
                 cur.close()
                 self.channel = await channel_listener(self.bot)
-            except Exception:
+            except InternalError:
                 pass
+            except Exception as e:
+                self.bot.logger.error(f'Error at poll:129\n{e}')
 
 
 def setup(bot):

@@ -12,9 +12,11 @@ class ViewTimeOuter(View):
         self.ctx = ctx
         self.embed = embed
 
-    async def on_timeout(self): return
+    async def on_timeout(self):
+        return
 
-    async def on_error(self, error: Exception, item: Item, interaction: nextcord.Interaction): return
+    async def on_error(self, error: Exception, item: Item, interaction: nextcord.Interaction):
+        return
 
 
 class Faceit(commands.Cog):
