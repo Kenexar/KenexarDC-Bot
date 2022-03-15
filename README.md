@@ -1,3 +1,4 @@
+[![CodeFactor](https://www.codefactor.io/repository/github/kenexar/discord-mr-python/badge)](https://www.codefactor.io/repository/github/kenexar/discord-mr-python)
 <div align="center">
     <h1>MrPython</h1>
     <p>This is a Multifunction bot. Current Bot language is de-DE but I will change it soon.</p>
@@ -52,3 +53,4 @@ note: I (exersalza) have no partnership with any of the Games or Api Provider, I
 
 [i20]: https://github.com/kenexar/discord-mr-python/issues/20
 [i18]: https://github.com/kenexar/discord-mr-python/issues/18
+
