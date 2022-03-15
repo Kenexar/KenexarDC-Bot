@@ -1,0 +1,6 @@
+# Dupe threshold
+MinLineCount: 10
+
+# File exclude
+IgnorePatterns:
+  - test/*
