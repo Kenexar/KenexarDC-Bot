@@ -14,8 +14,8 @@ class Rcon:
     def send_command(self, command, response=True):
         """ Sending commands to server
 
-        :param command: Enter a command that should sent to the server
-        :param response: Standart True, turn it to False when you dont want a response
+        :param command: Command to execute on the server
+        :param response: Standard True, turn it to False when you don't want a response
         from the server
 
         """

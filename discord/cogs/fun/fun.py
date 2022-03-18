@@ -22,7 +22,7 @@ class Fun(commands.Cog):
         if not counter.isdigit():
             return await ctx.send('Der angegebene Wert ist keine zahl.')
 
-        if 600 < int(counter) > 0:
+        if 600 > int(counter) > 0:
             await asyncio.sleep(int(counter))
             return await ctx.send(f'{ctx.message.author.mention} Die Zeit ist abgelaufen!')
         await ctx.send('Die zeit sollte zwischen 1-600 Sec liegen')
