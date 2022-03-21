@@ -1,7 +1,10 @@
+from datetime import datetime
+
 import nextcord
 from nextcord.ext import commands
 from nextcord.ext.commands import CommandNotFound
-from utils.checker import filler
+from nextcord.ui import View, Select
+from utils import filler
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -79,6 +82,25 @@ class Test(commands.Cog):
     async def get_avat(self, ctx: commands.Context, member: str = None):
         if member is not None:
             user = ctx.guild.get_member(int(member.strip('<@&!>')))
+
+    @commands.Command
+    async def send_test(self, ctx):
+        embed = nextcord.Embed(title=f'{datetime.now().strftime("%Y-%m-%d%H:%M:%S")}')
+        print(self.bot.server_settings)
+        embed.add_field(name=f'\u200b', value=f'`{datetime.now().strftime("%Y-%m-%d%H:%M:%S")}`')
+
+        view = View()
+
+        select = Select(custom_id='test')
+        select.add_option(label='test', value='missing')
+        select.add_option(label='test', value='mi')
+        select.add_option(label='test', value='mis')
+        select.add_option(label='test', value='miss')
+        select.add_option(label='test', value='missi')
+        select.add_option(label='test', value='missin')
+
+        view.add_item(select)
+        await ctx.send(embed=embed, view=view)
 
 
 def setup(bot):
