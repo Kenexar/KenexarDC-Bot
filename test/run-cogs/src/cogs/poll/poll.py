@@ -2,7 +2,6 @@ import nextcord
 
 from datetime import datetime
 from _datetime import timedelta
-from typing import Dict, List
 
 from nextcord import ButtonStyle
 from nextcord.ui import View, Button
@@ -81,6 +80,7 @@ class Poll(commands.Cog):
             des += f'{numbers[i[0]]} : {i[1].strip()} - `Votes: 0`\n'
             # set normal buttons
             view.add_item(Button(emoji=numbers[i[0]], style=ButtonStyle.blurple, custom_id=f'poll-btn-{i[0]}'))
+
         # set end button for admins to stop the poll when they want
         view.add_item(Button(emoji='🔒', style=ButtonStyle.danger, custom_id=f'exit-poll-btn', row=4))
 

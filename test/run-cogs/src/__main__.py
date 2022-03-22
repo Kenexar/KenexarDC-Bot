@@ -3,16 +3,16 @@ import platform
 import pprint
 from multiprocessing import Process
 
-import nextcord
+import discord
 from alive_progress import alive_bar
-from nextcord.ext import commands
+from discord.ext import commands
 
 from cogs.etc.config import PREFIX, PROJECT_NAME, SHARDS
 from define_global_vars import define_global_vars
 
 # from cogs.etc.config import OAUTH, BOT_USERNAME, tPREFIX, CHANNEL_NAME
 
-intents = nextcord.Intents.all()
+intents = discord.Intents.all()
 bot = commands.AutoShardedBot(command_prefix=PREFIX,
                               shard_count=SHARDS,
                               intents=intents,
@@ -62,10 +62,10 @@ if __name__ == '__main__':
     load()
     bot = define_global_vars(bot)
 
-    discord = Process(target=bot.run(bot.token))
+    discordo = Process(target=bot.run(bot.token))
     # twitch = Process(target=tbot.run())
 
-    discord.start()
+    discordo.start()
     # discord.run()
     # Client = Process(target=bot.run(bot.token))
     # Client.start()

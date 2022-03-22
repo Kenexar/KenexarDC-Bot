@@ -73,7 +73,6 @@ class Test(commands.Cog):
         self.bot.logger.info('Ready, pls don\'t delete me :(')
         self.bot.logger.info(f'Current Shards: {self.bot.cur_shards}')
         self.bot.server_settings = await filler(self.bot)
-        self.bot.dispatch('ticket_startup')
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
@@ -81,7 +80,7 @@ class Test(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ticket_startup(self):
-        print(self.__class__)
+        print('')
 
     @commands.Command
     async def get_avat(self, ctx: commands.Context, member: str = None):
@@ -96,15 +95,6 @@ class Test(commands.Cog):
 
         view = View()
 
-        select = Select(custom_id='test')
-        select.add_option(label='test', value='missing')
-        select.add_option(label='test', value='mi')
-        select.add_option(label='test', value='mis')
-        select.add_option(label='test', value='miss')
-        select.add_option(label='test', value='missi')
-        select.add_option(label='test', value='missin')
-
-        view.add_item(select)
         await ctx.send(embed=embed, view=view)
 
 

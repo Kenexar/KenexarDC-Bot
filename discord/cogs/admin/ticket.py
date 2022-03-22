@@ -617,7 +617,9 @@ class TicketEndView(View):
                     continue
 
                 message_timestamp = message.created_at.strftime("%Y-%m-%d %H:%M:%S")
-                message_content = f'{message_timestamp} | {message.author.name}#{message.author.discriminator}: {message.content}'
+                author = message.author
+
+                message_content = f'{message_timestamp} | {author.name}#{author.discriminator}: {message.content}'
                 file.write(message_content + '\n')
 
         cur = await new_cur(dbBase)
