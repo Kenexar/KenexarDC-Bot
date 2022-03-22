@@ -7,3 +7,4 @@ RUN python3.8 -m venv venv/ && source venv/bin/activate
 COPY req req
 RUN pip3 install -r req --no-cache-dir
 COPY discord/ .
+CMD ['./start.sh']
