@@ -80,7 +80,12 @@ class Reload(commands.Cog):
         try:
             self.bot.reload_extension(cog_module)
             if cog_module == 'cogs.admin.ticket':
+                print('inside?')
                 self.bot.dispatch('ticket_startup')
+
+                @commands.Cog.listener()
+                async def on_ticket_startup():
+                    print('start up')
         except commands.ExtensionFailed:
             return await ctx.send(f'{cog_module=} cannot be reloaded, rollback to state before')
 

@@ -73,10 +73,15 @@ class Test(commands.Cog):
         self.bot.logger.info('Ready, pls don\'t delete me :(')
         self.bot.logger.info(f'Current Shards: {self.bot.cur_shards}')
         self.bot.server_settings = await filler(self.bot)
+        self.bot.dispatch('ticket_startup')
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
         pass
+
+    @commands.Cog.listener()
+    async def on_ticket_startup(self):
+        print(self.__class__)
 
     @commands.Command
     async def get_avat(self, ctx: commands.Context, member: str = None):
