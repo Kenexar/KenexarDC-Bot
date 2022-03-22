@@ -9,7 +9,7 @@ from inspect import currentframe, getframeinfo
 
 import nextcord
 from cogs.etc.config import dbBase
-from utils import filler
+from kenutils.src.core import filler
 from mysql.connector import OperationalError, InternalError
 from nextcord import ButtonStyle
 from nextcord import TextChannel, CategoryChannel, ChannelType
