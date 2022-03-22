@@ -123,7 +123,7 @@ class Ticket(commands.Cog):
         self.bot.dbBase.commit()
         cur.close()
 
-        self.bot.server_settings[ctx.guild.id]['ticket_dropdown'] = sql_query[0]
+        self.bot.server_settings = await filler(self.bot)
         await ctx.send(f'Ticket Dropdown wurde erfolgreich auf **{True if sql_query[0] else False}** gesetzt')
 
     @ticket.command(no_pm=True)
@@ -252,6 +252,7 @@ class Ticket(commands.Cog):
 
             self.bot.dbBase.commit()
             self.bot.server_settings = await filler(self.bot)
+
         cur.execute("SELECT channel_id FROM dcbots.serverchannel WHERE server_id=%s AND channel_type=8",
                     (ctx.guild.id,))
         fetcher = cur.fetchone()
