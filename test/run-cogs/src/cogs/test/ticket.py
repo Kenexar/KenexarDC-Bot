@@ -66,7 +66,7 @@ class Ticket(commands.Cog):
 
     @ticket.command(no_pm=True)
     async def add(self, ctx: commands.Context, emote: Union[nextcord.Emoji, str], *option):
-        """ Adds an server side option to the Ticket message """
+        """ Adds a server side option to the Ticket message """
         emoji = 'nul'
 
         if isinstance(emote, str):
@@ -124,7 +124,7 @@ class Ticket(commands.Cog):
         cur.close()
 
         self.bot.server_settings[ctx.guild.id]['ticket_dropdown'] = sql_query[0]
-        await ctx.send(f'Ticket Dropdown wurde erfolgreich auf **{True if sql_query[0] else False!r}** gesetzt')
+        await ctx.send(f'Ticket Dropdown wurde erfolgreich auf **{True if sql_query[0] else False}** gesetzt')
 
     @ticket.command(no_pm=True)
     async def bind(self, ctx: commands.Context, category: Union[int, str], bind: int = 0):
@@ -275,19 +275,24 @@ class Ticket(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
+        self.bot.dispatch('ticket_startup')
+
+    @commands.Cog.listener()
+    async def on_ticket_startup(self):
+        embed, view = await self.__create_ticket_message()
+
         cur = await new_cur(self.bot.dbBase)
         cur.execute("SELECT channel_id FROM dcbots.serverchannel WHERE channel_type=8")
 
         fetcher = cur.fetchall()
         cur.close()
-        # embed, view = await self.__create_ticket_message()
-        #
-        # for entry in fetcher:
-        #     ch = self.bot.get_channel(entry[0])
-        #     if ch is None:
-        #         continue
-        #     await ch.purge()
-        #     await ch.send(embed=embed, view=view)
+
+        for entry in fetcher:
+            ch = self.bot.get_channel(entry[0])
+            if ch is None:
+                continue
+            await ch.purge()
+            await ch.send(embed=embed, view=view)
 
     @ticket.command(no_pm=True)
     async def send(self, ctx: commands.Context):

@@ -1,9 +1,8 @@
-import datetime
-
-epoch = datetime.datetime.utcfromtimestamp(0)
+from datetime import datetime as dt
 
 
-def conv(dt):
-    return (dt - epoch).total_seconds()
+def conv():
+    return (dt.now() - dt.utcfromtimestamp(0)).total_seconds()
 
-print(conv(datetime.datetime.now()))
+
+print()

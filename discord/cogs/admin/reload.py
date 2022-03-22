@@ -79,6 +79,8 @@ class Reload(commands.Cog):
 
         try:
             self.bot.reload_extension(cog_module)
+            if cog_module == 'cogs.admin.ticket':
+                self.bot.dispatch('ticket_startup')
         except commands.ExtensionFailed:
             return await ctx.send(f'{cog_module=} cannot be reloaded, rollback to state before')
 
@@ -150,6 +152,8 @@ class AutoModuleReloader(commands.Cog):
 
         for module in self.changed_modules:
             self.bot.reload_extension(module)
+            if module == 'cogs.admin.ticket':
+                self.bot.dispatch('ticket_startup')
             self.changed_modules.remove(module)
 
         await ctx.send('Reload was successfully')

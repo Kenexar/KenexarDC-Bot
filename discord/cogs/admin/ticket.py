@@ -1,24 +1,30 @@
 import asyncio
+import inspect
 import json
 import os
 import random
 from datetime import datetime
 from typing import Tuple, Union
+from inspect import currentframe, getframeinfo
 
 import nextcord
 from cogs.etc.config import dbBase
-from kenutils.src.core import filler
+from utils import filler
 from mysql.connector import OperationalError, InternalError
 from nextcord import ButtonStyle
 from nextcord import TextChannel, CategoryChannel, ChannelType
 from nextcord.errors import NotFound
 from nextcord.ext import commands
 from nextcord.ext.commands import has_permissions, EmojiNotFound
-from nextcord.ui import View, Button
+from nextcord.ui import View, Button, Select
 
 
 # Todo:
 #  Silent Ping
+
+
+def cf(frame) -> inspect.Traceback:
+    return getframeinfo(frame)
 
 
 async def new_cur(db):
@@ -60,7 +66,7 @@ class Ticket(commands.Cog):
 
     @ticket.command(no_pm=True)
     async def add(self, ctx: commands.Context, emote: Union[nextcord.Emoji, str], *option):
-        """ Adds an server side option to the Ticket message """
+        """ Adds a server side option to the Ticket message """
         emoji = 'nul'
 
         if isinstance(emote, str):
@@ -92,6 +98,33 @@ class Ticket(commands.Cog):
         cur.close()
 
         return await ctx.send(f'{" ".join(option)!r} Wurde als ticket button gesetzt!')
+
+    @ticket.command(no_om=True)
+    async def useselect(self, ctx: commands.Context, condition=None):
+        if condition is None:
+            return await ctx.send(f'Keine Option übergeben.\nSyntax $ticket useselect (1/0)')
+
+        if not condition.isdigit():
+            return await ctx.send(f'Option ist keine Zahl.\nSyntax $ticket useselect (1/0)')
+
+        sql_string = "UPDATE dcbots.server_settings SET ticket_dropdown=%s WHERE server_id=%s"
+
+        if not self.bot.server_settings[ctx.guild.id]:
+            sql_string = "INSERT INTO dcbots.server_settings (ticket_dropdown, server_id) VALUES (%s, %s)"
+
+        if int(condition):
+            sql_query = (1, ctx.guild.id)
+        else:
+            sql_query = (0, ctx.guild.id)
+
+        cur = await new_cur(self.bot.dbBase)
+        cur.execute(sql_string, sql_query)
+
+        self.bot.dbBase.commit()
+        cur.close()
+
+        self.bot.server_settings[ctx.guild.id]['ticket_dropdown'] = sql_query[0]
+        await ctx.send(f'Ticket Dropdown wurde erfolgreich auf **{True if sql_query[0] else False}** gesetzt')
 
     @ticket.command(no_pm=True)
     async def bind(self, ctx: commands.Context, category: Union[int, str], bind: int = 0):
@@ -198,7 +231,7 @@ class Ticket(commands.Cog):
             except InternalError:
                 pass
             except Exception as e:
-                self.bot.logger.error(f'error at ticket:201 \n{e}')
+                self.bot.logger.error(f'error at ticket:{cf(currentframe()).lineno} \n{e}')
             return await ctx.send('Given id is not an Category/Text channel!', delete_after=5)
 
     async def __define_init_category(self, channel_id, ctx, cur):
@@ -242,12 +275,17 @@ class Ticket(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
+        self.bot.dispatch('ticket_startup')
+
+    @commands.Cog.listener()
+    async def on_ticket_startup(self):
+        embed, view = await self.__create_ticket_message()
+
         cur = await new_cur(self.bot.dbBase)
         cur.execute("SELECT channel_id FROM dcbots.serverchannel WHERE channel_type=8")
 
         fetcher = cur.fetchall()
         cur.close()
-        embed, view = await self.__create_ticket_message()
 
         for entry in fetcher:
             ch = self.bot.get_channel(entry[0])
@@ -310,7 +348,7 @@ class TicketBackend(commands.Cog):
         with open('lib/badwords.json', 'r') as bw_list:
             self.badwords_list = json.loads(bw_list.read())
 
-    async def __is_blacklisted(self, sentence):
+    async def __is_blacklisted(self, sentence) -> bool:
         sentence_conv = []
         if isinstance(sentence, str):
             sentence_conv = sentence.split('-')
@@ -353,7 +391,6 @@ class TicketBackend(commands.Cog):
                 ch = await guild.create_text_channel(name=f"Ticket-{random.randint(0, 65535)}")
 
             await send_interaction_msg(f'{ch.mention} Dein Ticket', interaction)
-
             await ch.set_permissions(interaction.user, view_channel=True, send_messages=True, read_messages=True)
 
             cur.execute(
@@ -364,19 +401,34 @@ class TicketBackend(commands.Cog):
             cur.close()
 
             view = TicketBaseView(timeout=None)
+            select = Select(custom_id='custom-ticket-', placeholder='Enter something...')
+
             for btn in fetcher:
                 btn1 = bytes(btn[1]).decode('utf-8')
                 btn2 = bytes(btn[2]).decode('utf-8')
+                emote = str(btn1 if btn1 != "nul" else "📑")
 
-                view.add_item(Button(label=f'{btn[0]}: {btn2}', emoji=str(btn1 if btn1 != "nul" else "📑"),
-                                     style=ButtonStyle.blurple,
-                                     custom_id=f'custom-ticket-{btn[0]}'))
+                if not self.bot.server_settings[interaction.guild.id]['ticket_dropdown']:
+                    view.add_item(Button(label=f'{btn[0]}: {btn2}', emoji=emote,
+                                         style=ButtonStyle.blurple,
+                                         custom_id=f'custom-ticket-{btn[0]}'))
+
+                    continue
+
+                select.add_option(label=f'{btn[0]}: {btn2}', value=f'custom-ticket-{btn[0]}', emoji=emote)
+
+            if self.bot.server_settings[interaction.guild.id]['ticket_dropdown']:
+                view.add_item(select)
 
             await ch.send(f'{interaction.user.mention}', embed=embed, view=view)
-            return
+            return 0
 
         if 'custom-ticket-' in i_id:
-            cb = int(i_id.replace('custom-ticket-', ''))
+            if interaction.data.get('component_type') == 3:
+                cb = int(interaction.data.get('values')[0].replace('custom-ticket-', ''))
+            else:
+                cb = int(i_id.replace('custom-ticket-', ''))
+
             cur = await new_cur(self.bot.dbBase)
 
             cur.execute("SELECT category_id FROM dcbots.tickets_serverchannel WHERE category_bind=%s AND server_id=%s",
@@ -396,7 +448,7 @@ class TicketBackend(commands.Cog):
             await ch.move(end=True, category=category, sync_permissions=False)
             await self.__edit_embed_message(interaction)
 
-            return
+            return 0
 
         if 'ticket-rename' == i_id:
             ch = interaction.channel
@@ -416,8 +468,9 @@ Sollte ein Wort in der Blacklist sein, wird dir das recht entnommen den Channel 
             try:
                 msg = await self.bot.wait_for('message', check=check, timeout=5 * 60)
             except asyncio.TimeoutError:
-                await ch.send('Du hast es leider nicht in der vorgegebenen Zeit geschafft')
-                return
+                if self.bot.get_channel(interaction.channel.id) is not None:
+                    await ch.send('Du hast es leider nicht in der vorgegebenen Zeit geschafft')
+                return 0
 
             new_msg = msg.content.replace(' ', '-')
             is_blacklisted = await self.__is_blacklisted(new_msg)
@@ -425,7 +478,7 @@ Sollte ein Wort in der Blacklist sein, wird dir das recht entnommen den Channel 
                 await ch.send(
                     f'{interaction.user.mention} Du hast leider die Kriterien nicht erfüllt, der Channel name kann aber immer noch durch ein Teammitglied geändert werden!',
                     delete_after=10)
-                return
+                return 0
 
             await ch.edit(name=new_msg, reason='User renamed channel')
 
@@ -435,7 +488,8 @@ Sollte ein Wort in der Blacklist sein, wird dir das recht entnommen den Channel 
         message = inter.message
         origin_view = View().from_message(message)
         #  Here it says it is an item, but I take only one button out of it, so it's ok
-        rename_btn: Button = origin_view.children[-2:][0]
+        kids = origin_view.children
+        rename_btn: Button = kids[-2:][0]
 
         if rename_btn.disabled:
             await message.edit(view=TicketSecondBaseView(timeout=None))
@@ -473,7 +527,6 @@ class TicketBaseView(View):
     async def on_error(self, err, message, interation: nextcord.Interaction):
         if isinstance(err, NotFound):
             return
-
         print(err)
 
 
@@ -509,7 +562,7 @@ class TicketDeleteView(View):
         await m.add_reaction('<:monaloadingdark:915863386196181014>')
 
         await ch.edit(sync_permissions=True)
-        await ch.send(f'{interaction.user.mention} closed the ticket')
+        await ch.send(f'> {interaction.user.mention} closed the ticket')
         await ch.send(embed=nextcord.Embed(title='`Team Controls`'), view=TicketEndView(timeout=None))
         await interaction.message.delete()
 
