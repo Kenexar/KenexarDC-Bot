@@ -1,12 +1,21 @@
-from datetime import datetime
+import requests
 
 import nextcord
+from nextcord import TextInputStyle
 from nextcord.ext import commands
-from nextcord.ext.commands import CommandNotFound
-from nextcord.ui import View, Select
+from nextcord.ui import View, Button, Modal, TextInput
 from utils import filler
 
-from PIL import Image, ImageDraw, ImageFont
+
+async def is_valid_domain(domain: str) -> bool:
+    return True if 'https://docs.google.com/documents/' in domain else False
+
+
+async def is_accessible(link: str) -> bool:
+    res = requests.get(link)
+    if res.status_code != 200:
+        return False
+    return True if not res.headers.get('X-Frame-Options') else False
 
 
 class Test(commands.Cog):
@@ -89,13 +98,55 @@ class Test(commands.Cog):
 
     @commands.Command
     async def send_test(self, ctx):
-        embed = nextcord.Embed(title=f'{datetime.now().strftime("%Y-%m-%d%H:%M:%S")}')
-        print(self.bot.server_settings)
-        embed.add_field(name=f'\u200b', value=f'`{datetime.now().strftime("%Y-%m-%d%H:%M:%S")}`')
+        embed = nextcord.Embed(title=f'\u200b')
+        embed.add_field(name=f'\u200b', value=f'\u200b')
 
         view = View()
+        view.add_item(Button(label='test', custom_id='test'))
 
         await ctx.send(embed=embed, view=view)
+
+    @commands.Cog.listener()
+    async def on_interaction(self, inter: nextcord.Interaction):
+        c_id = inter.data.get('custom_id')
+
+        if c_id == 'test':
+            modal = Modal(title=f'Team Bewerbung.', custom_id='team-app')
+            modal.add_item(TextInput(label='Wie alt bist du?', custom_id='team-app-1', placeholder='17'))
+
+            modal.add_item(TextInput(label='Wie sind deine Online zeiten?',
+                                     custom_id='team-app-4', style=TextInputStyle.paragraph,
+                                     placeholder='Mo-Fr: 10-22 uhr...'))
+
+            modal.add_item(TextInput(label='Was sollten wir noch über dich wissen?',
+                                     custom_id='team-app-3', style=TextInputStyle.paragraph,
+                                     placeholder='Stärken, Schwächen...', max_length=2048))
+
+            modal.add_item(TextInput(label='Google Docs link',
+                                     placeholder='Bitte nur die Sachen reinschreiben, die nicht hier Abgefragt werden.',
+                                     custom_id='team-app-2'))
+
+            await inter.response.send_modal(modal=modal)
+            return
+
+        if c_id == 'team-app':
+            comp = inter.data.get('components')
+
+            team_app_1 = comp[0]['components'][0]['value']  # Age
+            team_app_2 = comp[1]['components'][0]['value']  # Link
+            team_app_3 = comp[2]['components'][0]['value']  # Other things
+            team_app_4 = comp[3]['components'][0]['value']  # Online times
+
+            if not is_valid_domain(team_app_2):
+                modal = Modal(title='')
+                await inter.followup.send_modal(modal=modal)
+
+            embed = nextcord.Embed(title=f'Team bewerbung von {inter.user.name}',
+                                   color=self.bot.embed_st,
+                                   timestamp=self.bot.current_timestamp())
+
+            embed.add_field(name='Alter', value=team_app_1, inline=False)
+            await inter.channel.send(embed=embed)
 
 
 def setup(bot):

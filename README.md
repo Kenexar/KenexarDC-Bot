@@ -53,4 +53,3 @@ note: I (exersalza) have no partnership with any of the Games or Api Provider, I
 
 [i20]: https://github.com/kenexar/discord-mr-python/issues/20
 [i18]: https://github.com/kenexar/discord-mr-python/issues/18
-
