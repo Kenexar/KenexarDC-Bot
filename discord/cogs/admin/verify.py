@@ -13,8 +13,6 @@ async def send_interaction_msg(message: str, interaction: nextcord.Interaction, 
         print(e)
 
 
-
-
 class Verify(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -37,7 +35,7 @@ class Verify(commands.Cog):
     async def verify(self, ctx):
         pass
 
-    @verify.Command
+    @verify.command()
     async def send(self, ctx):
         pass
 
