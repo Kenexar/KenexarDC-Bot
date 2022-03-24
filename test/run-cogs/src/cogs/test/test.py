@@ -1,7 +1,9 @@
+import random
+
 import requests
 
 import nextcord
-from nextcord import TextInputStyle
+from nextcord import TextInputStyle, InteractionType
 from nextcord.ext import commands
 from nextcord.ui import View, Button, Modal, TextInput
 from utils import filler
@@ -77,6 +79,19 @@ class Test(commands.Cog):
             },
         }
 
+        self.cursed_list = {
+            'test': 't̴e̶s̸t̶',
+            'ludwig': 'L̸u̸d̶w̸i̷g̵',
+            'historyv': 'h̸i̴s̶t̸o̵r̶y̵v̶',
+            'till': 'T̸i̸l̶l̵',
+            'lakker': 'l̴a̷k̴k̶e̶r̷',
+            'twitch': 'T̷w̸i̷t̷c̷h̵',
+            'burak': 'b̸u̵r̸a̸k̵',
+            'yeet': 'y̶e̶e̶t̷',
+        }
+
+        self.verify_user = {}
+
     @commands.Cog.listener()
     async def on_ready(self):
         self.bot.logger.info('Ready, pls don\'t delete me :(')
@@ -99,12 +114,24 @@ class Test(commands.Cog):
 
         view = View()
         view.add_item(Button(label='test', custom_id='test'))
+        view.add_item(Button(label='test2', custom_id='test2'))
 
         await ctx.send(embed=embed, view=view)
 
     @commands.Cog.listener()
     async def on_interaction(self, inter: nextcord.Interaction):
         c_id = inter.data.get('custom_id')
+
+        if c_id == 'test2':
+            modal = Modal(title='Verification', custom_id='verify-modal')
+            choice = random.choice(list(self.cursed_list.keys()))
+            word = self.cursed_list.get(choice, "test")
+
+            self.verify_user[inter.user.id] = choice
+
+            modal.add_item(TextInput(label=f'{word} - Captcha', custom_id='Tests'))
+            await inter.response.send_modal(modal)
+            return
 
         if c_id == 'test':
             modal = Modal(title=f'Team Bewerbung.', custom_id='team-app')

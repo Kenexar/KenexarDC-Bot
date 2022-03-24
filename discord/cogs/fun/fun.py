@@ -17,6 +17,10 @@ class Fun(commands.Cog):
     async def bug(self, ctx):
         return await ctx.send(f'Es gibt keine Bugs, nur Features')
 
+    @commands.Command
+    async def cake(self, ctx):
+        await ctx.send('the cake is a lie!')
+
     @commands.Command  # testing some MORE STUFF
     async def remindmein(self, ctx: commands.Context, counter):
         if not counter.isdigit():
